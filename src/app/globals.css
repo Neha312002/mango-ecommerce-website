@@ -24,3 +24,40 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Swiper Navigation Arrows Styling */
+.product-swiper .swiper-button-next,
+.product-swiper .swiper-button-prev {
+  color: #FF8C42;
+  background: white;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-swiper .swiper-button-next:after,
+.product-swiper .swiper-button-prev:after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.product-swiper .swiper-button-next:hover,
+.product-swiper .swiper-button-prev:hover {
+  background: #FF8C42;
+  color: white;
+}
+
+/* Swiper Pagination Dots Styling */
+.product-swiper .swiper-pagination-bullet {
+  background: #d1d5db;
+  opacity: 1;
+  width: 12px;
+  height: 12px;
+}
+
+.product-swiper .swiper-pagination-bullet-active {
+  background: #FF8C42;
+  width: 14px;
+  height: 14px;
+}
