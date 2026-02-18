@@ -219,7 +219,8 @@ export default function CheckoutPage() {
         const error = await response.json();
         console.error('Order creation failed:', error);
         console.error('Order data sent:', { orderItems, userData: userData.id });
-        alert(`Failed to place order: ${error.error || 'Unknown error'}. Please check that products are still available.`);
+        const details = typeof error.details === 'string' ? error.details : '';
+        alert(`Failed to place order: ${error.error || 'Unknown error'}${details ? ' (' + details + ')' : ''}. Please check that products are still available.`);
       }
     } catch (error) {
       console.error('Error placing order:', error);
