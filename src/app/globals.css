@@ -5,6 +5,11 @@
   --foreground: #171717;
 }
 
+html {
+  /* Shrink overall UI so 100% zoom looks like your current 75% */
+  font-size: 75%;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -16,6 +16,7 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
   const [useNewAddress, setUseNewAddress] = useState(false);
+  const [saveAddress, setSaveAddress] = useState(true);
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -78,6 +79,7 @@ export default function CheckoutPage() {
           });
         } else if (data.addresses.length === 0) {
           setUseNewAddress(true);
+          setSaveAddress(true);
         }
       }
     } catch (error) {
@@ -109,8 +111,8 @@ export default function CheckoutPage() {
   const handleShippingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Save new address to database if user is adding a new one
-    if (useNewAddress && !selectedAddressId) {
+    // Save new address to database only if user chose to save it
+    if (useNewAddress && !selectedAddressId && saveAddress) {
       const currentUser = localStorage.getItem('currentUser');
       if (currentUser) {
         const userData = JSON.parse(currentUser);
@@ -411,6 +413,7 @@ export default function CheckoutPage() {
                         onClick={() => {
                           setUseNewAddress(true);
                           setSelectedAddressId(null);
+                          setSaveAddress(true);
                           setShippingInfo({
                             fullName: '',
                             email: shippingInfo.email,
@@ -551,7 +554,21 @@ export default function CheckoutPage() {
                           placeholder="33101"
                         />
                       </div>
-                    </div>                    </>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-2">
+                      <input
+                        id="save-address"
+                        type="checkbox"
+                        checked={saveAddress}
+                        onChange={(e) => setSaveAddress(e.target.checked)}
+                        className="h-4 w-4 text-[#FF8C42] border-gray-300 rounded focus:ring-[#FF8C42]"
+                      />
+                      <label htmlFor="save-address" className="text-sm text-gray-700">
+                        Save this address to my account
+                      </label>
+                    </div>
+                    </>
                     )}
                     <button
                       type="submit"
