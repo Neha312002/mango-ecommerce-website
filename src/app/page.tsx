@@ -257,7 +257,7 @@ export default function Home() {
 
       {/* Flying Mango Animation Layer */}
       {flyingMangoes.length > 0 && (
-        <div className="pointer-events-none fixed inset-0 z-40">
+        <div className="pointer-events-none fixed inset-0 z-[9999]">
           {flyingMangoes.map((mango) => (
             <div
               key={mango.id}
@@ -405,6 +405,16 @@ export default function Home() {
 
       {/* Hero Section with Image Slider */}
       <section id="home" className="relative w-full h-[70vh] md:h-[85vh] flex items-center justify-center">
+        {/* Floating Leaves Animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+          <div className="floating-leaf leaf-1 text-4xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-2 text-3xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-3 text-5xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-4 text-3xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-5 text-4xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-6 text-3xl" style={{ bottom: '0' }}>🍃</div>
+        </div>
+        
         <Swiper 
           className="w-full h-full" 
           loop 
@@ -734,18 +744,50 @@ export default function Home() {
                         ${product.price} / kg
                       </motion.p>
                       <p className="text-gray-600 mb-6 flex-grow">{product.desc}</p>
-                      <motion.button 
-                        className="w-full bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button" 
-                        onClick={(event) => {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          handleAddToCart(product, event);
-                        }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        Add to Cart
-                      </motion.button>
+                      {cart.find(item => item.name === product.name) ? (
+                        <div className="flex items-center justify-center gap-3 w-full bg-[#3D4F42] text-white px-6 py-3 rounded-md shadow-md">
+                          <motion.button
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              removeFromCart(product.name);
+                            }}
+                            className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center font-bold"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            −
+                          </motion.button>
+                          <span className="text-lg font-bold min-w-[2rem] text-center">
+                            {cart.find(item => item.name === product.name)?.quantity}
+                          </span>
+                          <motion.button
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              handleAddToCart(product, event);
+                            }}
+                            className="w-8 h-8 rounded-full bg-[#FF8C42] hover:bg-orange-600 flex items-center justify-center font-bold"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            +
+                          </motion.button>
+                        </div>
+                      ) : (
+                        <motion.button 
+                          className="w-full bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button" 
+                          onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            handleAddToCart(product, event);
+                          }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Add to Cart
+                        </motion.button>
+                      )}
                     </div>
                   </motion.div>
                 </Link>

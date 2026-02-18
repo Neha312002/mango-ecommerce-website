@@ -348,3 +348,64 @@ html {
 .pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+/* Floating leaf animations */
+.floating-leaf {
+  position: absolute;
+  opacity: 0.6;
+  animation: float-leaf 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float-leaf {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.leaf-1 {
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 12s;
+}
+
+.leaf-2 {
+  left: 25%;
+  animation-delay: 3s;
+  animation-duration: 14s;
+}
+
+.leaf-3 {
+  left: 50%;
+  animation-delay: 6s;
+  animation-duration: 13s;
+}
+
+.leaf-4 {
+  left: 70%;
+  animation-delay: 2s;
+  animation-duration: 15s;
+}
+
+.leaf-5 {
+  left: 85%;
+  animation-delay: 5s;
+  animation-duration: 16s;
+}
+
+.leaf-6 {
+  left: 40%;
+  animation-delay: 8s;
+  animation-duration: 13s;
+}
