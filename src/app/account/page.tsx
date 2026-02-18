@@ -39,12 +39,21 @@ function AccountPageContent() {
     }
 
     const userData = JSON.parse(currentUser);
-    setUser(userData);
+    // Ensure user data has all required fields
+    const normalizedUser = {
+      id: userData.id,
+      name: userData.name || 'User',
+      email: userData.email || '',
+      joinedDate: userData.joinedDate || userData.createdAt || new Date().toISOString(),
+      wishlist: userData.wishlist || [],
+      reviews: userData.reviews || [],
+    };
+    setUser(normalizedUser);
 
     // Load orders from database
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`/api/orders?userId=${userData.id}`);
+        const response = await fetch(`/api/orders?userId=${normalizedUser.id}`);
         if (response.ok) {
           const dbOrders = await response.json();
           // Transform database orders to match the Order interface
@@ -52,10 +61,11 @@ function AccountPageContent() {
             orderNumber: order.orderNumber,
             date: order.createdAt,
             items: order.items.map((item: any) => ({
-              name: item.product.name,
+              id: item.productId,
+              name: item.product?.name || 'Unknown Product',
               quantity: item.quantity,
               price: item.price,
-              image: item.product.image,
+              img: item.product?.image || '/images/mango1.jpg',
             })),
             total: order.total,
             status: order.status,
@@ -188,8 +198,8 @@ function AccountPageContent() {
                 {[
                   { id: 'orders', icon: '📦', label: 'My Orders', count: orders.length },
                   { id: 'profile', icon: '👤', label: 'Profile' },
-                  { id: 'reviews', icon: '⭐', label: 'My Reviews', count: user.reviews.length },
-                  { id: 'wishlist', icon: '❤️', label: 'Wishlist', count: user.wishlist.length }
+                  { id: 'reviews', icon: '⭐', label: 'My Reviews', count: user?.reviews?.length || 0 },
+                  { id: 'wishlist', icon: '❤️', label: 'Wishlist', count: user?.wishlist?.length || 0 }
                 ].map((item) => (
                   <button
                     key={item.id}
