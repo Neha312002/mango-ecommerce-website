@@ -50,7 +50,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: 'Login successful',
-        user: userWithoutPassword,
+        user: {
+          id: userWithoutPassword.id,
+          name: userWithoutPassword.name,
+          email: userWithoutPassword.email,
+          joinedDate: userWithoutPassword.createdAt.toISOString(),
+          wishlist: [],
+          reviews: [],
+        },
         token,
       },
       { status: 200 }

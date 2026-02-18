@@ -57,6 +57,7 @@ export default function AuthPage() {
 
         // Store user data
         localStorage.setItem('currentUser', JSON.stringify(data.user));
+        setLoading(false);
         router.push('/account');
       } else {
         // Login - Call login API
@@ -80,10 +81,12 @@ export default function AuthPage() {
         // Store user data and token
         localStorage.setItem('currentUser', JSON.stringify(data.user));
         localStorage.setItem('authToken', data.token);
+        setLoading(false);
         router.push('/account');
       }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+    } catch (err: any) {
+      console.error('Auth error:', err);
+      setError(err.message || 'An error occurred. Please try again.');
       setLoading(false);
     }
   };

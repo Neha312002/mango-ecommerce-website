@@ -54,7 +54,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: 'User created successfully',
-        user,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          joinedDate: user.createdAt.toISOString(),
+          wishlist: [],
+          reviews: [],
+        },
       },
       { status: 201 }
     );
