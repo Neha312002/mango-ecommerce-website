@@ -17,15 +17,6 @@ const sliderImages = [
   '/images/mango3.jpg',
 ];
 
-const products = [
-  { id: 1, name: 'Alphonso Mango', price: 20, img: '/images/mango1.jpg', desc: 'Rich, sweet, and juicy - the king of mangoes.' },
-  { id: 2, name: 'Kesar Mango', price: 18, img: '/images/mango2.jpg', desc: 'Aromatic and flavorful with saffron notes.' },
-  { id: 3, name: 'Banganapalli Mango', price: 15, img: '/images/mango3.jpg', desc: 'Firm, delicious, and perfectly sweet.' },
-  { id: 4, name: 'Totapuri Mango', price: 16, img: '/images/mango1.jpg', desc: 'Tangy and great for cooking or eating.' },
-  { id: 5, name: 'Dasheri Mango', price: 19, img: '/images/mango2.jpg', desc: 'Sweet fragrance with delicious pulp.' },
-  { id: 6, name: 'Langra Mango', price: 17, img: '/images/mango3.jpg', desc: 'Green-skinned with exceptional sweetness.' },
-];
-
 type FlyingMango = {
   id: number;
   startX: number;
@@ -44,7 +35,33 @@ export default function Home() {
   const [cartAnimating, setCartAnimating] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [products, setProducts] = useState<any[]>([]);
   const cartButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Fetch products from database
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const data = await response.json();
+          // Transform to match expected format
+          const transformedProducts = data.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            img: p.image,
+            desc: p.description,
+          }));
+          setProducts(transformedProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Check for logged-in user on mount
   useEffect(() => {
@@ -54,7 +71,7 @@ export default function Home() {
     }
   }, []);
 
-  function handleAddToCart(product: (typeof products)[number], event: MouseEvent<HTMLButtonElement>) {
+  function handleAddToCart(product: any, event: MouseEvent<HTMLButtonElement>) {
     addToCart(product);
 
     if (!cartButtonRef.current) return;

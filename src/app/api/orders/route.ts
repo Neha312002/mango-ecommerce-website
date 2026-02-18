@@ -15,10 +15,37 @@ export async function POST(request: NextRequest) {
       total,
     } = body;
 
+    console.log('Creating order with data:', { userId, items, shipping, subtotal, shippingCost, tax, total });
+
     // Validation
     if (!userId || !items || items.length === 0 || !shipping) {
+      console.error('Validation failed:', { userId, itemsLength: items?.length, shipping });
       return NextResponse.json(
         { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Verify all products exist
+    const productIds = items.map((item: any) => item.productId);
+    const existingProducts = await prisma.product.findMany({
+      where: {
+        id: {
+          in: productIds,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const existingProductIds = existingProducts.map(p => p.id);
+    const missingProducts = productIds.filter((id: number) => !existingProductIds.includes(id));
+    
+    if (missingProducts.length > 0) {
+      console.error('Products not found in database:', missingProducts);
+      return NextResponse.json(
+        { error: `Products not found: ${missingProducts.join(', ')}` },
         { status: 400 }
       );
     }
@@ -68,10 +95,11 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Create order error:', error);
+    console.error('Error details:', error.message, error.stack);
     return NextResponse.json(
-      { error: 'Failed to create order' },
+      { error: 'Failed to create order', details: error.message },
       { status: 500 }
     );
   }
