@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +13,9 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [useNewAddress, setUseNewAddress] = useState(false);
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -33,13 +36,103 @@ export default function CheckoutPage() {
     cvv: ''
   });
 
+  // Load saved addresses when component mounts
+  useEffect(() => {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      const userData = JSON.parse(currentUser);
+      loadSavedAddresses(userData.id);
+      // Pre-fill email from user data
+      setShippingInfo(prev => ({ ...prev, email: userData.email || '' }));
+    }
+  }, []);
+
+  async function loadSavedAddresses(userId: number) {
+    try {
+      const response = await fetch(`/api/addresses?userId=${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setSavedAddresses(data.addresses);
+        
+        // Auto-select default address if exists
+        const defaultAddress = data.addresses.find((addr: any) => addr.isDefault);
+        if (defaultAddress) {
+          setSelectedAddressId(defaultAddress.id);
+          setShippingInfo({
+            fullName: defaultAddress.fullName,
+            email: shippingInfo.email,
+            phone: defaultAddress.phone,
+            address: defaultAddress.address,
+            city: defaultAddress.city,
+            state: defaultAddress.state,
+            zipCode: defaultAddress.zipCode,
+            country: defaultAddress.country
+          });
+        } else if (data.addresses.length === 0) {
+          setUseNewAddress(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading addresses:', error);
+      setUseNewAddress(true);
+    }
+  }
+
+  function selectAddress(address: any) {
+    setSelectedAddressId(address.id);
+    setUseNewAddress(false);
+    setShippingInfo({
+      fullName: address.fullName,
+      email: shippingInfo.email,
+      phone: address.phone,
+      address: address.address,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zipCode,
+      country: address.country
+    });
+  }
+
   const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
   const shipping = subtotal > 50 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
-  const handleShippingSubmit = (e: React.FormEvent) => {
+  const handleShippingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Save new address to database if user is adding a new one
+    if (useNewAddress && !selectedAddressId) {
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser) {
+        const userData = JSON.parse(currentUser);
+        try {
+          const response = await fetch('/api/addresses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: userData.id,
+              fullName: shippingInfo.fullName,
+              phone: shippingInfo.phone,
+              address: shippingInfo.address,
+              city: shippingInfo.city,
+              state: shippingInfo.state,
+              zipCode: shippingInfo.zipCode,
+              country: shippingInfo.country,
+              isDefault: savedAddresses.length === 0, // Make default if it's the first address
+            }),
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            setSelectedAddressId(data.address.id);
+          }
+        } catch (error) {
+          console.error('Error saving address:', error);
+        }
+      }
+    }
+    
     setStep(2);
   };
 
@@ -271,7 +364,88 @@ export default function CheckoutPage() {
                   className="bg-white rounded-2xl shadow-lg p-8"
                 >
                   <h2 className="text-2xl font-bold text-[#3D4F42] mb-6">Shipping Information</h2>
+                  
+                  {/* Saved Addresses */}
+                  {savedAddresses.length > 0 && !useNewAddress && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-700 mb-3">Select Saved Address</h3>
+                      <div className="space-y-3 mb-4">
+                        {savedAddresses.map((addr) => (
+                          <div
+                            key={addr.id}
+                            onClick={() => selectAddress(addr)}
+                            className={`p-4 border-2 rounded-lg cursor-pointer transition ${
+                              selectedAddressId === addr.id
+                                ? 'border-[#FF8C42] bg-orange-50'
+                                : 'border-gray-200 hover:border-[#FF8C42]/50'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-semibold text-gray-800">{addr.fullName}</p>
+                                <p className="text-sm text-gray-600">{addr.phone}</p>
+                                <p className="text-sm text-gray-600">{addr.address}, {addr.city}, {addr.state} {addr.zipCode}</p>
+                                {addr.isDefault && (
+                                  <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-[#FF8C42] text-white rounded">
+                                    Default
+                                  </span>
+                                )}
+                              </div>
+                              {selectedAddressId === addr.id && (
+                                <span className="text-[#FF8C42] text-xl">✓</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUseNewAddress(true);
+                          setSelectedAddressId(null);
+                          setShippingInfo({
+                            fullName: '',
+                            email: shippingInfo.email,
+                            phone: '',
+                            address: '',
+                            city: '',
+                            state: '',
+                            zipCode: '',
+                            country: 'United States'
+                          });
+                        }}
+                        className="text-[#FF8C42] hover:underline font-semibold"
+                      >
+                        + Add New Address
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Show form only when adding new address or no saved addresses */}
+                  {(useNewAddress || savedAddresses.length === 0) && (
+                    <>
+                      {savedAddresses.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUseNewAddress(false);
+                            const defaultAddr = savedAddresses.find(a => a.isDefault) || savedAddresses[0];
+                            if (defaultAddr) selectAddress(defaultAddr);
+                          }}
+                          className="mb-4 text-sm text-gray-600 hover:text-[#FF8C42]"
+                        >
+                          ← Back to saved addresses
+                        </button>
+                      )}
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                        {savedAddresses.length > 0 ? 'New Address' : 'Enter Shipping Address'}
+                      </h3>
+                    </>
+                  )}
+                  
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
+                    {(useNewAddress || savedAddresses.length === 0) && (
+                    <>
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -369,8 +543,8 @@ export default function CheckoutPage() {
                           placeholder="33101"
                         />
                       </div>
-                    </div>
-
+                    </div>                    </>
+                    )}
                     <button
                       type="submit"
                       className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition"

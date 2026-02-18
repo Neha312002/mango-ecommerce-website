@@ -26,7 +26,7 @@ type FlyingMango = {
 };
 
 export default function Home() {
-  const { cart, addToCart, removeFromCart, clearCart } = useCart();
+  const { cart, addToCart, removeFromCart, clearCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageName, setMessageName] = useState('');
@@ -765,6 +765,29 @@ export default function Home() {
                         whileHover={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       />
+                      {/* Wishlist Button */}
+                      <motion.button
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          if (product.id) {
+                            if (isInWishlist(product.id)) {
+                              removeFromWishlist(product.id);
+                            } else {
+                              addToWishlist(product.id);
+                            }
+                          }
+                        }}
+                        className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-lg z-10 ${
+                          product.id && isInWishlist(product.id)
+                            ? 'bg-red-500 text-white'
+                            : 'bg-white/90 text-gray-600 hover:bg-red-500 hover:text-white'
+                        } transition-colors`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        {product.id && isInWishlist(product.id) ? '❤️' : '🤍'}
+                      </motion.button>
                     </motion.div>
                     <div className="p-6 flex flex-col flex-grow">
                       <h3 className="text-xl font-bold text-[#3D4F42] mb-2">{product.name}</h3>

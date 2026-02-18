@@ -23,8 +23,30 @@ model User {
   orders        Order[]
   reviews       Review[]
   wishlist      WishlistItem[]
+  addresses     Address[]
   
   @@index([email])
+}
+
+// Address Model - User shipping addresses
+model Address {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  fullName      String
+  phone         String
+  address       String
+  city          String
+  state         String
+  zipCode       String
+  country       String    @default("USA")
+  isDefault     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
 }
 
 // Product Model - Mango varieties
