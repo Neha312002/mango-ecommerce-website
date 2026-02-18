@@ -85,6 +85,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     const userData = JSON.parse(currentUser);
+    console.log('Adding to wishlist:', { userId: userData.id, productId });
 
     try {
       const response = await fetch('/api/wishlist', {
@@ -93,8 +94,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ userId: userData.id, productId }),
       });
 
+      const data = await response.json();
+      console.log('Wishlist API response:', data);
+
       if (response.ok) {
-        setWishlist((prev) => [...prev, productId]);
+        setWishlist((prev) => {
+          const updated = [...prev, productId];
+          console.log('Wishlist updated:', updated);
+          return updated;
+        });
+      } else {
+        console.error('Failed to add to wishlist:', data);
       }
     } catch (error) {
       console.error('Error adding to wishlist:', error);

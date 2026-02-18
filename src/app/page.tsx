@@ -26,7 +26,7 @@ type FlyingMango = {
 };
 
 export default function Home() {
-  const { cart, addToCart, removeFromCart, clearCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+  const { cart, addToCart, removeFromCart, clearCart, addToWishlist, removeFromWishlist, isInWishlist, wishlist } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageName, setMessageName] = useState('');
@@ -256,8 +256,21 @@ export default function Home() {
               <a href="#contact" className="hover:text-[#FF8C42] transition font-medium">Contact Us</a>
             </div>
 
-            {/* Right side actions (log in + cart) */}
+            {/* Right side actions (log in + cart + wishlist) */}
             <div className="flex items-center gap-4 ml-auto">
+              <Link 
+                href="/wishlist" 
+                className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base hover:text-orange-300 transition relative"
+                title="Wishlist"
+              >
+                <span className="text-lg">❤️</span>
+                <span className="font-medium">Wishlist</span>
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
               <Link 
                 href={currentUser ? "/account" : "/auth"} 
                 className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base hover:text-orange-300 transition"

@@ -34,7 +34,7 @@ interface Product {
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'description' | 'nutrition' | 'reviews'>('description');
   const [product, setProduct] = useState<Product | null>(null);
@@ -222,6 +222,25 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   whileTap={{ scale: 0.98 }}
                 >
                   🛒 Add to Cart - ${(product.price * quantity).toFixed(2)}
+                </motion.button>
+                <motion.button
+                  onClick={() => {
+                    if (isInWishlist(product.id)) {
+                      removeFromWishlist(product.id);
+                    } else {
+                      addToWishlist(product.id);
+                    }
+                  }}
+                  className={`w-16 h-16 rounded-lg font-bold text-2xl shadow-lg transition ${
+                    isInWishlist(product.id)
+                      ? 'bg-red-500 text-white'
+                      : 'bg-white text-gray-600 hover:bg-red-500 hover:text-white border-2 border-gray-300'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  title={isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                >
+                  {isInWishlist(product.id) ? '❤️' : '🤍'}
                 </motion.button>
               </div>
 
