@@ -180,6 +180,12 @@ export default function CheckoutPage() {
       
       console.log('Placing order with items:', orderItems);
 
+      // Ensure email is always populated on the order
+      const shippingForOrder = {
+        ...shippingInfo,
+        email: shippingInfo.email || userData.email || '',
+      };
+
       // Save order to database
       const response = await fetch('/api/orders', {
         method: 'POST',
@@ -189,7 +195,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           userId: userData.id,
           items: orderItems,
-          shipping: shippingInfo,
+          shipping: shippingForOrder,
           subtotal: subtotal,
           shippingCost: shipping,
           tax: tax,
@@ -209,7 +215,7 @@ export default function CheckoutPage() {
           date: new Date().toISOString(),
           items: cart,
           total: total,
-          shipping: shippingInfo,
+          shipping: shippingForOrder,
           status: 'processing'
         };
         
