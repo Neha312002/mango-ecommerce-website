@@ -111,9 +111,9 @@ export default function Home() {
       <nav className="sticky top-0 z-40 shadow-lg text-white">
         <div className="flex w-full">
           {/* Left Brand Block */}
-          <div className="hidden sm:flex items-center gap-4 bg-[#FF8C42] text-[#3D4F42] px-6 md:px-10 py-4 relative overflow-visible">
+          <div className="hidden sm:flex items-center gap-3 bg-[#FF8C42] text-[#3D4F42] px-5 md:px-8 py-3 relative overflow-visible">
             {/* Mango with Juice Splash */}
-            <div className="relative w-20 h-20 flex items-center justify-center">
+            <div className="relative w-16 h-16 flex items-center justify-center">
               
               {/* Splash droplets flying around */}
               <motion.div
@@ -183,13 +183,13 @@ export default function Home() {
             
             {/* Brand Text */}
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Mango Fresh Farm</h1>
+              <h1 className="text-xl md:text-2xl font-extrabold tracking-tight">Mango Fresh Farm</h1>
               <p className="text-xs md:text-sm font-medium">Deliver Season's Best</p>
             </div>
           </div>
 
           {/* Center Nav Area */}
-          <div className="flex-1 bg-[#3D4F42] px-4 md:px-10 py-4 flex items-center justify-between">
+          <div className="flex-1 bg-[#3D4F42] px-4 md:px-8 py-3 flex items-center justify-between">
             {/* Mobile Brand (when left block is hidden) */}
             <div className="sm:hidden flex items-center gap-2">
               <div className="relative w-12 h-12 flex items-center justify-center">
@@ -403,7 +403,7 @@ export default function Home() {
         <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/60 to-black/30 flex items-center px-6 md:px-16">
           <div className="max-w-3xl text-left">
             <motion.h1 
-              className="mb-2 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white drop-shadow-2xl leading-tight"
+              className="mb-2 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-2xl leading-tight"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -433,7 +433,7 @@ export default function Home() {
               </motion.span>
             </motion.h1>
             <motion.p 
-              className="mt-6 text-lg sm:text-2xl text-orange-200 font-medium drop-shadow-lg"
+              className="mt-4 text-base sm:text-xl text-orange-200 font-medium drop-shadow-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.9 }}
@@ -442,7 +442,7 @@ export default function Home() {
             </motion.p>
             <motion.a
               href="#products"
-              className="inline-block mt-8 bg-white text-[#3D4F42] border border-white px-8 py-3 rounded-md font-semibold text-lg shadow-xl transition-all juice-button-outline"
+              className="inline-block mt-6 bg-white text-[#3D4F42] border border-white px-6 py-2.5 rounded-md font-semibold text-base shadow-xl transition-all juice-button-outline"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 1.1 }}
