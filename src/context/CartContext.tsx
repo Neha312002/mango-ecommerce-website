@@ -35,14 +35,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<number[]>([]);
 
-  // Load wishlist from database when user logs in
+  // Load cart and wishlist when app mounts
   useEffect(() => {
+    // Restore cart from localStorage so refresh doesn't clear it
+    try {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        const parsed = JSON.parse(storedCart) as CartItem[];
+        setCart(parsed);
+      }
+    } catch (error) {
+      console.error('Error loading cart from storage:', error);
+    }
+
+    // Load wishlist from database when user logs in
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
       const userData = JSON.parse(currentUser);
       fetchWishlist(userData.id);
     }
   }, []);
+
+  // Persist cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    } catch (error) {
+      console.error('Error saving cart to storage:', error);
+    }
+  }, [cart]);
 
   async function fetchWishlist(userId: number) {
     try {

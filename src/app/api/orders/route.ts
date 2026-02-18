@@ -29,29 +29,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify all products exist
-    const productIds = items.map((item: any) => item.productId);
-    const existingProducts = await prisma.product.findMany({
-      where: {
-        id: {
-          in: productIds,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const existingProductIds = existingProducts.map((p: { id: number }) => p.id);
-    const missingProducts = productIds.filter((id: number) => !existingProductIds.includes(id));
-    
-    if (missingProducts.length > 0) {
-      console.error('Products not found in database:', missingProducts);
-      return NextResponse.json(
-        { error: `Products not found: ${missingProducts.join(', ')}` },
-        { status: 400 }
-      );
-    }
+    // Normalize item productIds to numbers for safety
+    const normalizedItems = items.map((item: any) => ({
+      productId: typeof item.productId === 'string' ? parseInt(item.productId, 10) : item.productId,
+      quantity: item.quantity,
+      price: item.price,
+    }));
 
     // Generate order number
     const orderNumber = 'MF' + Date.now().toString();
@@ -75,11 +58,7 @@ export async function POST(request: NextRequest) {
         total,
         status: 'processing',
         items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
+          create: normalizedItems,
         },
       },
       include: {
