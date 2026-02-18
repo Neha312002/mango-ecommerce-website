@@ -60,12 +60,22 @@ export default function CheckoutPage() {
       
       const userData = JSON.parse(currentUser);
       
+      // Validate cart items have IDs
+      const invalidItems = cart.filter((item) => !item.id);
+      if (invalidItems.length > 0) {
+        alert('Some items in your cart are invalid. Please clear your cart and add products again from the homepage.');
+        console.error('Invalid cart items:', invalidItems);
+        return;
+      }
+      
       // Prepare order items with productId
       const orderItems = cart.map((item) => ({
-        productId: item.id || 1, // Default to 1 if no ID (fallback)
+        productId: item.id,
         quantity: item.quantity || 1,
         price: item.price,
       }));
+      
+      console.log('Placing order with items:', orderItems);
 
       // Save order to database
       const response = await fetch('/api/orders', {
@@ -104,11 +114,13 @@ export default function CheckoutPage() {
         localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
       } else {
         const error = await response.json();
-        alert(`Failed to place order: ${error.error}`);
+        console.error('Order creation failed:', error);
+        console.error('Order data sent:', { orderItems, userData: userData.id });
+        alert(`Failed to place order: ${error.error || 'Unknown error'}. Please check that products are still available.`);
       }
     } catch (error) {
       console.error('Error placing order:', error);
-      alert('Failed to place order. Please try again.');
+      alert('Failed to place order. Please try again or clear your cart and add products fresh from the homepage.');
     }
   };
 
@@ -560,6 +572,17 @@ export default function CheckoutPage() {
                   </div>
                 ))}
               </div>
+              
+              <button
+                onClick={() => {
+                  if (confirm('Are you sure you want to clear your entire cart?')) {
+                    clearCart();
+                  }
+                }}
+                className="w-full mb-4 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition"
+              >
+                Clear Cart
+              </button>
 
               <div className="border-t pt-4 space-y-3">
                 <div className="flex justify-between text-gray-700">
