@@ -36,6 +36,14 @@ export default function CheckoutPage() {
     cvv: ''
   });
 
+  // Ensure user is logged in before using checkout
+  useEffect(() => {
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      router.push('/auth?redirect=/checkout');
+    }
+  }, [router]);
+
   // Load saved addresses when component mounts
   useEffect(() => {
     const currentUser = localStorage.getItem('currentUser');
@@ -147,7 +155,7 @@ export default function CheckoutPage() {
       const currentUser = localStorage.getItem('currentUser');
       if (!currentUser) {
         alert('Please login to place an order');
-        router.push('/auth');
+        router.push('/auth?redirect=/checkout');
         return;
       }
       

@@ -30,6 +30,7 @@ function AccountPageContent() {
   const [activeTab, setActiveTab] = useState<'orders' | 'profile' | 'reviews' | 'wishlist'>('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [reviewForm, setReviewForm] = useState<{ productId: number; rating: number; comment: string } | null>(null);
+  const [addresses, setAddresses] = useState<any[]>([]);
 
   useEffect(() => {
     const currentUser = localStorage.getItem('currentUser');
@@ -86,6 +87,21 @@ function AccountPageContent() {
 
     fetchOrders();
 
+    // Load saved addresses from database
+    const fetchAddresses = async () => {
+      try {
+        const response = await fetch(`/api/addresses?userId=${normalizedUser.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setAddresses(data.addresses || []);
+        }
+      } catch (error) {
+        console.error('Error fetching addresses:', error);
+      }
+    };
+
+    fetchAddresses();
+
     // Check for tab parameter
     const tab = searchParams.get('tab');
     if (tab && ['orders', 'profile', 'reviews', 'wishlist'].includes(tab)) {
@@ -141,6 +157,68 @@ function AccountPageContent() {
     } catch (error) {
       console.error('Error submitting review:', error);
       alert('Failed to submit review. Please try again.');
+    }
+  };
+
+  const handleSetDefaultAddress = async (addressId: number) => {
+    if (!user) return;
+    const addr = addresses.find((a: any) => a.id === addressId);
+    if (!addr) return;
+
+    try {
+      const response = await fetch('/api/addresses', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: addr.id,
+          userId: user.id,
+          fullName: addr.fullName,
+          phone: addr.phone,
+          address: addr.address,
+          city: addr.city,
+          state: addr.state,
+          zipCode: addr.zipCode,
+          country: addr.country,
+          isDefault: true,
+        }),
+      });
+
+      if (response.ok) {
+        setAddresses((prev) => prev.map((a: any) => ({
+          ...a,
+          isDefault: a.id === addressId,
+        })));
+      } else {
+        const error = await response.json();
+        alert(`Failed to set default address: ${error.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error setting default address:', error);
+      alert('Failed to set default address. Please try again.');
+    }
+  };
+
+  const handleDeleteAddress = async (addressId: number) => {
+    if (!user) return;
+    const confirmed = window.confirm('Are you sure you want to delete this address?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`/api/addresses?id=${addressId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setAddresses((prev) => prev.filter((a: any) => a.id !== addressId));
+      } else {
+        const error = await response.json();
+        alert(`Failed to delete address: ${error.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting address:', error);
+      alert('Failed to delete address. Please try again.');
     }
   };
 
@@ -412,6 +490,50 @@ function AccountPageContent() {
                           Update Password
                         </button>
                       </form>
+                    </div>
+
+                    <div className="mt-10 pt-8 border-t">
+                      <h3 className="text-xl font-bold text-gray-800 mb-4">Saved Addresses</h3>
+                      {addresses.length === 0 ? (
+                        <p className="text-gray-600 text-sm">
+                          No saved addresses yet. Your shipping address will be saved here after your first checkout.
+                        </p>
+                      ) : (
+                        <div className="space-y-4">
+                          {addresses.map((addr) => (
+                            <div key={addr.id} className="p-4 border rounded-lg bg-gray-50">
+                              <p className="font-semibold text-gray-800">{addr.fullName}</p>
+                              <p className="text-sm text-gray-600">{addr.phone}</p>
+                              <p className="text-sm text-gray-600">
+                                {addr.address}, {addr.city}, {addr.state} {addr.zipCode}, {addr.country}
+                              </p>
+                              <div className="mt-3 flex items-center gap-3">
+                                {addr.isDefault && (
+                                  <span className="inline-block px-2 py-0.5 text-xs bg-[#FF8C42] text-white rounded">
+                                    Default
+                                  </span>
+                                )}
+                                {!addr.isDefault && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSetDefaultAddress(addr.id)}
+                                    className="text-xs text-[#FF8C42] hover:underline font-semibold"
+                                  >
+                                    Set as Default
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteAddress(addr.id)}
+                                  className="text-xs text-red-500 hover:underline font-semibold ml-auto"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

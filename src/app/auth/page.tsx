@@ -2,11 +2,21 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
   const router = useRouter();
+  const [redirect, setRedirect] = useState<string | null>('/');
+
+  // Read redirect parameter from URL on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const redirectParam = params.get('redirect');
+      setRedirect(redirectParam || '/');
+    }
+  }, []);
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -58,7 +68,7 @@ export default function AuthPage() {
         // Store user data
         localStorage.setItem('currentUser', JSON.stringify(data.user));
         setLoading(false);
-        router.push('/account');
+        router.push(redirect || '/');
       } else {
         // Login - Call login API
         const response = await fetch('/api/auth/login', {
@@ -82,7 +92,7 @@ export default function AuthPage() {
         localStorage.setItem('currentUser', JSON.stringify(data.user));
         localStorage.setItem('authToken', data.token);
         setLoading(false);
-        router.push('/account');
+        router.push(redirect || '/');
       }
     } catch (err: any) {
       console.error('Auth error:', err);

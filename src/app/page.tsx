@@ -10,6 +10,7 @@ import 'swiper/css/pagination';
 import { useCart } from '../context/CartContext';
 import { useState, useRef, useEffect, type MouseEvent, type CSSProperties } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 const sliderImages = [
   '/images/mango1.jpg',
@@ -27,6 +28,7 @@ type FlyingMango = {
 
 export default function Home() {
   const { cart, addToCart, removeFromCart, clearCart, addToWishlist, removeFromWishlist, isInWishlist, wishlist } = useCart();
+  const router = useRouter();
   const [cartOpen, setCartOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageName, setMessageName] = useState('');
@@ -415,15 +417,22 @@ export default function Home() {
                       ${cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}
                     </motion.span>
                   </motion.div>
-                  <Link href="/checkout" className="w-full block">
-                    <motion.button 
-                      className="w-full bg-[#3D4F42] hover:bg-[#2d3a32] text-white py-3 rounded-lg font-bold text-lg transition shadow-md mb-3"
-                      whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(61, 79, 66, 0.3)' }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Proceed to Checkout
-                    </motion.button>
-                  </Link>
+                  <motion.button 
+                    className="w-full bg-[#3D4F42] hover:bg-[#2d3a32] text-white py-3 rounded-lg font-bold text-lg transition shadow-md mb-3"
+                    whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(61, 79, 66, 0.3)' }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      const redirectTo = '/checkout';
+                      if (currentUser) {
+                        router.push(redirectTo);
+                      } else {
+                        router.push(`/auth?redirect=${encodeURIComponent(redirectTo)}`);
+                      }
+                      setCartOpen(false);
+                    }}
+                  >
+                    Proceed to Checkout
+                  </motion.button>
                   <motion.button 
                   className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-medium transition" 
                   onClick={clearCart}
