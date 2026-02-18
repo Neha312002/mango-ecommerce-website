@@ -15,59 +15,76 @@ export default function AuthPage() {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (!isLogin) {
-      // Signup validation
-      if (formData.password !== formData.confirmPassword) {
-        setError('Passwords do not match');
-        return;
-      }
-      if (formData.password.length < 6) {
-        setError('Password must be at least 6 characters');
-        return;
-      }
+    try {
+      if (!isLogin) {
+        // Signup validation
+        if (formData.password !== formData.confirmPassword) {
+          setError('Passwords do not match');
+          setLoading(false);
+          return;
+        }
+        if (formData.password.length < 6) {
+          setError('Password must be at least 6 characters');
+          setLoading(false);
+          return;
+        }
 
-      // Create account
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      
-      // Check if user already exists
-      if (users.find((u: any) => u.email === formData.email)) {
-        setError('An account with this email already exists');
-        return;
-      }
+        // Call signup API
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password
+          })
+        });
 
-      const newUser = {
-        id: Date.now(),
-        name: formData.name,
-        email: formData.email,
-        password: formData.password, // In production, this should be hashed!
-        joinedDate: new Date().toISOString(),
-        wishlist: [],
-        reviews: []
-      };
+        const data = await response.json();
 
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
+        if (!response.ok) {
+          setError(data.error || 'Signup failed');
+          setLoading(false);
+          return;
+        }
 
-      router.push('/account');
-    } else {
-      // Login
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(
-        (u: any) => u.email === formData.email && u.password === formData.password
-      );
-
-      if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        // Store user data
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
         router.push('/account');
       } else {
-        setError('Invalid email or password');
+        // Login - Call login API
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || 'Login failed');
+          setLoading(false);
+          return;
+        }
+
+        // Store user data and token
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+        localStorage.setItem('authToken', data.token);
+        router.push('/account');
       }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -213,9 +230,10 @@ export default function AuthPage() {
 
               <button
                 type="submit"
-                className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg"
+                disabled={loading}
+                className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLogin ? 'Login' : 'Create Account'}
+                {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Create Account')}
               </button>
             </form>
 

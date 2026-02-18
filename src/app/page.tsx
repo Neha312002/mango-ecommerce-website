@@ -43,7 +43,16 @@ export default function Home() {
   const [flyingMangoes, setFlyingMangoes] = useState<FlyingMango[]>([]);
   const [cartAnimating, setCartAnimating] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const cartButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Check for logged-in user on mount
+  useEffect(() => {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      setCurrentUser(JSON.parse(userData));
+    }
+  }, []);
 
   function handleAddToCart(product: (typeof products)[number], event: MouseEvent<HTMLButtonElement>) {
     addToCart(product);
@@ -231,7 +240,7 @@ export default function Home() {
             <div className="flex items-center gap-4 ml-auto">
               <Link href="/auth" className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base hover:text-orange-300 transition">
                 <span className="text-lg">👤</span>
-                <span className="font-medium">Account</span>
+                <span className="font-medium">{currentUser ? currentUser.name : 'Account'}</span>
               </Link>
               <button
                 ref={cartButtonRef}
