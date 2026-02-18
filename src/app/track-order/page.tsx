@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 interface Order {
@@ -14,7 +14,7 @@ interface Order {
   status: 'processing' | 'packed' | 'shipped' | 'delivered';
 }
 
-export default function TrackOrderPage() {
+function TrackOrderPageContent() {
   const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState(searchParams.get('order') || '');
   const [order, setOrder] = useState<Order | null>(null);
@@ -237,5 +237,13 @@ export default function TrackOrderPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function TrackOrderPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <TrackOrderPageContent />
+    </Suspense>
   );
 }
