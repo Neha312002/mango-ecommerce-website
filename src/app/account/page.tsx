@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 interface User {
@@ -23,7 +23,7 @@ interface Order {
   status: string;
 }
 
-export default function AccountPage() {
+function AccountPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
@@ -493,5 +493,13 @@ export default function AccountPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <AccountPageContent />
+    </Suspense>
   );
 }
