@@ -329,20 +329,36 @@ export default function Home() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 * idx }}
                       >
-                        <div>
+                        <div className="flex-1">
                           <p className="font-medium text-[#3D4F42]">{item.name}</p>
-                          <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <motion.button
+                              onClick={() => removeFromCart(item.name)}
+                              className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700"
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              −
+                            </motion.button>
+                            <span className="w-8 text-center font-medium">{item.quantity}</span>
+                            <motion.button
+                              onClick={(e) => {
+                                // Find existing product from products array and add one more
+                                const product = products.find(p => p.name === item.name);
+                                if (product) {
+                                  addToCart(product);
+                                }
+                              }}
+                              className="w-7 h-7 rounded-full bg-[#FF8C42] hover:bg-orange-600 text-white flex items-center justify-center font-bold"
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              +
+                            </motion.button>
+                          </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="font-bold text-[#FF8C42]">${item.price * item.quantity}</span>
-                          <motion.button 
-                            className="text-red-500 hover:text-red-700 text-sm font-medium" 
-                            onClick={() => removeFromCart(item.name)}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                          >
-                            Remove
-                          </motion.button>
                         </div>
                       </motion.li>
                     ))}
