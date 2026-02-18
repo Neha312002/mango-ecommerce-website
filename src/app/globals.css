@@ -246,16 +246,6 @@ body {
   filter: brightness(1.2);
 }
 
-.flying-mango::before {
-  content: '';
-  position: absolute;
-  inset: -15px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, rgba(255, 140, 66, 0.4) 40%, transparent 70%);
-  animation: light-pulse 2s ease-in-out forwards;
-  z-index: -1;
-}
-
 @keyframes flying-mango {
   0% {
     transform: translate(-50%, -50%) translate(0, 0) scale(1);
@@ -267,21 +257,6 @@ body {
   }
   100% {
     transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.5);
-    opacity: 0;
-  }
-}
-
-@keyframes light-pulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(2);
     opacity: 0;
   }
 }
