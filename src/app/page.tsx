@@ -405,16 +405,6 @@ export default function Home() {
 
       {/* Hero Section with Image Slider */}
       <section id="home" className="relative w-full h-[70vh] md:h-[85vh] flex items-center justify-center">
-        {/* Floating Leaves Animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-          <div className="floating-leaf leaf-1 text-4xl" style={{ bottom: '0' }}>🍃</div>
-          <div className="floating-leaf leaf-2 text-3xl" style={{ bottom: '0' }}>🍃</div>
-          <div className="floating-leaf leaf-3 text-5xl" style={{ bottom: '0' }}>🍃</div>
-          <div className="floating-leaf leaf-4 text-3xl" style={{ bottom: '0' }}>🍃</div>
-          <div className="floating-leaf leaf-5 text-4xl" style={{ bottom: '0' }}>🍃</div>
-          <div className="floating-leaf leaf-6 text-3xl" style={{ bottom: '0' }}>🍃</div>
-        </div>
-        
         <Swiper 
           className="w-full h-full" 
           loop 
@@ -656,13 +646,20 @@ export default function Home() {
       {/* Product Catalog Section */}
       <motion.section 
         id="products" 
-        className="py-16 md:py-24 px-6 bg-gradient-to-b from-[#FFE9D6] to-white relative z-10"
+        className="py-16 md:py-24 px-6 bg-gradient-to-b from-[#FFE9D6] to-white relative z-10 overflow-hidden"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="max-w-7xl mx-auto">
+        {/* Floating Leaves Animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="floating-leaf leaf-1 text-4xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-2 text-3xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-3 text-5xl" style={{ bottom: '0' }}>🍃</div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.h2 
             className="text-3xl md:text-5xl font-bold text-center text-[#3D4F42] mb-4"
             initial={{ opacity: 0, y: -30 }}
@@ -799,13 +796,19 @@ export default function Home() {
 
       {/* Customer Testimonials */}
       <motion.section 
-        className="py-16 md:py-20 px-6 bg-white relative z-10"
+        className="py-16 md:py-20 px-6 bg-white relative z-10 overflow-hidden"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: false }}
         transition={{ duration: 0.8 }}
       >
-        <div className="max-w-6xl mx-auto">
+        {/* Floating Leaves Animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="floating-leaf leaf-4 text-3xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-5 text-4xl" style={{ bottom: '0' }}>🍃</div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.h2 
             className="text-3xl md:text-4xl font-bold text-center text-[#3D4F42] mb-3"
             initial={{ opacity: 0, y: -20 }}
@@ -879,7 +882,13 @@ export default function Home() {
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="max-w-7xl mx-auto">
+        {/* Floating Leaves Animation */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="floating-leaf leaf-6 text-3xl" style={{ bottom: '0' }}>🍃</div>
+          <div className="floating-leaf leaf-1 text-4xl" style={{ bottom: '0', animationDelay: '4s' }}>🍃</div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.h2 
             className="text-3xl md:text-5xl font-bold text-center text-[#3D4F42] mb-4"
             initial={{ opacity: 0, y: -40 }}
