@@ -15,11 +15,14 @@ export async function POST(request: NextRequest) {
       total,
     } = body;
 
-    console.log('Creating order with data:', { userId, items, shipping, subtotal, shippingCost, tax, total });
+    // Normalize userId to a number (Prisma expects Int)
+    const userIdInt = typeof userId === 'string' ? parseInt(userId, 10) : userId;
+
+    console.log('Creating order with data:', { userId: userIdInt, items, shipping, subtotal, shippingCost, tax, total });
 
     // Validation
-    if (!userId || !items || items.length === 0 || !shipping) {
-      console.error('Validation failed:', { userId, itemsLength: items?.length, shipping });
+    if (!userIdInt || !items || items.length === 0 || !shipping) {
+      console.error('Validation failed:', { userId: userIdInt, itemsLength: items?.length, shipping });
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -57,7 +60,7 @@ export async function POST(request: NextRequest) {
     const order = await prisma.order.create({
       data: {
         orderNumber,
-        userId,
+        userId: userIdInt,
         fullName: shipping.fullName,
         email: shipping.email,
         phone: shipping.phone,
