@@ -53,10 +53,10 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Create review error:', error);
     return NextResponse.json(
-      { error: 'Failed to create review' },
+      { error: 'Failed to create review', details: error.message },
       { status: 500 }
     );
   }

@@ -152,7 +152,8 @@ function AccountPageContent() {
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
       } else {
         const error = await response.json();
-        alert(`Failed to submit review: ${error.error}`);
+        const details = typeof error.details === 'string' ? error.details : '';
+        alert(`Failed to submit review: ${error.error || 'Unknown error'}${details ? ' (' + details + ')' : ''}`);
       }
     } catch (error) {
       console.error('Error submitting review:', error);
