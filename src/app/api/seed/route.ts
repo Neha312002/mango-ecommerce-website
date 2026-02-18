@@ -104,10 +104,10 @@ export async function GET() {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Seed error:', error);
     return NextResponse.json(
-      { error: 'Failed to seed database' },
+      { error: 'Failed to seed database', details: error.message, stack: error.stack },
       { status: 500 }
     );
   }
