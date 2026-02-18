@@ -238,9 +238,12 @@ export default function Home() {
 
             {/* Right side actions (log in + cart) */}
             <div className="flex items-center gap-4 ml-auto">
-              <Link href="/auth" className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base hover:text-orange-300 transition">
+              <Link 
+                href={currentUser ? "/account" : "/auth"} 
+                className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base hover:text-orange-300 transition"
+              >
                 <span className="text-lg">👤</span>
-                <span className="font-medium">{currentUser ? currentUser.name : 'Account'}</span>
+                <span className="font-medium">{currentUser ? currentUser.name : 'Login'}</span>
               </Link>
               <button
                 ref={cartButtonRef}

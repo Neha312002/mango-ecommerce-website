@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Product = {
+  id?: number;
   name: string;
   price: number;
   img: string;

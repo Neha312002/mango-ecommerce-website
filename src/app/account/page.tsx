@@ -41,9 +41,40 @@ function AccountPageContent() {
     const userData = JSON.parse(currentUser);
     setUser(userData);
 
-    // Load orders
-    const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    setOrders(allOrders);
+    // Load orders from database
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(`/api/orders?userId=${userData.id}`);
+        if (response.ok) {
+          const dbOrders = await response.json();
+          // Transform database orders to match the Order interface
+          const transformedOrders = dbOrders.map((order: any) => ({
+            orderNumber: order.orderNumber,
+            date: order.createdAt,
+            items: order.items.map((item: any) => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.price,
+              image: item.product.image,
+            })),
+            total: order.total,
+            status: order.status,
+          }));
+          setOrders(transformedOrders);
+        } else {
+          // Fallback to localStorage if API fails
+          const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+          setOrders(allOrders);
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        // Fallback to localStorage if API fails
+        const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        setOrders(allOrders);
+      }
+    };
+
+    fetchOrders();
 
     // Check for tab parameter
     const tab = searchParams.get('tab');
@@ -63,32 +94,44 @@ function AccountPageContent() {
     router.push('/');
   };
 
-  const handleSubmitReview = (orderNumber: string, productId: number) => {
+  const handleSubmitReview = async (orderNumber: string, productId: number) => {
     if (!reviewForm || !user) return;
 
-    const review = {
-      id: Date.now(),
-      userId: user.id,
-      userName: user.name,
-      productId: reviewForm.productId,
-      rating: reviewForm.rating,
-      comment: reviewForm.comment,
-      date: new Date().toISOString(),
-      orderNumber: orderNumber
-    };
+    try {
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          productId: reviewForm.productId,
+          rating: reviewForm.rating,
+          comment: reviewForm.comment,
+          orderNumber: orderNumber,
+        }),
+      });
 
-    // Save review to localStorage
-    const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
-    reviews.push(review);
-    localStorage.setItem('reviews', JSON.stringify(reviews));
-
-    // Update user reviews
-    const updatedUser = { ...user, reviews: [...user.reviews, review] };
-    setUser(updatedUser);
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-
-    setReviewForm(null);
-    alert('Review submitted successfully!');
+      if (response.ok) {
+        const data = await response.json();
+        alert('Review submitted successfully!');
+        setReviewForm(null);
+        
+        // Update user reviews in localStorage
+        const updatedUser = { 
+          ...user, 
+          reviews: [...user.reviews, data.review] 
+        };
+        setUser(updatedUser);
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      } else {
+        const error = await response.json();
+        alert(`Failed to submit review: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      alert('Failed to submit review. Please try again.');
+    }
   };
 
   if (!user) {

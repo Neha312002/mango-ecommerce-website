@@ -48,25 +48,68 @@ export default function CheckoutPage() {
     setStep(3);
   };
 
-  const handlePlaceOrder = () => {
-    // Generate order number
-    const orderNum = 'MF' + Date.now().toString().slice(-8);
-    setOrderNumber(orderNum);
-    setOrderPlaced(true);
-    clearCart();
-    
-    // Store order in localStorage for tracking
-    const order = {
-      orderNumber: orderNum,
-      date: new Date().toISOString(),
-      items: cart,
-      total: total,
-      shipping: shippingInfo,
-      status: 'processing'
-    };
-    
-    const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
+  const handlePlaceOrder = async () => {
+    try {
+      // Get current user
+      const currentUser = localStorage.getItem('currentUser');
+      if (!currentUser) {
+        alert('Please login to place an order');
+        router.push('/auth');
+        return;
+      }
+      
+      const userData = JSON.parse(currentUser);
+      
+      // Prepare order items with productId
+      const orderItems = cart.map((item) => ({
+        productId: item.id || 1, // Default to 1 if no ID (fallback)
+        quantity: item.quantity || 1,
+        price: item.price,
+      }));
+
+      // Save order to database
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userData.id,
+          items: orderItems,
+          shipping: shippingInfo,
+          subtotal: subtotal,
+          shippingCost: shipping,
+          tax: tax,
+          total: total,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setOrderNumber(data.order.orderNumber);
+        setOrderPlaced(true);
+        clearCart();
+        
+        // Also save to localStorage as backup
+        const order = {
+          orderNumber: data.order.orderNumber,
+          date: new Date().toISOString(),
+          items: cart,
+          total: total,
+          shipping: shippingInfo,
+          status: 'processing'
+        };
+        
+        const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
+      } else {
+        const error = await response.json();
+        alert(`Failed to place order: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again.');
+    }
   };
 
   if (orderPlaced) {
