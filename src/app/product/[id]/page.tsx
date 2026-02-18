@@ -7,36 +7,70 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 
-const products = [
-  { id: 1, name: 'Alphonso Mango', price: 12.99, img: '/images/mango1.jpg', desc: 'The king of mangoes with rich, creamy texture and aromatic sweetness.', details: 'Alphonso mangoes are renowned worldwide for their golden color, smooth texture, and rich taste. Perfect for eating fresh or in desserts.', weight: '1 kg', origin: 'Maharashtra, India', season: 'April - June', nutritional: '60 calories per 100g, Rich in Vitamin C and Fiber' },
-  { id: 2, name: 'Kesar Mango', price: 10.99, img: '/images/mango2.jpg', desc: 'Known for its saffron color and uniquely sweet taste.', details: 'Kesar mangoes have a distinctive saffron color inside and out. They are incredibly sweet with a hint of citrus flavor.', weight: '1 kg', origin: 'Gujarat, India', season: 'May - July', nutritional: '65 calories per 100g, High in Vitamin A' },
-  { id: 3, name: 'Dasheri Mango', price: 9.99, img: '/images/mango3.jpg', desc: 'Fiber-free pulp with an exceptionally sweet flavor.', details: 'Dasheri mangoes are elongated with smooth, fiber-free pulp. Perfect for smoothies and mango lassi.', weight: '1 kg', origin: 'Uttar Pradesh, India', season: 'June - July', nutritional: '58 calories per 100g, Low in fat' },
-  { id: 4, name: 'Totapuri Mango', price: 8.99, img: '/images/mango1.jpg', desc: 'Firm texture makes it perfect for cooking and pickling.', details: 'Totapuri has a distinctive parrot-beak shape. Its firm texture makes it ideal for salads, cooking, and pickling.', weight: '1 kg', origin: 'Karnataka, India', season: 'May - July', nutritional: '55 calories per 100g, Good source of potassium' },
-  { id: 5, name: 'Langra Mango', price: 11.99, img: '/images/mango2.jpg', desc: 'Traditional variety loved for its tangy-sweet balance.', details: 'Langra mangoes have a unique greenish skin even when ripe. They offer a perfect balance of sweet and tangy flavors.', weight: '1 kg', origin: 'Uttar Pradesh, India', season: 'July - August', nutritional: '62 calories per 100g, Rich in antioxidants' },
-  { id: 6, name: 'Badami Mango', price: 13.99, img: '/images/mango3.jpg', desc: 'Buttery smooth with an intense tropical flavor.', details: 'Badami mangoes are named after the almond-like shape (Badam means almond). They have a smooth, buttery texture and intense sweetness.', weight: '1 kg', origin: 'Karnataka, India', season: 'May - June', nutritional: '70 calories per 100g, High in beta-carotene' }
-];
+interface Review {
+  id: number;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  user: {
+    id: number;
+    name: string;
+  };
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  details: string;
+  weight: string;
+  origin: string;
+  season: string;
+  nutritional: string;
+  reviews: Review[];
+}
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'description' | 'nutrition' | 'reviews'>('description');
-  const [reviews, setReviews] = useState<any[]>([]);
-  
-  const product = products.find(p => p.id === parseInt(params.id));
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Load reviews from localStorage
+  // Fetch product from database
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedReviews = localStorage.getItem('reviews');
-      if (storedReviews) {
-        const allReviews = JSON.parse(storedReviews);
-        // Filter reviews for this product
-        const productReviews = allReviews.filter((r: any) => r.productId === parseInt(params.id));
-        setReviews(productReviews);
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/products/${params.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setProduct(data);
+        } else {
+          console.error('Product not found');
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchProduct();
   }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🥭</div>
+          <p className="text-gray-600">Loading product...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -50,13 +84,23 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   }
 
   const handleAddToCart = () => {
+    if (!product) return;
+    const cartProduct = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img: product.image,
+      desc: product.description,
+    };
     for (let i = 0; i < quantity; i++) {
-      addToCart(product);
+      addToCart(cartProduct);
     }
     router.push('/checkout');
   };
 
-  const avgRating = reviews.length > 0 ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length : 5;
+  const avgRating = product.reviews && product.reviews.length > 0 
+    ? product.reviews.reduce((acc, r) => acc + r.rating, 0) / product.reviews.length 
+    : 5;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -88,7 +132,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             >
               <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
                 <Image 
-                  src={product.img}
+                  src={product.image}
                   alt={product.name}
                   fill
                   className="object-cover"
@@ -109,7 +153,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-4xl">{avgRating >= 4.5 ? '⭐' : '⭐'}</span>
                 <span className="text-2xl font-bold text-gray-800">{avgRating.toFixed(1)}</span>
-                <span className="text-gray-600">({reviews.length} reviews)</span>
+                <span className="text-gray-600">({product.reviews?.length || 0} reviews)</span>
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-[#3D4F42] mb-4">
@@ -121,7 +165,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               </p>
 
               <p className="text-gray-700 text-lg leading-relaxed mb-8">
-                {product.desc}
+                {product.description}
               </p>
 
               {/* Product Details Grid */}
@@ -282,7 +326,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         ))}
                       </div>
                       <span className="text-xl font-bold">{avgRating.toFixed(1)}</span>
-                      <span className="text-gray-600">({reviews.length} {reviews.length === 1 ? 'review' : 'reviews'})</span>
+                      <span className="text-gray-600">({product.reviews?.length || 0} {product.reviews?.length === 1 ? 'review' : 'reviews'})</span>
                     </div>
                   </div>
                   <Link href={`/account?tab=reviews&productId=${product.id}`} className="bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition inline-block">
@@ -291,22 +335,22 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </div>
 
                 <div className="space-y-6">
-                  {reviews.length === 0 ? (
+                  {(!product.reviews || product.reviews.length === 0) ? (
                     <div className="text-center py-12">
                       <p className="text-gray-500 text-lg mb-2">No reviews yet</p>
                       <p className="text-gray-400">Be the first to review this product!</p>
                     </div>
                   ) : (
-                    reviews.map((review) => (
+                    product.reviews.map((review) => (
                       <div key={review.id} className="border-b pb-6">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-[#FF8C42] rounded-full flex items-center justify-center text-white font-bold">
-                              {review.userName[0]}
+                              {review.user.name[0]}
                             </div>
                             <div>
-                              <p className="font-bold text-gray-800">{review.userName}</p>
-                              <p className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                              <p className="font-bold text-gray-800">{review.user.name}</p>
+                              <p className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                             </div>
                           </div>
                           <div className="flex gap-1">
@@ -324,33 +368,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Related Products */}
-          <div className="mt-16">
-            <h3 className="text-3xl font-bold text-[#3D4F42] mb-8">You Might Also Like</h3>
-            <div className="grid md:grid-cols-3 gap-8">
-              {products.filter(p => p.id !== product.id).slice(0, 3).map((relatedProduct) => (
-                <Link 
-                  key={relatedProduct.id}
-                  href={`/product/${relatedProduct.id}`}
-                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden group"
-                >
-                  <div className="relative h-48">
-                    <Image 
-                      src={relatedProduct.img}
-                      alt={relatedProduct.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition duration-300"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h4 className="font-bold text-xl text-[#3D4F42] mb-2">{relatedProduct.name}</h4>
-                    <p className="text-[#FF8C42] font-bold text-lg">${relatedProduct.price} / kg</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       </div>
