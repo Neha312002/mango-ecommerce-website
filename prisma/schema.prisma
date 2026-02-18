@@ -1,0 +1,139 @@
+// Mango Fresh Farm E-commerce Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model - Customer accounts
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  orders        Order[]
+  reviews       Review[]
+  wishlist      WishlistItem[]
+  
+  @@index([email])
+}
+
+// Product Model - Mango varieties
+model Product {
+  id            Int       @id @default(autoincrement())
+  name          String
+  price         Float
+  description   String
+  details       String
+  image         String
+  weight        String    @default("1 kg")
+  origin        String
+  season        String
+  nutritional   String
+  stock         Int       @default(100)
+  featured      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  orderItems    OrderItem[]
+  reviews       Review[]
+  wishlistItems WishlistItem[]
+  
+  @@index([featured])
+}
+
+// Order Model - Customer orders
+model Order {
+  id            Int       @id @default(autoincrement())
+  orderNumber   String    @unique
+  userId        Int
+  status        String    @default("processing") // processing, packed, shipped, delivered
+  
+  // Shipping Information
+  fullName      String
+  email         String
+  phone         String
+  address       String
+  city          String
+  state         String
+  zipCode       String
+  country       String
+  
+  // Order Details
+  subtotal      Float
+  shipping      Float
+  tax           Float
+  total         Float
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([status])
+}
+
+// OrderItem Model - Items in each order
+model OrderItem {
+  id            Int       @id @default(autoincrement())
+  orderId       Int
+  productId     Int
+  quantity      Int
+  price         Float
+  
+  // Relations
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product   @relation(fields: [productId], references: [id])
+  
+  @@index([orderId])
+  @@index([productId])
+}
+
+// Review Model - Product reviews
+model Review {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  productId     Int
+  rating        Int       // 1-5 stars
+  comment       String
+  orderNumber   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  product       Product   @relation(fields: [productId], references: [id])
+  
+  @@index([userId])
+  @@index([productId])
+  @@index([rating])
+}
+
+// WishlistItem Model - User wishlist
+model WishlistItem {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  productId     Int
+  createdAt     DateTime  @default(now())
+  
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  product       Product   @relation(fields: [productId], references: [id])
+  
+  @@unique([userId, productId])
+  @@index([userId])
+}
