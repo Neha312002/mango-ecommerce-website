@@ -26,8 +26,44 @@ function TrackOrderPageContent() {
     }
   }, [searchParams]);
 
-  const searchForOrder = (num: string) => {
+  const searchForOrder = async (num: string) => {
     setError('');
+    
+    try {
+      // First try to fetch from database
+      const response = await fetch(`/api/orders/track/${num}`);
+      if (response.ok) {
+        const data = await response.json();
+        const transformedOrder = {
+          orderNumber: data.orderNumber,
+          date: data.createdAt,
+          items: data.items.map((item: any) => ({
+            name: item.product?.name || 'Unknown Product',
+            quantity: item.quantity,
+            price: item.price,
+            img: item.product?.image || '/images/mango1.jpg',
+          })),
+          total: data.total,
+          shipping: {
+            fullName: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            city: data.city,
+            state: data.state,
+            zipCode: data.zipCode,
+            country: data.country,
+          },
+          status: data.status,
+        };
+        setOrder(transformedOrder);
+        return;
+      }
+    } catch (error) {
+      console.error('Error fetching order from database:', error);
+    }
+    
+    // Fallback to localStorage
     const orders = JSON.parse(localStorage.getItem('orders') || '[]');
     const found = orders.find((o: Order) => o.orderNumber === num);
     

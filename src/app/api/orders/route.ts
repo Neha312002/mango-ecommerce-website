@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const existingProductIds = existingProducts.map(p => p.id);
+    const existingProductIds = existingProducts.map((p: { id: number }) => p.id);
     const missingProducts = productIds.filter((id: number) => !existingProductIds.includes(id));
     
     if (missingProducts.length > 0) {

@@ -36,6 +36,7 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
   const cartButtonRef = useRef<HTMLButtonElement | null>(null);
 
   // Fetch products from database
@@ -57,6 +58,8 @@ export default function Home() {
         }
       } catch (error) {
         console.error('Error fetching products:', error);
+      } finally {
+        setProductsLoading(false);
       }
     };
 
@@ -700,6 +703,18 @@ export default function Home() {
           </motion.p>
           
           {/* Product Carousel */}
+          {productsLoading ? (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4 animate-bounce">🥭</div>
+              <p className="text-gray-600 text-lg">Loading fresh mangoes...</p>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4">📦</div>
+              <p className="text-gray-600 text-lg mb-4">No products available</p>
+              <a href="/api/seed" className="text-[#FF8C42] hover:underline">Seed database with products</a>
+            </div>
+          ) : (
           <Swiper
             modules={[Navigation, Pagination]}
             spaceBetween={30}
@@ -811,6 +826,7 @@ export default function Home() {
               </SwiperSlide>
             ))}
           </Swiper>
+          )}
         </div>
       </motion.section>
 
