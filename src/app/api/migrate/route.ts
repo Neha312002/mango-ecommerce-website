@@ -30,8 +30,20 @@ export async function GET() {
       "nutritional" TEXT NOT NULL,
       "stock" INTEGER NOT NULL DEFAULT 0,
       "featured" BOOLEAN NOT NULL DEFAULT false,
-      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`;
+    
+    // Add updatedAt column if it doesn't exist
+    await prisma.$executeRaw`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                      WHERE table_name='Product' AND column_name='updatedAt') THEN
+          ALTER TABLE "Product" ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+        END IF;
+      END $$;
+    `;
 
     await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "Order" (
       "id" SERIAL PRIMARY KEY,
