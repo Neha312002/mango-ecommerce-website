@@ -581,9 +581,9 @@ export default function Home() {
                         img: selectedProduct.image,
                         desc: selectedProduct.description,
                       };
-                      addToCart(cartProduct);
+                      handleAddToCart(cartProduct, e);
                       closeProductModal();
-                      setCartOpen(true);
+                      setTimeout(() => setCartOpen(true), 1000);
                     }}
                     className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
                     whileHover={{ scale: 1.02 }}
@@ -604,13 +604,13 @@ export default function Home() {
                     }}
                     className={`w-full px-6 py-2 rounded-lg font-semibold transition ${
                       isInWishlist(selectedProduct.id)
-                        ? 'bg-red-500 text-white hover:bg-red-600'
-                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-red-500 hover:text-red-500'
+                        ? 'bg-pink-50 text-pink-600 border-2 border-pink-300 hover:bg-pink-100'
+                        : 'bg-white text-gray-600 border-2 border-gray-300 hover:border-pink-300 hover:text-pink-500 hover:bg-pink-50'
                     }`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {isInWishlist(selectedProduct.id) ? '❤️ In Wishlist' : '🤍 Add to Wishlist'}
+                    {isInWishlist(selectedProduct.id) ? '💖 In Wishlist' : '🤍 Add to Wishlist'}
                   </motion.button>
                 </motion.div>
               </div>
