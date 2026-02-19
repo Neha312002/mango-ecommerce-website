@@ -306,7 +306,7 @@ export default function Home() {
               <button
                 ref={cartButtonRef}
                 onClick={() => setCartOpen(true)}
-                className={`bg-[#FF8C42] hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md ${cartAnimating ? 'cart-animate' : ''}`}
+                className={`bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md ${cartAnimating ? 'cart-animate' : ''}`}
               >
                 🛒 <span className="hidden sm:inline">Cart</span> ({cart.reduce((sum, item) => sum + item.quantity, 0)})
               </button>
@@ -410,7 +410,7 @@ export default function Home() {
                                   addToCart(product);
                                 }
                               }}
-                              className="w-7 h-7 rounded-full bg-[#FF8C42] hover:bg-orange-600 text-white flex items-center justify-center font-bold"
+                              className="w-7 h-7 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] text-white flex items-center justify-center font-bold"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                             >
@@ -585,7 +585,7 @@ export default function Home() {
                       closeProductModal();
                       setTimeout(() => setCartOpen(true), 1000);
                     }}
-                    className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
+                    className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -704,7 +704,7 @@ export default function Home() {
                       <h3 className="text-xl font-bold text-[#3D4F42]">Customer Reviews</h3>
                       <Link 
                         href={`/account?tab=reviews&productId=${selectedProduct.id}`}
-                        className="bg-[#FF8C42] hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+                        className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
                         onClick={closeProductModal}
                       >
                         Write a Review
@@ -869,7 +869,7 @@ export default function Home() {
             </p>
               <a 
               href="#products" 
-              className="inline-block bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button"
+              className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button"
             >
               Shop Now
             </a>
@@ -1153,7 +1153,7 @@ export default function Home() {
                               event.stopPropagation();
                               handleAddToCart(product, event);
                             }}
-                            className="w-8 h-8 rounded-full bg-[#FF8C42] hover:bg-orange-600 flex items-center justify-center font-bold"
+                            className="w-8 h-8 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] flex items-center justify-center font-bold"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                           >
@@ -1481,7 +1481,7 @@ export default function Home() {
               >
                 <motion.a 
                   href="#products" 
-                  className="inline-block bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition shadow-lg juice-button"
+                  className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-semibold transition shadow-lg juice-button"
                   whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(255, 140, 66, 0.3)' }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -1802,7 +1802,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <motion.a
                     href="mailto:info@mangofreshfarm.com"
-                    className="flex-1 bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition text-center"
+                    className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-semibold transition text-center"
                     whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(255, 140, 66, 0.4)' }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -1845,7 +1845,7 @@ export default function Home() {
       {/* Floating Message Icon */}
       <button
         onClick={() => setMessageOpen(true)}
-        className="fixed bottom-8 right-8 z-50 bg-[#FF8C42] hover:bg-orange-600 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-3xl transition-all transform hover:scale-110 animate-bounce"
+        className="fixed bottom-8 right-8 z-50 bg-[#FF8C42] hover:bg-[#FFA558] text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-3xl transition-all transform hover:scale-110 animate-bounce"
         aria-label="Open message dialog"
       >
         💬
@@ -1998,7 +1998,7 @@ export default function Home() {
                   className="flex-1 px-5 py-3 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FF8C42] transition"
                 />
                 <motion.button
-                  className="bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg whitespace-nowrap"
+                  className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg whitespace-nowrap"
                   whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(255, 140, 66, 0.4)' }}
                   whileTap={{ scale: 0.95 }}
                 >

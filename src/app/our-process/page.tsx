@@ -16,7 +16,7 @@ export default function OurProcessPage() {
           </Link>
           <Link 
             href="/" 
-            className="bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-2 rounded-md font-semibold transition"
+            className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-md font-semibold transition"
           >
             ← Back to Home
           </Link>
@@ -270,7 +270,7 @@ export default function OurProcessPage() {
           >
             <Link
               href="/#products"
-              className="inline-block bg-[#FF8C42] hover:bg-orange-600 text-white px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl"
+              className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl"
             >
               Shop Our Mangoes 🛒
             </Link>

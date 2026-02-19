@@ -120,7 +120,7 @@ function TrackOrderPageContent() {
             />
             <button
               type="submit"
-              className="bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-bold transition"
+              className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
             >
               Track Order
             </button>
@@ -258,7 +258,7 @@ function TrackOrderPageContent() {
             <div className="flex gap-4">
               <Link
                 href="/#products"
-                className="flex-1 bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-center transition"
+                className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-center transition"
               >
                 Order Again
               </Link>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 // Create order
 export async function POST(request: NextRequest) {
@@ -13,6 +14,7 @@ export async function POST(request: NextRequest) {
       shippingCost,
       tax,
       total,
+      paymentId,
     } = body;
 
     // Normalize userId to a number (Prisma expects Int)
@@ -69,6 +71,37 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Send order confirmation email (don't block response if email fails)
+    if (shipping.email) {
+      sendOrderConfirmationEmail(
+        shipping.email,
+        {
+          orderNumber,
+          customerName: shipping.fullName,
+          items: order.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          subtotal,
+          shipping: shippingCost,
+          tax,
+          total,
+          shippingAddress: {
+            fullName: shipping.fullName,
+            address: shipping.address,
+            city: shipping.city,
+            state: shipping.state,
+            zipCode: shipping.zipCode,
+            country: shipping.country,
+          },
+        }
+      ).catch((error) => {
+        console.error('Failed to send order confirmation email:', error);
+        // Don't throw - email failure shouldn't fail the order
+      });
+    }
 
     return NextResponse.json(
       {

@@ -105,10 +105,16 @@ export default function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
             <span className="text-3xl">🥭</span>
             <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          </Link>
+          <Link 
+            href="/" 
+            className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-md font-semibold transition"
+          >
+            ← Back to Home
           </Link>
         </div>
       </nav>
@@ -244,7 +250,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Create Account')}
               </button>

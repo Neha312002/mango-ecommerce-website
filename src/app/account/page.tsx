@@ -326,7 +326,7 @@ function AccountPageContent() {
                       <p className="text-gray-600 mb-6">Start shopping for delicious organic mangoes!</p>
                       <Link
                         href="/#products"
-                        className="inline-block bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-bold transition"
+                        className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
                       >
                         Browse Products
                       </Link>
@@ -398,7 +398,7 @@ function AccountPageContent() {
                               </p>
                               <Link
                                 href={`/track-order?order=${order.orderNumber}`}
-                                className="bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+                                className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-lg font-semibold transition"
                               >
                                 Track Order
                               </Link>
@@ -459,7 +459,7 @@ function AccountPageContent() {
                       <div className="pt-4">
                         <button
                           type="submit"
-                          className="bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-bold transition"
+                          className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
                         >
                           Save Changes
                         </button>
@@ -662,7 +662,7 @@ function AccountPageContent() {
               </button>
               <button
                 onClick={() => handleSubmitReview('', reviewForm.productId)}
-                className="flex-1 bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-bold transition"
+                className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold transition"
               >
                 Submit Review
               </button>

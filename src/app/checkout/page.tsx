@@ -7,6 +7,13 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 
+// Declare Razorpay type
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, removeFromCart, clearCart } = useCart();
@@ -17,6 +24,7 @@ export default function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
   const [useNewAddress, setUseNewAddress] = useState(false);
   const [saveAddress, setSaveAddress] = useState(true);
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -44,6 +52,17 @@ export default function CheckoutPage() {
       router.push('/auth?redirect=/checkout');
     }
   }, [router]);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   // Load saved addresses when component mounts
   useEffect(() => {
@@ -146,13 +165,10 @@ export default function CheckoutPage() {
     setStep(2);
   };
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep(3);
-  };
-
   const handlePlaceOrder = async () => {
     try {
+      setProcessingPayment(true);
+
       // Get current user
       const currentUser = localStorage.getItem('currentUser');
       if (!currentUser) {
@@ -168,69 +184,131 @@ export default function CheckoutPage() {
       if (invalidItems.length > 0) {
         alert('Some items in your cart are invalid. Please clear your cart and add products again from the homepage.');
         console.error('Invalid cart items:', invalidItems);
+        setProcessingPayment(false);
         return;
       }
-      
-      // Prepare order items with productId
-      const orderItems = cart.map((item) => ({
-        productId: item.id,
-        quantity: item.quantity || 1,
-        price: item.price,
-      }));
-      
-      console.log('Placing order with items:', orderItems);
 
-      // Ensure email is always populated on the order
-      const shippingForOrder = {
-        ...shippingInfo,
-        email: shippingInfo.email || userData.email || '',
-      };
-
-      // Save order to database
-      const response = await fetch('/api/orders', {
+      // Create Razorpay order
+      const razorpayOrderResponse = await fetch('/api/razorpay/create-order', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: userData.id,
-          items: orderItems,
-          shipping: shippingForOrder,
-          subtotal: subtotal,
-          shippingCost: shipping,
-          tax: tax,
-          total: total,
+          amount: total,
+          currency: 'INR',
+          receipt: `order_${Date.now()}`,
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setOrderNumber(data.order.orderNumber);
-        setOrderPlaced(true);
-        clearCart();
-        
-        // Also save to localStorage as backup
-        const order = {
-          orderNumber: data.order.orderNumber,
-          date: new Date().toISOString(),
-          items: cart,
-          total: total,
-          shipping: shippingForOrder,
-          status: 'processing'
-        };
-        
-        const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-        localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
-      } else {
-        const error = await response.json();
-        console.error('Order creation failed:', error);
-        console.error('Order data sent:', { orderItems, userData: userData.id });
-        const details = typeof error.details === 'string' ? error.details : '';
-        alert(`Failed to place order: ${error.error || 'Unknown error'}${details ? ' (' + details + ')' : ''}. Please check that products are still available.`);
+      const razorpayOrderData = await razorpayOrderResponse.json();
+
+      if (!razorpayOrderData.success) {
+        throw new Error(razorpayOrderData.error || 'Failed to create payment order');
       }
-    } catch (error) {
-      console.error('Error placing order:', error);
-      alert('Failed to place order. Please try again or clear your cart and add products fresh from the homepage.');
+
+      // Initialize Razorpay payment
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
+        amount: razorpayOrderData.amount,
+        currency: razorpayOrderData.currency,
+        name: 'Mango Fresh Farm',
+        description: 'Fresh Organic Mangoes',
+        order_id: razorpayOrderData.orderId,
+        handler: async function (response: any) {
+          try {
+            // Verify payment
+            const verifyResponse = await fetch('/api/razorpay/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+
+            const verifyData = await verifyResponse.json();
+
+            if (verifyData.success) {
+              // Payment verified, now create order in database
+              const orderItems = cart.map((item) => ({
+                productId: item.id,
+                quantity: item.quantity || 1,
+                price: item.price,
+              }));
+
+              const shippingForOrder = {
+                ...shippingInfo,
+                email: shippingInfo.email || userData.email || '',
+              };
+
+              const orderResponse = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  userId: userData.id,
+                  items: orderItems,
+                  shipping: shippingForOrder,
+                  subtotal: subtotal,
+                  shippingCost: shipping,
+                  tax: tax,
+                  total: total,
+                  paymentId: response.razorpay_payment_id,
+                }),
+              });
+
+              if (orderResponse.ok) {
+                const orderData = await orderResponse.json();
+                setOrderNumber(orderData.order.orderNumber);
+                setOrderPlaced(true);
+                clearCart();
+                
+                // Save to localStorage as backup
+                const order = {
+                  orderNumber: orderData.order.orderNumber,
+                  date: new Date().toISOString(),
+                  items: cart,
+                  total: total,
+                  shipping: shippingForOrder,
+                  status: 'processing',
+                  paymentId: response.razorpay_payment_id,
+                };
+                
+                const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+                localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
+              } else {
+                throw new Error('Failed to create order in database');
+              }
+            } else {
+              throw new Error('Payment verification failed');
+            }
+          } catch (error: any) {
+            console.error('Error after payment:', error);
+            alert('Payment successful but order creation failed. Please contact support with payment ID: ' + response.razorpay_payment_id);
+          } finally {
+            setProcessingPayment(false);
+          }
+        },
+        prefill: {
+          name: shippingInfo.fullName,
+          email: shippingInfo.email,
+          contact: shippingInfo.phone,
+        },
+        theme: {
+          color: '#FF8C42',
+        },
+        modal: {
+          ondismiss: function() {
+            setProcessingPayment(false);
+          }
+        }
+      };
+
+      const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.open();
+    } catch (error: any) {
+      console.error('Error initiating payment:', error);
+      alert('Failed to initiate payment: ' + error.message);
+      setProcessingPayment(false);
     }
   };
 
@@ -279,7 +357,7 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <Link
                 href={`/track-order?order=${orderNumber}`}
-                className="block w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold transition"
+                className="block w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold transition"
               >
                 Track Your Order
               </Link>
@@ -314,7 +392,7 @@ export default function CheckoutPage() {
           <p className="text-gray-600 mb-8">Add some delicious mangoes to get started!</p>
           <Link
             href="/#products"
-            className="inline-block bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold transition"
+            className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold transition"
           >
             Browse Products
           </Link>
@@ -579,7 +657,7 @@ export default function CheckoutPage() {
                     )}
                     <button
                       type="submit"
-                      className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition"
+                      className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-lg transition"
                     >
                       Continue to Payment →
                     </button>
@@ -596,73 +674,41 @@ export default function CheckoutPage() {
                   exit={{ opacity: 0, x: 20 }}
                   className="bg-white rounded-2xl shadow-lg p-8"
                 >
-                  <h2 className="text-2xl font-bold text-[#3D4F42] mb-6">Payment Information</h2>
-                  <form onSubmit={handlePaymentSubmit} className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Cardholder Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={paymentInfo.cardName}
-                        onChange={(e) => setPaymentInfo({...paymentInfo, cardName: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                        placeholder="John Doe"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Card Number *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={paymentInfo.cardNumber}
-                        onChange={(e) => setPaymentInfo({...paymentInfo, cardNumber: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Expiry Date *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={paymentInfo.expiry}
-                          onChange={(e) => setPaymentInfo({...paymentInfo, expiry: e.target.value})}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                          placeholder="MM/YY"
-                          maxLength={5}
-                        />
+                  <h2 className="text-2xl font-bold text-[#3D4F42] mb-6">Payment Method</h2>
+                  
+                  <div className="space-y-6">
+                    <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-3xl">💳</span>
+                        <h3 className="text-xl font-bold text-[#3D4F42]">Secure Payment with Razorpay</h3>
                       </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          CVV *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={paymentInfo.cvv}
-                          onChange={(e) => setPaymentInfo({...paymentInfo, cvv: e.target.value})}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                          placeholder="123"
-                          maxLength={4}
-                        />
+                      <p className="text-gray-700 mb-4">
+                        Your payment will be processed securely through Razorpay, India's leading payment gateway.
+                      </p>
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-white rounded-lg p-3 text-center">
+                          <p className="text-sm font-semibold text-gray-700">💳 Credit/Debit Cards</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 text-center">
+                          <p className="text-sm font-semibold text-gray-700">🏦 Net Banking</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 text-center">
+                          <p className="text-sm font-semibold text-gray-700">📱 UPI</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 text-center">
+                          <p className="text-sm font-semibold text-gray-700">👝 Wallets</p>
+                        </div>
                       </div>
                     </div>
 
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
                       <span className="text-green-600 text-xl">🔒</span>
-                      <p className="text-sm text-gray-700">
-                        Your payment information is encrypted and secure. We never store your card details.
-                      </p>
+                      <div>
+                        <p className="font-semibold text-gray-800 mb-1">100% Secure & Encrypted</p>
+                        <p className="text-sm text-gray-700">
+                          Your payment information is encrypted with 256-bit SSL. We never store your card details.
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex gap-4">
@@ -674,13 +720,14 @@ export default function CheckoutPage() {
                         ← Back
                       </button>
                       <button
-                        type="submit"
-                        className="flex-1 bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold transition"
+                        type="button"
+                        onClick={() => setStep(3)}
+                        className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold transition"
                       >
                         Review Order →
                       </button>
                     </div>
-                  </form>
+                  </div>
                 </motion.div>
               )}
 
@@ -739,9 +786,14 @@ export default function CheckoutPage() {
                     </button>
                     <button
                       onClick={handlePlaceOrder}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold transition"
+                      disabled={processingPayment}
+                      className={`flex-1 px-8 py-4 rounded-lg font-bold transition ${
+                        processingPayment
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-green-600 hover:bg-green-700 text-white'
+                      }`}
                     >
-                      Place Order - ₹{total.toFixed(2)}
+                      {processingPayment ? 'Processing Payment...' : `Place Order - ₹${total.toFixed(2)}`}
                     </button>
                   </div>
                 </motion.div>
