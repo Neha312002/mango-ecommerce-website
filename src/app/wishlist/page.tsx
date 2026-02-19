@@ -129,7 +129,7 @@ export default function WishlistPage() {
                     {item.product.name}
                   </h3>
                   <p className="text-2xl font-bold text-[#FF8C42] mb-4">
-                    ${item.product.price.toFixed(2)} / kg
+                    ₹{item.product.price.toFixed(2)} / kg
                   </p>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {item.product.description}

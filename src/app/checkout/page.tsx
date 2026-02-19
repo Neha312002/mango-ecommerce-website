@@ -741,7 +741,7 @@ export default function CheckoutPage() {
                       onClick={handlePlaceOrder}
                       className="flex-1 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold transition"
                     >
-                      Place Order - ${total.toFixed(2)}
+                      Place Order - ₹{total.toFixed(2)}
                     </button>
                   </div>
                 </motion.div>
@@ -767,7 +767,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-800 text-sm">{item.name}</p>
-                      <p className="text-[#FF8C42] font-bold">${item.price.toFixed(2)}</p>
+                      <p className="text-[#FF8C42] font-bold">₹{item.price.toFixed(2)}</p>
                     </div>
                     <button
                       onClick={() => removeFromCart(item.name)}
@@ -793,26 +793,26 @@ export default function CheckoutPage() {
               <div className="border-t pt-4 space-y-3">
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span>Tax</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>₹{tax.toFixed(2)}</span>
                 </div>
                 <div className="border-t pt-3 flex justify-between text-xl font-bold text-[#3D4F42]">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
 
               {subtotal < 50 && (
                 <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <p className="text-sm text-gray-700">
-                    💡 Add <strong>${(50 - subtotal).toFixed(2)}</strong> more to get FREE shipping!
+                    💡 Add <strong>₹{(50 - subtotal).toFixed(2)}</strong> more to get FREE shipping!
                   </p>
                 </div>
               )}

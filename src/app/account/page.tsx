@@ -365,7 +365,7 @@ function AccountPageContent() {
                                 </div>
                                 <div className="flex-1">
                                   <p className="font-semibold text-gray-800">{item.name}</p>
-                                  <p className="text-[#FF8C42] font-bold">${item.price.toFixed(2)}</p>
+                                  <p className="text-[#FF8C42] font-bold">₹{item.price.toFixed(2)}</p>
                                   <button
                                     onClick={() => setReviewForm({ productId: item.id, rating: 5, comment: '' })}
                                     className="text-sm text-[#FF8C42] hover:underline mt-1"
@@ -394,7 +394,7 @@ function AccountPageContent() {
                             </div>
                             <div className="flex items-center gap-4">
                               <p className="text-xl font-bold text-[#3D4F42]">
-                                Total: ${order.total.toFixed(2)}
+                                Total: ₹{order.total.toFixed(2)}
                               </p>
                               <Link
                                 href={`/track-order?order=${order.orderNumber}`}

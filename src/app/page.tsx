@@ -543,7 +543,7 @@ export default function Home() {
                   </h1>
                   
                   <p className="text-2xl font-bold text-[#FF8C42] mb-4">
-                    ${selectedProduct.price} / kg
+                    ₹{selectedProduct.price} / kg
                   </p>
 
                   <p className="text-gray-700 text-base leading-relaxed mb-6">
@@ -582,6 +582,8 @@ export default function Home() {
                         desc: selectedProduct.description,
                       };
                       addToCart(cartProduct);
+                      closeProductModal();
+                      setCartOpen(true);
                     }}
                     className="w-full bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
                     whileHover={{ scale: 1.02 }}
@@ -1125,7 +1127,7 @@ export default function Home() {
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.2 }}
                       >
-                        ${product.price} / kg
+                        ₹{product.price} / kg
                       </motion.p>
                       <p className="text-gray-600 mb-6 flex-grow">{product.desc}</p>
                       {cart.find(item => item.name === product.name) ? (

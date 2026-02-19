@@ -115,7 +115,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </h1>
 
               <p className="text-2xl font-bold text-[#FF8C42] mb-6">
-                ${product.price} / kg
+                ₹{product.price} / kg
               </p>
 
               <p className="text-gray-700 text-lg leading-relaxed mb-8">
@@ -175,7 +175,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  🛒 Add to Cart - ${(product.price * quantity).toFixed(2)}
+                  🛒 Add to Cart - ₹{(product.price * quantity).toFixed(2)}
                 </motion.button>
                 <motion.button
                   onClick={() => {

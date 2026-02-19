@@ -242,14 +242,14 @@ function TrackOrderPageContent() {
                       <p className="font-semibold text-gray-800">{item.name}</p>
                       <p className="text-sm text-gray-500">1 kg</p>
                     </div>
-                    <p className="font-bold text-[#FF8C42]">${item.price.toFixed(2)}</p>
+                    <p className="font-bold text-[#FF8C42]">₹{item.price.toFixed(2)}</p>
                   </div>
                 ))}
               </div>
               <div className="mt-6 pt-6 border-t">
                 <div className="flex justify-between text-2xl font-bold text-[#3D4F42]">
                   <span>Total</span>
-                  <span>${order.total.toFixed(2)}</span>
+                  <span>₹{order.total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
