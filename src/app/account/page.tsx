@@ -238,16 +238,28 @@ function AccountPageContent() {
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
       <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-700">Hello, <strong>{user.name}</strong></span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
+              <span className="text-3xl">🥭</span>
+              <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+            </Link>
+            <Link
+              href="/"
+              className="bg-[#FF8C42] hover:bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 text-sm sm:text-base"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="hidden sm:inline">Back to Home</span>
+              <span className="sm:hidden">Home</span>
+            </Link>
+          </div>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <span className="text-gray-700 text-sm sm:text-base">Hello, <strong>{user.name}</strong></span>
             <button
               onClick={handleLogout}
-              className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold transition"
+              className="bg-gray-200 hover:bg-gray-300 px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base"
             >
               Logout
             </button>
