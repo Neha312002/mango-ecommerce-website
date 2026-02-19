@@ -739,61 +739,112 @@ export default function CheckoutPage() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-4 sm:space-y-6"
                 >
-                  {/* Shipping Details */}
+                  {/* Review Order Details */}
                   <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#3D4F42]">Shipping Address</h3>
-                      <button
-                        onClick={() => setStep(1)}
-                        className="text-[#FF8C42] hover:underline text-sm font-semibold"
-                      >
-                        Edit
-                      </button>
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#3D4F42] mb-6">Review Your Order</h2>
+                    
+                    {/* Shipping Details */}
+                    <div className="mb-6 pb-6 border-b">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-bold text-[#3D4F42]">Shipping Address</h3>
+                        <button
+                          onClick={() => setStep(1)}
+                          className="text-[#FF8C42] hover:underline text-sm font-semibold"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-4 text-gray-700">
+                        <p className="font-semibold text-base">{shippingInfo.fullName}</p>
+                        <p className="text-sm">{shippingInfo.address}</p>
+                        <p className="text-sm">{shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}</p>
+                        <p className="text-sm mt-2">{shippingInfo.email}</p>
+                        <p className="text-sm">{shippingInfo.phone}</p>
+                      </div>
                     </div>
-                    <div className="text-gray-700">
-                      <p className="font-semibold">{shippingInfo.fullName}</p>
-                      <p>{shippingInfo.address}</p>
-                      <p>{shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}</p>
-                      <p className="mt-2">{shippingInfo.email}</p>
-                      <p>{shippingInfo.phone}</p>
-                    </div>
-                  </div>
 
-                  {/* Payment Details */}
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold text-[#3D4F42]">Payment Method</h3>
+                    {/* Order Items */}
+                    <div className="mb-6 pb-6 border-b">
+                      <h3 className="text-lg font-bold text-[#3D4F42] mb-3">Order Items</h3>
+                      <div className="space-y-3">
+                        {cart.map((item, index) => (
+                          <div key={index} className="flex gap-4 bg-gray-50 rounded-lg p-3">
+                            <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                              <Image 
+                                src={item.img}
+                                alt={item.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-800">{item.name}</p>
+                              <p className="text-sm text-gray-600">Quantity: {item.quantity || 1}</p>
+                              <p className="text-[#FF8C42] font-bold">₹{item.price.toFixed(2)} each</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-gray-800">₹{(item.price * (item.quantity || 1)).toFixed(2)}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Payment Method */}
+                    <div className="mb-6">
+                      <h3 className="text-lg font-bold text-[#3D4F42] mb-3">Payment Method</h3>
+                      <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">💳</span>
+                          <p className="font-semibold text-gray-800">Razorpay Payment Gateway</p>
+                        </div>
+                        <p className="text-sm text-gray-600">You will be redirected to secure payment page after clicking "Place Order"</p>
+                        <p className="text-xs text-gray-500 mt-2">Accepts: UPI, Cards, Net Banking, Wallets</p>
+                      </div>
+                    </div>
+
+                    {/* Order Summary */}
+                    <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                      <h3 className="text-lg font-bold text-[#3D4F42] mb-3">Order Summary</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-gray-700">
+                          <span>Subtotal</span>
+                          <span>₹{subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-gray-700">
+                          <span>Shipping</span>
+                          <span>{shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}</span>
+                        </div>
+                        <div className="flex justify-between text-gray-700">
+                          <span>Tax (8%)</span>
+                          <span>₹{tax.toFixed(2)}</span>
+                        </div>
+                        <div className="border-t pt-2 flex justify-between text-xl font-bold text-[#3D4F42]">
+                          <span>Total</span>
+                          <span>₹{total.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <button
                         onClick={() => setStep(2)}
-                        className="text-[#FF8C42] hover:underline text-sm font-semibold"
+                        className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold transition text-sm sm:text-base"
                       >
-                        Edit
+                        ← Back
+                      </button>
+                      <button
+                        onClick={handlePlaceOrder}
+                        disabled={processingPayment}
+                        className={`flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold transition text-sm sm:text-base ${
+                          processingPayment
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-green-600 hover:bg-green-700 text-white'
+                        }`}
+                      >
+                        {processingPayment ? '⏳ Processing...' : `🔒 Place Order - ₹${total.toFixed(2)}`}
                       </button>
                     </div>
-                    <div className="text-gray-700">
-                      <p>Card ending in ****{paymentInfo.cardNumber.slice(-4)}</p>
-                      <p className="text-sm text-gray-500">Expires {paymentInfo.expiry}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => setStep(2)}
-                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-4 rounded-lg font-bold transition"
-                    >
-                      ← Back
-                    </button>
-                    <button
-                      onClick={handlePlaceOrder}
-                      disabled={processingPayment}
-                      className={`flex-1 px-8 py-4 rounded-lg font-bold transition ${
-                        processingPayment
-                          ? 'bg-gray-400 cursor-not-allowed'
-                          : 'bg-green-600 hover:bg-green-700 text-white'
-                      }`}
-                    >
-                      {processingPayment ? 'Processing Payment...' : `Place Order - ₹${total.toFixed(2)}`}
-                    </button>
                   </div>
                 </motion.div>
               )}
@@ -818,28 +869,33 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-800 text-sm">{item.name}</p>
+                      <p className="text-sm text-gray-600">Qty: {item.quantity || 1}</p>
                       <p className="text-[#FF8C42] font-bold">₹{item.price.toFixed(2)}</p>
                     </div>
-                    <button
-                      onClick={() => removeFromCart(item.name)}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      Remove
-                    </button>
+                    {step === 1 && (
+                      <button
+                        onClick={() => removeFromCart(item.name)}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
               
-              <button
-                onClick={() => {
-                  if (confirm('Are you sure you want to clear your entire cart?')) {
-                    clearCart();
-                  }
-                }}
-                className="w-full mb-4 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition"
-              >
-                Clear Cart
-              </button>
+              {step === 1 && (
+                <button
+                  onClick={() => {
+                    if (confirm('Are you sure you want to clear your entire cart?')) {
+                      clearCart();
+                    }
+                  }}
+                  className="w-full mb-4 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition"
+                >
+                  Clear Cart
+                </button>
+              )}
 
               <div className="border-t pt-4 space-y-3">
                 <div className="flex justify-between text-gray-700">
