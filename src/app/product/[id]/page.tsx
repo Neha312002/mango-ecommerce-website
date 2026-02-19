@@ -1,10 +1,11 @@
-import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import ProductDetailClient from './ProductDetailClient';
 import type { Product as ClientProduct } from './ProductDetailClient';
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const productId = Number(params.id);
+  const { id } = params;
+  const productId = Number(id);
 
   if (isNaN(productId)) {
     return (
@@ -17,26 +18,15 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
     );
   }
 
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
-    include: {
-      reviews: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      },
-    },
+  const incomingHeaders = await headers();
+  const host = incomingHeaders.get('host') ?? 'localhost:3000';
+  const protocol = host.startsWith('localhost') ? 'http' : 'https';
+
+  const res = await fetch(`${protocol}://${host}/api/products/${productId}`, {
+    cache: 'no-store',
   });
 
-  if (!product) {
+  if (!res.ok) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -47,28 +37,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
     );
   }
 
-  const clientProduct: ClientProduct = {
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    image: product.image,
-    description: product.description,
-    details: product.details,
-    weight: product.weight,
-    origin: product.origin,
-    season: product.season,
-    nutritional: product.nutritional,
-    reviews: product.reviews.map((review: any): ClientProduct['reviews'][number] => ({
-      id: review.id,
-      rating: review.rating,
-      comment: review.comment,
-      createdAt: review.createdAt.toISOString(),
-      user: {
-        id: review.user.id,
-        name: review.user.name,
-      },
-    })),
-  };
+  const product = (await res.json()) as ClientProduct;
 
-  return <ProductDetailClient product={clientProduct} />;
+  return <ProductDetailClient product={product} />;
 }
