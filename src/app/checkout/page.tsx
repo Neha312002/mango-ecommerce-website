@@ -444,8 +444,8 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
             <AnimatePresence mode="wait">
@@ -456,20 +456,19 @@ export default function CheckoutPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="bg-white rounded-2xl shadow-lg p-8"
-                >
-                  <h2 className="text-2xl font-bold text-[#3D4F42] mb-6">Shipping Information</h2>
+                  className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#3D4F42] mb-4 sm:mb-6">Shipping Information</h2>
                   
                   {/* Saved Addresses */}
                   {savedAddresses.length > 0 && !useNewAddress && (
                     <div className="mb-6">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-3">Select Saved Address</h3>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3">Select Saved Address</h3>
                       <div className="space-y-3 mb-4">
                         {savedAddresses.map((addr) => (
                           <div
                             key={addr.id}
                             onClick={() => selectAddress(addr)}
-                            className={`p-4 border-2 rounded-lg cursor-pointer transition ${
+                            className={`p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition ${
                               selectedAddressId === addr.id
                                 ? 'border-[#FF8C42] bg-orange-50'
                                 : 'border-gray-200 hover:border-[#FF8C42]/50'
@@ -477,9 +476,9 @@ export default function CheckoutPage() {
                           >
                             <div className="flex items-start justify-between">
                               <div>
-                                <p className="font-semibold text-gray-800">{addr.fullName}</p>
-                                <p className="text-sm text-gray-600">{addr.phone}</p>
-                                <p className="text-sm text-gray-600">{addr.address}, {addr.city}, {addr.state} {addr.zipCode}</p>
+                                <p className="font-semibold text-gray-800 text-sm sm:text-base">{addr.fullName}</p>
+                                <p className="text-xs sm:text-sm text-gray-600">{addr.phone}</p>
+                                <p className="text-xs sm:text-sm text-gray-600">{addr.address}, {addr.city}, {addr.state} {addr.zipCode}</p>
                                 {addr.isDefault && (
                                   <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-[#FF8C42] text-white rounded">
                                     Default
@@ -657,7 +656,7 @@ export default function CheckoutPage() {
                     )}
                     <button
                       type="submit"
-                      className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-lg transition"
+                      className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition"
                     >
                       Continue to Payment →
                     </button>
@@ -672,15 +671,15 @@ export default function CheckoutPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="bg-white rounded-2xl shadow-lg p-8"
+                  className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8"
                 >
-                  <h2 className="text-2xl font-bold text-[#3D4F42] mb-6">Payment Method</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#3D4F42] mb-4 sm:mb-6">Payment Method</h2>
                   
                   <div className="space-y-6">
-                    <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-xl p-6">
+                    <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-xl p-4 sm:p-6">
                       <div className="flex items-center gap-3 mb-4">
-                        <span className="text-3xl">💳</span>
-                        <h3 className="text-xl font-bold text-[#3D4F42]">Secure Payment with Razorpay</h3>
+                        <span className="text-2xl sm:text-3xl">💳</span>
+                        <h3 className="text-lg sm:text-xl font-bold text-[#3D4F42]">Secure Payment with Razorpay</h3>
                       </div>
                       <p className="text-gray-700 mb-4">
                         Your payment will be processed securely through Razorpay, India's leading payment gateway.
@@ -711,18 +710,18 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <button
                         type="button"
                         onClick={() => setStep(1)}
-                        className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-4 rounded-lg font-bold transition"
+                        className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold transition text-sm sm:text-base"
                       >
                         ← Back
                       </button>
                       <button
                         type="button"
                         onClick={() => setStep(3)}
-                        className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold transition"
+                        className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold transition text-sm sm:text-base"
                       >
                         Review Order →
                       </button>
@@ -738,12 +737,12 @@ export default function CheckoutPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="space-y-6"
+                  className="space-y-4 sm:space-y-6"
                 >
                   {/* Shipping Details */}
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold text-[#3D4F42]">Shipping Address</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-[#3D4F42]">Shipping Address</h3>
                       <button
                         onClick={() => setStep(1)}
                         className="text-[#FF8C42] hover:underline text-sm font-semibold"

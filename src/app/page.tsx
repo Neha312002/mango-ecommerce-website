@@ -42,6 +42,7 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'nutrition' | 'reviews'>('description');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartButtonRef = useRef<HTMLButtonElement | null>(null);
 
   // Fetch products from database
@@ -281,6 +282,26 @@ export default function Home() {
               <a href="#contact" className="hover:text-[#FF8C42] transition font-medium">Contact Us</a>
             </div>
 
+            {/* Mobile Hamburger Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+
             {/* Right side actions (log in + cart + wishlist) */}
             <div className="flex items-center gap-4 ml-auto">
               <Link 
@@ -316,6 +337,124 @@ export default function Home() {
         </div>
       </nav>
 
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/50 z-50 md:hidden"
+            />
+            
+            {/* Menu Drawer */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-[280px] bg-white shadow-2xl z-50 md:hidden"
+            >
+              {/* Menu Header */}
+              <div className="bg-[#3D4F42] p-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🥭</span>
+                  <span className="text-white font-bold text-lg">Menu</span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:bg-white/10 p-2 rounded-lg transition"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Menu Items */}
+              <nav className="flex flex-col p-4 space-y-1">
+                <a
+                  href="#home"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">🏠</span>
+                  <span>Home</span>
+                </a>
+                <a
+                  href="#about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">ℹ️</span>
+                  <span>About</span>
+                </a>
+                <a
+                  href="/our-process"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">🔄</span>
+                  <span>Our Process</span>
+                </a>
+                <a
+                  href="#products"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">🛒</span>
+                  <span>Order Online</span>
+                </a>
+                <a
+                  href="#blog"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">📝</span>
+                  <span>Blog</span>
+                </a>
+                <a
+                  href="#contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">📞</span>
+                  <span>Contact Us</span>
+                </a>
+
+                <div className="border-t my-2"></div>
+
+                {/* Mobile Quick Links */}
+                <Link
+                  href="/wishlist"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">❤️</span>
+                  <span>Wishlist</span>
+                  {wishlist.length > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  href={currentUser ? "/account" : "/auth"}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                >
+                  <span className="text-xl">👤</span>
+                  <span>{currentUser ? currentUser.name : 'Login / Sign Up'}</span>
+                </Link>
+              </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* Flying Mango Animation Layer */}
       {flyingMangoes.length > 0 && (
         <div className="pointer-events-none fixed inset-0 z-[9999]">
@@ -347,15 +486,15 @@ export default function Home() {
             onClick={() => setCartOpen(false)}
           >
             <motion.div 
-              className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-md relative"
-              initial={{ scale: 0.8, y: 50 }}
+              className="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 w-full max-w-md relative"
+              initial={{ scale: 0.9, y: 30 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 50 }}
+              exit={{ scale: 0.9, y: 30 }}
               transition={{ type: 'spring', duration: 0.5 }}
               onClick={(e) => e.stopPropagation()}
             >
               <motion.button 
-                className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-600" 
+                className="absolute top-2 right-2 sm:top-4 sm:right-4 text-2xl sm:text-3xl text-gray-400 hover:text-gray-600" 
                 onClick={() => setCartOpen(false)}
                 whileHover={{ rotate: 90, scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
@@ -363,7 +502,7 @@ export default function Home() {
                 &times;
               </motion.button>
               <motion.h2 
-                className="text-2xl font-bold mb-6 text-[#3D4F42]"
+                className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-[#3D4F42]"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
@@ -381,7 +520,7 @@ export default function Home() {
                 </motion.p>
               ) : (
                 <>
-                  <ul className="mb-6 space-y-3">
+                  <ul className="mb-4 sm:mb-6 space-y-2 sm:space-y-3 max-h-[50vh] overflow-y-auto">
                     {cart.map((item, idx) => (
                       <motion.li 
                         key={item.name} 
@@ -390,18 +529,18 @@ export default function Home() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 * idx }}
                       >
-                        <div className="flex-1">
-                          <p className="font-medium text-[#3D4F42]">{item.name}</p>
-                          <div className="flex items-center gap-2 mt-2">
+                        <div className="flex-1 pr-2">
+                          <p className="font-medium text-[#3D4F42] text-sm sm:text-base">{item.name}</p>
+                          <div className="flex items-center gap-2 mt-1.5 sm:mt-2">
                             <motion.button
                               onClick={() => removeFromCart(item.name)}
-                              className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700"
+                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 text-sm sm:text-base"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                             >
                               −
                             </motion.button>
-                            <span className="w-8 text-center font-medium">{item.quantity}</span>
+                            <span className="w-6 sm:w-8 text-center font-medium text-sm sm:text-base">{item.quantity}</span>
                             <motion.button
                               onClick={(e) => {
                                 // Find existing product from products array and add one more
@@ -410,7 +549,7 @@ export default function Home() {
                                   addToCart(product);
                                 }
                               }}
-                              className="w-7 h-7 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] text-white flex items-center justify-center font-bold"
+                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] text-white flex items-center justify-center font-bold text-sm sm:text-base"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                             >
@@ -418,30 +557,30 @@ export default function Home() {
                             </motion.button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#FF8C42]">${item.price * item.quantity}</span>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <span className="font-bold text-[#FF8C42] text-sm sm:text-base">₹{item.price * item.quantity}</span>
                         </div>
                       </motion.li>
                     ))}
                   </ul>
                   <motion.div 
-                    className="flex items-center justify-between mb-6 pt-4 border-t-2"
+                    className="flex items-center justify-between mb-4 sm:mb-6 pt-3 sm:pt-4 border-t-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
                   >
-                    <span className="font-bold text-xl text-[#3D4F42]">Total:</span>
+                    <span className="font-bold text-base sm:text-xl text-[#3D4F42]">Total:</span>
                     <motion.span 
-                      className="font-bold text-2xl text-[#FF8C42]"
+                      className="font-bold text-lg sm:text-2xl text-[#FF8C42]"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', delay: 0.5 }}
                     >
-                      ${cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}
+                      ₹{cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}
                     </motion.span>
                   </motion.div>
                   <motion.button 
-                    className="w-full bg-[#3D4F42] hover:bg-[#2d3a32] text-white py-3 rounded-lg font-bold text-lg transition shadow-md mb-3"
+                    className="w-full bg-[#3D4F42] hover:bg-[#2d3a32] text-white py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg transition shadow-md mb-2 sm:mb-3"
                     whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(61, 79, 66, 0.3)' }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
@@ -475,31 +614,31 @@ export default function Home() {
       <AnimatePresence>
         {productModalOpen && selectedProduct && (
           <motion.div 
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto"
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeProductModal}
           >
             <motion.div 
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8 relative max-h-[90vh] overflow-y-auto"
-              initial={{ scale: 0.8, y: 50 }}
+              className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-5xl my-4 sm:my-8 relative max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
+              initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 50 }}
+              exit={{ scale: 0.9, y: 20 }}
               transition={{ type: 'spring', duration: 0.5 }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <motion.button 
-                className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100" 
+                className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100" 
                 onClick={closeProductModal}
                 whileHover={{ rotate: 90, scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <span className="text-2xl">×</span>
+                <span className="text-xl sm:text-2xl">×</span>
               </motion.button>
 
-              <div className="grid md:grid-cols-2 gap-8 p-6 md:p-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 p-4 sm:p-6 md:p-10">
                 {/* Product Image */}
                 <motion.div
                   initial={{ opacity: 0, x: -30 }}
@@ -507,7 +646,7 @@ export default function Home() {
                   transition={{ duration: 0.5 }}
                   className="relative"
                 >
-                  <div className="relative h-[400px] rounded-xl overflow-hidden shadow-lg">
+                  <div className="relative h-[250px] sm:h-[350px] md:h-[400px] rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
                     <Image 
                       src={selectedProduct.image}
                       alt={selectedProduct.name}
@@ -538,11 +677,11 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <h1 className="text-3xl md:text-4xl font-bold text-[#3D4F42] mb-3">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#3D4F42] mb-2 sm:mb-3">
                     {selectedProduct.name}
                   </h1>
                   
-                  <p className="text-2xl font-bold text-[#FF8C42] mb-4">
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#FF8C42] mb-3 sm:mb-4">
                     ₹{selectedProduct.price} / kg
                   </p>
 
@@ -585,7 +724,7 @@ export default function Home() {
                       closeProductModal();
                       setTimeout(() => setCartOpen(true), 1000);
                     }}
-                    className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
+                    className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg shadow-lg transition mb-2 sm:mb-3"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -616,13 +755,13 @@ export default function Home() {
               </div>
 
               {/* Tabs Section */}
-              <div className="border-t px-6 md:px-10 pb-10">
-                <div className="flex gap-4 border-b mb-6 pt-6">
+              <div className="border-t px-4 sm:px-6 md:px-10 pb-6 sm:pb-8 md:pb-10">
+                <div className="flex gap-2 sm:gap-4 border-b mb-4 sm:mb-6 pt-4 sm:pt-6 overflow-x-auto">
                   {['description', 'nutrition', 'reviews'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab as any)}
-                      className={`px-4 py-2 font-semibold capitalize transition ${
+                      className={`px-3 sm:px-4 py-2 font-semibold capitalize transition text-sm sm:text-base whitespace-nowrap ${
                         activeTab === tab
                           ? 'text-[#FF8C42] border-b-2 border-[#FF8C42]'
                           : 'text-gray-600 hover:text-gray-800'
