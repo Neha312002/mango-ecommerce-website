@@ -9,12 +9,13 @@ import { useCart } from '@/context/CartContext';
 
 export default function WishlistPage() {
   const router = useRouter();
-  const { addToCart, removeFromWishlist, isInWishlist, addToWishlist } = useCart();
+  const { cart, addToCart, removeFromWishlist, isInWishlist, addToWishlist } = useCart();
   const [wishlistProducts, setWishlistProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'nutrition' | 'reviews'>('description');
+  const [cartOpen, setCartOpen] = useState(false);
 
   useEffect(() => {
     const currentUser = localStorage.getItem('currentUser');
@@ -46,7 +47,10 @@ export default function WishlistPage() {
     setWishlistProducts(prev => prev.filter(item => item.productId !== productId));
   }
 
-  async function handleAddToCart(product: any) {
+  async function handleAddToCart(product: any, event?: MouseEvent) {
+    if (event) {
+      event.stopPropagation();
+    }
     const productData = {
       id: product.product.id,
       name: product.product.name,
@@ -55,6 +59,16 @@ export default function WishlistPage() {
       desc: product.product.description,
     };
     addToCart(productData);
+    
+    // Optional: Show a brief notification
+    const button = event?.currentTarget as HTMLElement;
+    if (button) {
+      const originalText = button.textContent;
+      button.textContent = '✓ Added!';
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 1000);
+    }
   }
 
   const handleProductClick = async (productId: number) => {
@@ -361,17 +375,26 @@ export default function WishlistPage() {
                             </div>
                             <p className="text-gray-700 text-sm leading-relaxed">{review.comment}</p>
                           </div>
-                        ))
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+                        ))4 sm:px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
+            <span className="text-3xl">🥭</span>
+            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          </Link>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link
+              href="/checkout"
+              className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-3 sm:px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md"
+            >
+              🛒 <span className="hidden sm:inline">Cart</span> ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+            </Link>
+            <Link 
+              href="/" 
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 sm:px-4 py-2 rounded-md font-semibold transition"
+            >
+              <span className="hidden sm:inline">← Back to Home</span>
+              <span className="sm:hidden">← Home</span>
+            </Link>
+          </div
       {/* Navigation */}
       <nav className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -436,10 +459,7 @@ export default function WishlistPage() {
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-[#3D4F42] mb-2">
                     {item.product.name}
-                  </h3>
-                  <p className="text-2xl font-bold text-[#FF8C42] mb-4">
-                    ₹{item.product.price.toFixed(2)} / kg
-                  </p>
+                  </h3>handleAddToCart(item, e)
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {item.product.description}
                   </p>
