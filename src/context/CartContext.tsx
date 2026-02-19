@@ -17,6 +17,7 @@ type CartContextType = {
   wishlist: number[]; // Array of product IDs
   addToCart: (product: Product) => void;
   removeFromCart: (name: string) => void;
+  updateQuantity: (name: string, quantity: number) => void;
   clearCart: () => void;
   addToWishlist: (productId: number) => void;
   removeFromWishlist: (productId: number) => void;
@@ -94,6 +95,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart((prev) => prev.filter((item) => item.name !== name));
   }
 
+  function updateQuantity(name: string, quantity: number) {
+    if (quantity <= 0) {
+      removeFromCart(name);
+      return;
+    }
+    setCart((prev) =>
+      prev.map((item) =>
+        item.name === name ? { ...item, quantity } : item
+      )
+    );
+  }
+
   function clearCart() {
     setCart([]);
   }
@@ -160,7 +173,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cart, 
       wishlist,
       addToCart, 
-      removeFromCart, 
+      removeFromCart,
+      updateQuantity, 
       clearCart,
       addToWishlist,
       removeFromWishlist,

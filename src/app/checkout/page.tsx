@@ -16,7 +16,7 @@ declare global {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
@@ -873,7 +873,7 @@ export default function CheckoutPage() {
               
               <div className="space-y-4 mb-6">
                 {cart.map((item, index) => (
-                  <div key={index} className="flex gap-4">
+                  <div key={index} className="flex gap-3">
                     <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                       <Image 
                         src={item.img}
@@ -882,15 +882,33 @@ export default function CheckoutPage() {
                         className="object-cover"
                       />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800 text-sm">{item.name}</p>
-                      <p className="text-sm text-gray-600">Qty: {item.quantity || 1}</p>
-                      <p className="text-[#FF8C42] font-bold">₹{item.price.toFixed(2)}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-800 text-sm truncate">{item.name}</p>
+                      {step === 1 ? (
+                        <div className="flex items-center gap-2 mt-1">
+                          <button
+                            onClick={() => updateQuantity(item.name, (item.quantity || 1) - 1)}
+                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition"
+                          >
+                            −
+                          </button>
+                          <span className="text-sm font-semibold text-gray-700 min-w-[20px] text-center">{item.quantity || 1}</span>
+                          <button
+                            onClick={() => updateQuantity(item.name, (item.quantity || 1) + 1)}
+                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition"
+                          >
+                            +
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-600 mt-1">Qty: {item.quantity || 1}</p>
+                      )}
+                      <p className="text-[#FF8C42] font-bold text-sm mt-1">₹{item.price.toFixed(2)}</p>
                     </div>
                     {step === 1 && (
                       <button
                         onClick={() => removeFromCart(item.name)}
-                        className="text-red-500 hover:text-red-700 text-sm"
+                        className="text-red-500 hover:text-red-700 text-xs self-start"
                       >
                         Remove
                       </button>
