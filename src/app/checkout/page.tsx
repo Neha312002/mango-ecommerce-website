@@ -405,11 +405,26 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
       <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
+              <span className="text-3xl">🥭</span>
+              <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+            </Link>
+            <Link
+              href="/"
+              className="bg-[#FF8C42] hover:bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 text-sm sm:text-base"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="hidden sm:inline">Continue Shopping</span>
+              <span className="sm:hidden">Shop</span>
+            </Link>
+          </div>
+          <div className="text-sm text-gray-600">
+            🛒 <span className="font-semibold">{cart.length} {cart.length === 1 ? 'item' : 'items'}</span> in cart
+          </div>
         </div>
       </nav>
 
