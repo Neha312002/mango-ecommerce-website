@@ -9,10 +9,18 @@ export async function POST(req: NextRequest) {
       razorpay_signature 
     } = await req.json();
 
+    // Validate environment variables
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json(
+        { error: 'Razorpay credentials not configured' },
+        { status: 500 }
+      );
+    }
+
     // Verify signature
     const sign = razorpay_order_id + '|' + razorpay_payment_id;
     const expectedSignature = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
       .update(sign.toString())
       .digest('hex');
 

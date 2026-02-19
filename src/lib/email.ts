@@ -1,7 +1,5 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function sendOrderConfirmationEmail(
   to: string,
   orderData: {
@@ -23,6 +21,15 @@ export async function sendOrderConfirmationEmail(
   }
 ) {
   try {
+    // Check if email is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('RESEND_API_KEY not configured, skipping email');
+      return { success: false, error: 'Email not configured' };
+    }
+
+    // Initialize Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     const itemsHtml = orderData.items
       .map(
         (item) => `
