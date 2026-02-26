@@ -24,6 +24,8 @@ export default function AdminDashboard() {
     try {
       const token = localStorage.getItem('authToken');
       
+      console.log('Fetching dashboard data...');
+      
       // Fetch stats
       const [ordersRes, productsRes] = await Promise.all([
         fetch('/api/orders', {
@@ -32,12 +34,28 @@ export default function AdminDashboard() {
         fetch('/api/products'),
       ]);
 
+      console.log('Orders response status:', ordersRes.status);
+      console.log('Products response status:', productsRes.status);
+
+      if (!ordersRes.ok) {
+        console.error('Failed to fetch orders:', await ordersRes.text());
+        throw new Error('Failed to fetch orders');
+      }
+
+      if (!productsRes.ok) {
+        console.error('Failed to fetch products:', await productsRes.text());
+        throw new Error('Failed to fetch products');
+      }
+
       const orders = await ordersRes.json();
       const products = await productsRes.json();
 
-      // Calculate stats
-      const totalRevenue = orders.reduce((sum: number, order: any) => sum + order.totalAmount, 0);
-      const pendingOrders = orders.filter((o: any) => o.status === 'pending').length;
+      console.log('Fetched orders:', orders.length);
+      console.log('Fetched products:', products.length);
+
+      // Calculate stats - use 'total' field, not 'totalAmount'
+      const totalRevenue = orders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
+      const pendingOrders = orders.filter((o: any) => o.status === 'processing').length;
       const completedOrders = orders.filter((o: any) => o.status === 'delivered').length;
 
       setStats({
@@ -215,14 +233,14 @@ export default function AdminDashboard() {
                 {recentOrders.map((order) => (
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4 font-mono text-sm">{order.orderNumber}</td>
-                    <td className="py-3 px-4">{order.user?.name || 'Guest'}</td>
-                    <td className="py-3 px-4 font-semibold">₹{order.totalAmount.toFixed(2)}</td>
+                    <td className="py-3 px-4">{order.user?.name || order.fullName || 'Guest'}</td>
+                    <td className="py-3 px-4 font-semibold">₹{order.total?.toFixed(2) || '0.00'}</td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
                           order.status === 'delivered'
                             ? 'bg-green-100 text-green-700'
-                            : order.status === 'pending'
+                            : order.status === 'processing'
                             ? 'bg-yellow-100 text-yellow-700'
                             : 'bg-blue-100 text-blue-700'
                         }`}
