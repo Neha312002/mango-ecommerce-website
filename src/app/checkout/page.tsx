@@ -74,17 +74,18 @@ export default function CheckoutPage() {
     if (currentUser) {
       const userData = JSON.parse(currentUser);
       console.log('🔍 User data loaded:', { email: userData.email, name: userData.name });
-      loadSavedAddresses(userData.id);
       // Pre-fill email from user data - THIS IS MANDATORY
       const userEmail = userData.email || '';
       console.log('📧 Setting email to:', userEmail);
       setShippingInfo(prev => ({ ...prev, email: userEmail }));
+      // Load addresses and pass the email so it doesn't get cleared
+      loadSavedAddresses(userData.id, userEmail);
     } else {
       console.error('❌ No currentUser in localStorage!');
     }
   }, []);
 
-  async function loadSavedAddresses(userId: number) {
+  async function loadSavedAddresses(userId: number, userEmail: string) {
     try {
       const response = await fetch(`/api/addresses?userId=${userId}`);
       if (response.ok) {
@@ -97,7 +98,7 @@ export default function CheckoutPage() {
           setSelectedAddressId(defaultAddress.id);
           setShippingInfo({
             fullName: defaultAddress.fullName,
-            email: shippingInfo.email,
+            email: userEmail, // Use the passed email, not the state
             phone: defaultAddress.phone,
             address: defaultAddress.address,
             city: defaultAddress.city,
@@ -119,16 +120,16 @@ export default function CheckoutPage() {
   function selectAddress(address: any) {
     setSelectedAddressId(address.id);
     setUseNewAddress(false);
-    setShippingInfo({
+    setShippingInfo(prev => ({
       fullName: address.fullName,
-      email: shippingInfo.email,
+      email: prev.email, // Preserve the email from state
       phone: address.phone,
       address: address.address,
       city: address.city,
       state: address.state,
       zipCode: address.zipCode,
       country: address.country
-    });
+    }));
   }
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
