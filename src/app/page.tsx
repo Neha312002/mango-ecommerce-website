@@ -1043,14 +1043,15 @@ export default function Home() {
             </motion.p>
             <motion.a
               href="#products"
-              className="inline-block mt-6 sm:mt-8 bg-gradient-to-r from-[#ffa62b] to-[#ff9500] hover:from-[#ff9500] hover:to-[#ffa62b] text-white px-8 py-3.5 rounded-lg font-bold text-lg shadow-2xl transition-all border-2 border-white/30"
+              className="inline-block mt-6 bg-white text-white border border-white px-6 py-2.5 rounded-md font-semibold text-base shadow-xl transition-all juice-button-outline"
+              style={{ color: 'white', backgroundColor: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)' }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 1.1 }}
-              whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(255, 166, 43, 0.6)' }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.1, boxShadow: '0 20px 40px rgba(255, 140, 66, 0.4)' }}
+              whileTap={{ scale: 0.95 }}
             >
-              🛒 Order Online
+              Order Online
             </motion.a>
           </div>
         </div>
