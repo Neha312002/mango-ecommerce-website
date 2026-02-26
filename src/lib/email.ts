@@ -67,7 +67,7 @@ export async function sendOrderConfirmationEmail(
     // Initialize Gmail transporter
     const transporter = createTransporter();
     console.log('✅ Gmail transporter initialized');
-    console.log('📧 SMTP Config: smtp.gmail.com:465 (SSL)');
+    console.log('📧 SMTP Config: smtp.gmail.com:587 (STARTTLS)');
 
     const itemsHtml = orderData.items
       .map(
