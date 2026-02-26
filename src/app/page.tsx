@@ -2194,10 +2194,10 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4">Customer Service</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-[#FF8C42] transition">Shipping Information</a></li>
-                <li><a href="#" className="hover:text-[#FF8C42] transition">Return Policy</a></li>
-                <li><a href="#" className="hover:text-[#FF8C42] transition">Terms & Conditions</a></li>
-                <li><a href="#" className="hover:text-[#FF8C42] transition">Privacy Policy</a></li>
+                <li><a href="/shipping-policy" className="hover:text-[#FF8C42] transition">Shipping Information</a></li>
+                <li><a href="/refund-policy" className="hover:text-[#FF8C42] transition">Return Policy</a></li>
+                <li><a href="/terms" className="hover:text-[#FF8C42] transition">Terms & Conditions</a></li>
+                <li><a href="/privacy-policy" className="hover:text-[#FF8C42] transition">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-[#FF8C42] transition">FAQ</a></li>
               </ul>
             </div>
@@ -2231,9 +2231,10 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
               <p className="text-gray-400">&copy; 2026 Mango Fresh Farm. All rights reserved.</p>
               <div className="flex gap-6 text-gray-400">
-                <a href="#" className="hover:text-[#FF8C42] transition">Privacy</a>
-                <a href="#" className="hover:text-[#FF8C42] transition">Terms</a>
-                <a href="#" className="hover:text-[#FF8C42] transition">Sitemap</a>
+                <a href="/privacy-policy" className="hover:text-[#FF8C42] transition">Privacy</a>
+                <a href="/terms" className="hover:text-[#FF8C42] transition">Terms</a>
+                <a href="/refund-policy" className="hover:text-[#FF8C42] transition">Refunds</a>
+                <a href="/shipping-policy" className="hover:text-[#FF8C42] transition">Shipping</a>
               </div>
             </div>
           </div>
