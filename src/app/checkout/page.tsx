@@ -28,6 +28,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi'>('upi');
   const [paymentScreenshot, setPaymentScreenshot] = useState<string | null>(null);
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [testMode, setTestMode] = useState(true); // TEST MODE - Set to false after testing emails
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -215,6 +216,61 @@ export default function CheckoutPage() {
         alert('Some items in your cart are invalid. Please clear your cart and add products again from the homepage.');
         console.error('Invalid cart items:', invalidItems);
         setProcessingPayment(false);
+        return;
+      }
+
+      // TEST MODE - Skip payment and create order directly
+      if (testMode) {
+        const orderItems = cart.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity || 1,
+          price: item.price,
+        }));
+
+        const shippingForOrder = {
+          ...shippingInfo,
+          email: shippingInfo.email || userData.email || '',
+        };
+
+        const orderResponse = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userData.id,
+            items: orderItems,
+            shipping: shippingForOrder,
+            subtotal: subtotal,
+            shippingCost: shipping,
+            tax: tax,
+            total: total,
+            paymentMethod: 'test',
+            status: 'processing',
+          }),
+        });
+
+        if (orderResponse.ok) {
+          const orderData = await orderResponse.json();
+          setOrderNumber(orderData.order.orderNumber);
+          setOrderPlaced(true);
+          clearCart();
+          
+          const order = {
+            orderNumber: orderData.order.orderNumber,
+            date: new Date().toISOString(),
+            items: cart,
+            total: total,
+            shipping: shippingForOrder,
+            status: 'processing',
+            paymentMethod: 'test',
+          };
+          
+          const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+          localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
+          
+          setProcessingPayment(false);
+        } else {
+          throw new Error('Failed to create order');
+        }
         return;
       }
 
@@ -524,6 +580,26 @@ export default function CheckoutPage() {
         </div>
       </nav>
 
+      {/* TEST MODE BANNER */}
+      {testMode && (
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <span className="text-2xl">🧪</span>
+              <p className="font-bold text-sm sm:text-base">
+                TEST MODE ACTIVE - Orders will be placed without payment for email testing
+              </p>
+              <button
+                onClick={() => setTestMode(false)}
+                className="bg-white text-orange-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-gray-100 transition"
+              >
+                Disable Test Mode
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Progress Steps */}
       <div className="bg-white border-b">
         <div className="max-w-4xl mx-auto px-6 py-6">
@@ -786,9 +862,25 @@ export default function CheckoutPage() {
                 >
                   <h2 className="text-xl sm:text-2xl font-bold text-[#3D4F42] mb-4 sm:mb-6">Payment Method</h2>
                   
+                  {/* TEST MODE MESSAGE */}
+                  {testMode && (
+                    <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-4 mb-6">
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl">🧪</span>
+                        <div>
+                          <p className="font-bold text-gray-800 mb-1">Test Mode Active</p>
+                          <p className="text-sm text-gray-700">
+                            Payment is bypassed. Click "Review Order" to proceed directly and test email notifications.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="space-y-6">
                     {/* Payment Method Selection */}
-                    <div className="grid md:grid-cols-2 gap-4">
+                    {!testMode && (
+                    <div className="grid md:grid-cols-2 gap-4">{" "}
                       {/* Razorpay Option */}
                       <button
                         type="button"
@@ -847,9 +939,10 @@ export default function CheckoutPage() {
                         </p>
                       </button>
                     </div>
+                    )}
 
                     {/* Razorpay Payment Info */}
-                    {paymentMethod === 'razorpay' && (
+                    {!testMode && paymentMethod === 'razorpay' && (
                       <div className="space-y-4">
                         <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border border-[#FF8C42] rounded-xl p-4 sm:p-6">
                           <p className="text-gray-700 mb-4">
@@ -874,7 +967,7 @@ export default function CheckoutPage() {
                     )}
 
                     {/* UPI Manual Payment Info */}
-                    {paymentMethod === 'upi' && (
+                    {!testMode && paymentMethod === 'upi' && (
                       <div className="space-y-4">
                         <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 sm:p-6">
                           <h4 className="font-bold text-gray-800 mb-3">📱 Pay via UPI</h4>
@@ -982,6 +1075,7 @@ export default function CheckoutPage() {
                       </div>
                     )}
 
+                    {!testMode && (
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
                       <span className="text-green-600 text-xl">🔒</span>
                       <div>
@@ -993,6 +1087,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                     </div>
+                    )}
 
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <button
