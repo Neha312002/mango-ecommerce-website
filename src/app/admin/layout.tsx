@@ -20,22 +20,33 @@ export default function AdminLayout({
     const token = localStorage.getItem('authToken');
     const userData = localStorage.getItem('currentUser');
     
+    console.log('Admin auth check:', { token: !!token, userData: !!userData });
+    
     if (!token || !userData) {
+      console.log('No auth data, redirecting to login');
       router.push('/auth?redirect=/admin');
       return;
     }
 
-    const parsedUser = JSON.parse(userData);
-    
-    // Check if user has admin role
-    if (parsedUser.role !== 'admin') {
-      alert('Access denied. Admin privileges required.');
-      router.push('/');
-      return;
-    }
+    try {
+      const parsedUser = JSON.parse(userData);
+      console.log('Parsed user:', { email: parsedUser.email, role: parsedUser.role });
+      
+      // Check if user has admin role
+      if (parsedUser.role !== 'admin') {
+        console.log('User is not admin, redirecting');
+        alert('Access denied. Admin privileges required.');
+        router.push('/');
+        return;
+      }
 
-    setUser(parsedUser);
-    setLoading(false);
+      console.log('Admin access granted');
+      setUser(parsedUser);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      router.push('/auth?redirect=/admin');
+    }
   }, [router]);
 
   const handleLogout = () => {
