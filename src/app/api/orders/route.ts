@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 
+// Configure max execution time for Vercel (10s max on Hobby plan)
+export const maxDuration = 10;
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Helper to verify admin access
