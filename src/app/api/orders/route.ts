@@ -7,15 +7,21 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 // Helper to verify admin access
 function verifyAdmin(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
+  console.log('Auth header present:', !!authHeader);
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log('No valid auth header');
     return null;
   }
 
   try {
     const token = authHeader.substring(7);
+    console.log('Token length:', token.length);
     const decoded = jwt.verify(token, JWT_SECRET) as any;
+    console.log('Decoded token:', { userId: decoded.userId, email: decoded.email, role: decoded.role });
     return decoded;
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Token verification failed:', error.message);
     return null;
   }
 }

@@ -7,6 +7,7 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
@@ -25,16 +26,17 @@ export default function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
+      setError(null);
       const token = localStorage.getItem('authToken');
       
       if (!token) {
         console.error('No auth token found');
-        alert('Please login again');
+        setError('No authentication token found. Please login again.');
         setLoading(false);
         return;
       }
 
-      console.log('Fetching orders with token');
+      console.log('Fetching orders with token...');
       const res = await fetch('/api/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -42,30 +44,31 @@ export default function AdminOrders() {
       console.log('Orders response status:', res.status);
 
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
         console.error('Failed to fetch orders:', errorData);
-        alert(`Failed to load orders: ${errorData.error || 'Unknown error'}`);
+        setError(`Failed to load orders: ${errorData.error || 'Unknown error'}`);
         setLoading(false);
         return;
       }
 
       const data = await res.json();
-      console.log('Orders fetched:', data.length);
+      console.log('Orders fetched successfully:', data.length, 'orders');
       
       // Ensure data is an array
       if (Array.isArray(data)) {
         setOrders(data);
         setFilteredOrders(data);
       } else {
-        console.error('Invalid orders data:', data);
+        console.error('Invalid orders data (not an array):', data);
+        setError('Invalid data received from server');
         setOrders([]);
         setFilteredOrders([]);
       }
       
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching orders:', error);
-      alert('Failed to load orders. Check console for details.');
+      setError(`Failed to load orders: ${error.message || 'Network error'}`);
       setOrders([]);
       setFilteredOrders([]);
       setLoading(false);
@@ -110,6 +113,35 @@ export default function AdminOrders() {
         <div className="text-center">
           <div className="animate-spin text-6xl mb-4">🥭</div>
           <p className="text-gray-600">Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto mt-12">
+        <div className="bg-red-50 border-2 border-red-200 rounded-xl p-8 text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-red-800 mb-4">Failed to Load Orders</h2>
+          <p className="text-red-700 mb-6">{error}</p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={fetchOrders}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                window.location.href = '/auth?redirect=/admin/orders';
+              }}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition"
+            >
+              Re-login
+            </button>
+          </div>
         </div>
       </div>
     );

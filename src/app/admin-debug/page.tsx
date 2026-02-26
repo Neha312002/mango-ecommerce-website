@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 
 export default function AdminDebug() {
   const [info, setInfo] = useState<any>({});
+  const [tokenVerification, setTokenVerification] = useState<any>(null);
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -26,7 +28,27 @@ export default function AdminDebug() {
       currentUserData: parsedUser,
       allLocalStorageKeys: Object.keys(localStorage),
     });
+
+    // Auto-verify token
+    if (token) {
+      verifyToken(token);
+    }
   }, []);
+
+  const verifyToken = async (token: string) => {
+    setVerifying(true);
+    try {
+      const res = await fetch('/api/auth/verify', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setTokenVerification(data);
+    } catch (error) {
+      setTokenVerification({ error: 'Failed to verify token' });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -90,6 +112,39 @@ export default function AdminDebug() {
               <p className="text-red-600 text-lg font-semibold">
                 ❌ User does NOT have admin role (role: {info.currentUserData?.role || 'undefined'})
               </p>
+            )}
+          </div>
+
+          <div className="border-b pb-4">
+            <h2 className="text-xl font-semibold mb-2">JWT Token Verification</h2>
+            {verifying ? (
+              <p className="text-gray-600">Verifying token...</p>
+            ) : tokenVerification ? (
+              <div>
+                {tokenVerification.valid ? (
+                  <div className="bg-green-50 p-4 rounded">
+                    <p className="text-green-600 text-lg font-semibold mb-2">✅ Token is Valid</p>
+                    <pre className="text-sm overflow-auto">
+                      {JSON.stringify(tokenVerification.decoded, null, 2)}
+                    </pre>
+                    {tokenVerification.decoded?.isAdmin ? (
+                      <p className="text-green-700 font-bold mt-2">✅ Token has admin role</p>
+                    ) : (
+                      <p className="text-red-700 font-bold mt-2">❌ Token does NOT have admin role</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-red-50 p-4 rounded">
+                    <p className="text-red-600 text-lg font-semibold mb-2">❌ Token is Invalid</p>
+                    <pre className="text-sm overflow-auto">
+                      {JSON.stringify(tokenVerification, null, 2)}
+                    </pre>
+                    <p className="text-red-700 font-bold mt-2">You need to re-login!</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-600">No token to verify</p>
             )}
           </div>
 
