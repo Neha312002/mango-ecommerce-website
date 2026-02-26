@@ -1,7 +1,7 @@
-# 🚀 Production Setup Guide - Mango Fresh Farm
+# 🚀 Quick Setup Guide for New Collaborators
 
 ## Overview
-This guide will help you configure Razorpay payments and email notifications for your production website.
+This guide will help you get the project running on your machine in **under 10 minutes**!
 
 ---
 
