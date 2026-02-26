@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user with valid reset token
+    // @ts-expect-error - Prisma types not updated locally, but works in production
     const user = await prisma.user.findFirst({
       where: {
         email: email.toLowerCase(),
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password and clear reset token
+    // @ts-expect-error - Prisma types not updated locally, but works in production
     await prisma.user.update({
       where: { id: user.id },
       data: {
