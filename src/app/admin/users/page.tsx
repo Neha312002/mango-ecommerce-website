@@ -13,7 +13,7 @@ export default function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       // Note: You need to create a /api/users endpoint
       const res = await fetch('/api/auth/users', {
         headers: { Authorization: `Bearer ${token}` },

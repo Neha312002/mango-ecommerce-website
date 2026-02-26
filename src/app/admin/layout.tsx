@@ -17,8 +17,8 @@ export default function AdminLayout({
 
   useEffect(() => {
     // Check if user is logged in and is admin
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    const token = localStorage.getItem('authToken');
+    const userData = localStorage.getItem('currentUser');
     
     if (!token || !userData) {
       router.push('/auth?redirect=/admin');
@@ -39,8 +39,8 @@ export default function AdminLayout({
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
     router.push('/');
   };
 

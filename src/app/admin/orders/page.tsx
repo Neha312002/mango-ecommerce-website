@@ -25,7 +25,7 @@ export default function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       const res = await fetch('/api/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -41,7 +41,7 @@ export default function AdminOrders() {
 
   const handleStatusUpdate = async (orderId: number, newStatus: string) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       const res = await fetch(`/api/orders/${orderId}`, {
         method: 'PUT',
         headers: {

@@ -22,7 +22,7 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       
       // Fetch stats
       const [ordersRes, productsRes] = await Promise.all([
