@@ -53,16 +53,7 @@ export async function sendOrderConfirmationEmail(
     // Initialize Gmail transporter
     const transporter = createTransporter();
     console.log('✅ Gmail transporter initialized');
-
-    // Verify connection
-    console.log('🔌 Verifying SMTP connection...');
-    try {
-      await transporter.verify();
-      console.log('✅ SMTP connection verified successfully!');
-    } catch (verifyError: any) {
-      console.error('❌ SMTP verification failed:', verifyError.message);
-      throw verifyError;
-    }
+    console.log('📧 SMTP Config: smtp.gmail.com:465 (SSL)');
 
     const itemsHtml = orderData.items
       .map(
