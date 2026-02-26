@@ -168,16 +168,30 @@ export async function sendOrderConfirmationEmail(
     console.log('📤 Attempting to send email...');
     console.log('From:', process.env.SENDGRID_FROM_EMAIL);
     console.log('To:', to);
+    console.log('API Key configured:', !!process.env.SENDGRID_API_KEY);
+    console.log('API Key starts with SG:', process.env.SENDGRID_API_KEY?.startsWith('SG.'));
     
-    await sgMail.send({
-      to: to,
-      from: process.env.SENDGRID_FROM_EMAIL!,
-      subject: `Order Confirmation - #${orderData.orderNumber}`,
-      html: htmlContent,
-    });
-
-    console.log('✅ Email sent successfully via SendGrid!');
-    return { success: true };
+    try {
+      const response = await sgMail.send({
+        to: to,
+        from: process.env.SENDGRID_FROM_EMAIL!,
+        subject: `Order Confirmation - #${orderData.orderNumber}`,
+        html: htmlContent,
+      });
+      
+      console.log('✅ Email sent successfully via SendGrid!');
+      console.log('Response:', JSON.stringify(response));
+      return { success: true };
+    } catch (sendError: any) {
+      console.error('❌ SendGrid send() error:', sendError);
+      console.error('Error code:', sendError.code);
+      console.error('Error message:', sendError.message);
+      if (sendError.response) {
+        console.error('SendGrid Response Status:', sendError.response.statusCode);
+        console.error('SendGrid Response Body:', JSON.stringify(sendError.response.body));
+      }
+      throw sendError;
+    }
   } catch (error: any) {
     console.error('❌ Email sending error:', error);
     console.error('Error message:', error.message);
@@ -324,15 +338,26 @@ export async function sendAdminOrderNotification(orderData: {
     console.log('From:', process.env.SENDGRID_FROM_EMAIL);
     console.log('To:', process.env.ADMIN_EMAIL);
 
-    await sgMail.send({
-      to: process.env.ADMIN_EMAIL!,
-      from: process.env.SENDGRID_FROM_EMAIL!,
-      subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
-      html: htmlContent,
-    });
+    try {
+      const response = await sgMail.send({
+        to: process.env.ADMIN_EMAIL!,
+        from: process.env.SENDGRID_FROM_EMAIL!,
+        subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
+        html: htmlContent,
+      });
 
-    console.log('✅ Admin email sent successfully via SendGrid!');
-    return { success: true };
+      console.log('✅ Admin email sent successfully via SendGrid!');
+      console.log('Response:', JSON.stringify(response));
+      return { success: true };
+    } catch (sendError: any) {
+      console.error('❌ SendGrid admin send() error:', sendError);
+      console.error('Error code:', sendError.code);
+      if (sendError.response) {
+        console.error('SendGrid Response Status:', sendError.response.statusCode);
+        console.error('SendGrid Response Body:', JSON.stringify(sendError.response.body));
+      }
+      throw sendError;
+    }
   } catch (error: any) {
     console.error('❌ Admin email sending error:', error);
     console.error('Error message:', error.message);
