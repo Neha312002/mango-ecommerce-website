@@ -74,8 +74,49 @@ export async function PUT(
             product: true,
           },
         },
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
       },
     });
+
+    // Send status update email to customer
+    if (order.email && process.env.RESEND_API_KEY) {
+      const statusMessages: { [key: string]: string } = {
+        processing: 'Your order is being processed and will be shipped soon.',
+        shipped: 'Great news! Your order has been shipped and is on its way to you.',
+        delivered: 'Your order has been delivered successfully. We hope you enjoy your fresh mangoes!',
+        cancelled: 'Your order has been cancelled. If you have any questions, please contact our support team.',
+      };
+
+      import('@/lib/email')
+        .then(({ sendOrderStatusUpdateEmail }) => {
+          sendOrderStatusUpdateEmail(
+            order.email!,
+            {
+              orderNumber: order.orderNumber,
+              customerName: order.fullName || order.user?.name || 'Customer',
+              status,
+              statusMessage: statusMessages[status] || 'Your order status has been updated.',
+              items: order.items.map((item) => ({
+                name: item.product.name,
+                quantity: item.quantity,
+              })),
+              trackingUrl: status === 'shipped' 
+                ? `${process.env.NEXT_PUBLIC_APP_URL || 'https://yourdomain.com'}/account#orders`
+                : undefined,
+            }
+          ).catch((error) => {
+            console.error('Failed to send status update email:', error);
+          });
+        })
+        .catch((error) => {
+          console.error('Failed to load email module:', error);
+        });
+    }
 
     return NextResponse.json(
       {

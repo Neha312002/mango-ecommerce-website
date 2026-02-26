@@ -177,3 +177,299 @@ export async function sendOrderConfirmationEmail(
     return { success: false, error };
   }
 }
+
+// Send admin notification when new order is placed
+export async function sendAdminOrderNotification(orderData: {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  items: Array<{ name: string; quantity: number; price: number }>;
+  total: number;
+  shippingAddress: {
+    fullName: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+}) {
+  try {
+    if (!process.env.RESEND_API_KEY || !process.env.ADMIN_EMAIL) {
+      console.warn('Email not configured for admin notifications');
+      return { success: false, error: 'Email not configured' };
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const itemsHtml = orderData.items
+      .map(
+        (item) => `
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
+            ${item.name}
+          </td>
+          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">
+            ${item.quantity}
+          </td>
+          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">
+            ₹${(item.price * item.quantity).toFixed(2)}
+          </td>
+        </tr>
+      `
+      )
+      .join('');
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Order Received</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+          <table role="presentation" style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td align="center" style="padding: 40px 0;">
+                <table role="presentation" style="width: 600px; max-width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                  
+                  <!-- Header -->
+                  <tr>
+                    <td style="background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%); padding: 40px 20px; text-align: center;">
+                      <h1 style="margin: 0; color: #ffffff; font-size: 32px;">🛎️ New Order Alert</h1>
+                      <p style="margin: 10px 0 0; color: #ffffff; font-size: 18px;">Admin Notification</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Order Details -->
+                  <tr>
+                    <td style="padding: 40px 30px;">
+                      <h2 style="margin: 0 0 20px; color: #3D4F42; font-size: 24px;">New Order Received!</h2>
+                      
+                      <div style="background-color: #FEF3C7; border-left: 4px solid #F59E0B; padding: 15px; margin-bottom: 30px;">
+                        <p style="margin: 0; color: #3D4F42; font-size: 14px; font-weight: 600;">Order Number</p>
+                        <p style="margin: 5px 0 0; color: #F59E0B; font-size: 20px; font-weight: 700;">#${orderData.orderNumber}</p>
+                      </div>
+                      
+                      <!-- Customer Info -->
+                      <h3 style="margin: 30px 0 15px; color: #3D4F42; font-size: 18px;">Customer Information</h3>
+                      <div style="background-color: #f9fafb; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                        <p style="margin: 0 0 5px; color: #3D4F42; font-weight: 600;">${orderData.customerName}</p>
+                        <p style="margin: 0 0 5px; color: #4b5563;">📧 ${orderData.customerEmail}</p>
+                        <p style="margin: 5px 0 0; color: #4b5563; font-size: 14px;">
+                          📍 ${orderData.shippingAddress.address}, ${orderData.shippingAddress.city}, ${orderData.shippingAddress.state} ${orderData.shippingAddress.zipCode}
+                        </p>
+                      </div>
+                      
+                      <!-- Items Table -->
+                      <h3 style="margin: 30px 0 15px; color: #3D4F42; font-size: 18px;">Order Items</h3>
+                      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <thead>
+                          <tr>
+                            <th style="padding: 12px; border-bottom: 2px solid #3D4F42; text-align: left; color: #3D4F42; font-size: 14px;">Product</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #3D4F42; text-align: center; color: #3D4F42; font-size: 14px;">Qty</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #3D4F42; text-align: right; color: #3D4F42; font-size: 14px;">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${itemsHtml}
+                        </tbody>
+                      </table>
+                      
+                      <!-- Order Total -->
+                      <div style="background-color: #DBEAFE; padding: 20px; border-radius: 6px; text-align: center;">
+                        <p style="margin: 0 0 5px; color: #1E40AF; font-size: 14px; font-weight: 600;">Order Total</p>
+                        <p style="margin: 0; color: #1E40AF; font-size: 32px; font-weight: 700;">₹${orderData.total.toFixed(2)}</p>
+                      </div>
+                      
+                      <!-- Action Button -->
+                      <div style="text-align: center; margin-top: 40px;">
+                        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://yourdomain.com'}/admin/orders" 
+                           style="display: inline-block; background-color: #8B5CF6; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                          View in Admin Panel
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #f9fafb; padding: 30px 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+                      <p style="margin: 0; color: #9ca3af; font-size: 12px;">
+                        This is an automated admin notification from Mango Fresh Farm
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Mango Fresh Farm <onboarding@resend.dev>',
+      to: [process.env.ADMIN_EMAIL],
+      subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
+      html: htmlContent,
+    });
+
+    if (error) {
+      console.error('Admin email sending failed:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Admin email sending error:', error);
+    return { success: false, error };
+  }
+}
+
+// Send order status update notification to customer
+export async function sendOrderStatusUpdateEmail(
+  to: string,
+  orderData: {
+    orderNumber: string;
+    customerName: string;
+    status: string;
+    statusMessage: string;
+    items: Array<{ name: string; quantity: number }>;
+    trackingUrl?: string;
+  }
+) {
+  try {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('RESEND_API_KEY not configured, skipping email');
+      return { success: false, error: 'Email not configured' };
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const statusColors: { [key: string]: { bg: string; text: string; emoji: string } } = {
+      processing: { bg: '#FEF3C7', text: '#F59E0B', emoji: '⏳' },
+      shipped: { bg: '#DBEAFE', text: '#2563EB', emoji: '🚚' },
+      delivered: { bg: '#D1FAE5', text: '#059669', emoji: '✅' },
+      cancelled: { bg: '#FEE2E2', text: '#DC2626', emoji: '❌' },
+    };
+
+    const statusStyle = statusColors[orderData.status.toLowerCase()] || statusColors.processing;
+
+    const itemsHtml = orderData.items
+      .map(
+        (item) => `
+        <li style="padding: 8px 0; color: #4b5563; font-size: 15px;">
+          ${item.name} × ${item.quantity}
+        </li>
+      `
+      )
+      .join('');
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Order Status Update</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+          <table role="presentation" style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td align="center" style="padding: 40px 0;">
+                <table role="presentation" style="width: 600px; max-width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                  
+                  <!-- Header -->
+                  <tr>
+                    <td style="background: linear-gradient(135deg, #FF8C42 0%, #3D4F42 100%); padding: 40px 20px; text-align: center;">
+                      <h1 style="margin: 0; color: #ffffff; font-size: 32px;">🥭 Mango Fresh Farm</h1>
+                      <p style="margin: 10px 0 0; color: #ffffff; font-size: 18px;">Order Status Update</p>
+                    </td>
+                  </tr>
+                  
+                  <!-- Status Update -->
+                  <tr>
+                    <td style="padding: 40px 30px;">
+                      <h2 style="margin: 0 0 20px; color: #3D4F42; font-size: 24px;">Hi ${orderData.customerName}!</h2>
+                      <p style="margin: 0 0 30px; color: #4b5563; font-size: 16px;">
+                        Your order status has been updated.
+                      </p>
+                      
+                      <!-- Status Badge -->
+                      <div style="background-color: ${statusStyle.bg}; border-left: 4px solid ${statusStyle.text}; padding: 20px; margin-bottom: 30px; border-radius: 6px;">
+                        <p style="margin: 0 0 5px; color: #3D4F42; font-size: 14px; font-weight: 600;">Order Number</p>
+                        <p style="margin: 0 0 15px; color: ${statusStyle.text}; font-size: 20px; font-weight: 700;">#${orderData.orderNumber}</p>
+                        <p style="margin: 0; color: #3D4F42; font-size: 14px; font-weight: 600;">Status</p>
+                        <p style="margin: 5px 0 0; color: ${statusStyle.text}; font-size: 24px; font-weight: 700;">
+                          ${statusStyle.emoji} ${orderData.status.toUpperCase()}
+                        </p>
+                      </div>
+                      
+                      <!-- Status Message -->
+                      <div style="background-color: #f9fafb; padding: 20px; border-radius: 6px; margin-bottom: 30px;">
+                        <p style="margin: 0; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                          ${orderData.statusMessage}
+                        </p>
+                      </div>
+                      
+                      <!-- Order Items -->
+                      <h3 style="margin: 30px 0 15px; color: #3D4F42; font-size: 18px;">Order Items</h3>
+                      <ul style="list-style: none; padding: 0; margin: 0 0 30px 0;">
+                        ${itemsHtml}
+                      </ul>
+                      
+                      ${
+                        orderData.trackingUrl
+                          ? `
+                      <!-- Track Button -->
+                      <div style="text-align: center; margin-top: 40px;">
+                        <a href="${orderData.trackingUrl}" 
+                           style="display: inline-block; background-color: #FF8C42; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                          Track Your Order
+                        </a>
+                      </div>
+                      `
+                          : ''
+                      }
+                    </td>
+                  </tr>
+                  
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #f9fafb; padding: 30px 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+                      <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px;">
+                        Questions? Contact us at <a href="mailto:support@mangofreshfarm.com" style="color: #FF8C42; text-decoration: none;">support@mangofreshfarm.com</a>
+                      </p>
+                      <p style="margin: 0; color: #9ca3af; font-size: 12px;">
+                        © ${new Date().getFullYear()} Mango Fresh Farm. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Mango Fresh Farm <onboarding@resend.dev>',
+      to: [to],
+      subject: `Order #${orderData.orderNumber} - ${statusStyle.emoji} ${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}`,
+      html: htmlContent,
+    });
+
+    if (error) {
+      console.error('Status update email failed:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Status update email error:', error);
+    return { success: false, error };
+  }
+}

@@ -100,8 +100,9 @@ export async function POST(request: NextRequest) {
     if (shipping.email && process.env.RESEND_API_KEY) {
       // Dynamic import to avoid build-time initialization
       import('@/lib/email')
-        .then(({ sendOrderConfirmationEmail }) => {
-          return sendOrderConfirmationEmail(
+        .then(({ sendOrderConfirmationEmail, sendAdminOrderNotification }) => {
+          // Send customer confirmation
+          sendOrderConfirmationEmail(
             shipping.email,
             {
               orderNumber,
@@ -124,11 +125,37 @@ export async function POST(request: NextRequest) {
                 country: shipping.country,
               },
             }
-          );
+          ).catch((error) => {
+            console.error('Failed to send customer confirmation email:', error);
+          });
+
+          // Send admin notification
+          if (process.env.ADMIN_EMAIL) {
+            sendAdminOrderNotification({
+              orderNumber,
+              customerName: shipping.fullName,
+              customerEmail: shipping.email,
+              items: order.items.map((item) => ({
+                name: item.product.name,
+                quantity: item.quantity,
+                price: item.price,
+              })),
+              total,
+              shippingAddress: {
+                fullName: shipping.fullName,
+                address: shipping.address,
+                city: shipping.city,
+                state: shipping.state,
+                zipCode: shipping.zipCode,
+                country: shipping.country,
+              },
+            }).catch((error) => {
+              console.error('Failed to send admin notification email:', error);
+            });
+          }
         })
         .catch((error) => {
-          console.error('Failed to send order confirmation email:', error);
-          // Don't throw - email failure shouldn't fail the order
+          console.error('Failed to load email module:', error);
         });
     }
 
