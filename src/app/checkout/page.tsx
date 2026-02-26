@@ -73,9 +73,14 @@ export default function CheckoutPage() {
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
       const userData = JSON.parse(currentUser);
+      console.log('🔍 User data loaded:', { email: userData.email, name: userData.name });
       loadSavedAddresses(userData.id);
-      // Pre-fill email from user data
-      setShippingInfo(prev => ({ ...prev, email: userData.email || '' }));
+      // Pre-fill email from user data - THIS IS MANDATORY
+      const userEmail = userData.email || '';
+      console.log('📧 Setting email to:', userEmail);
+      setShippingInfo(prev => ({ ...prev, email: userEmail }));
+    } else {
+      console.error('❌ No currentUser in localStorage!');
     }
   }, []);
 
@@ -227,10 +232,24 @@ export default function CheckoutPage() {
           price: item.price,
         }));
 
+        // Ensure email is always present
+        const finalEmail = shippingInfo.email || userData.email || '';
+        console.log('📧 Final email for order:', finalEmail);
+        console.log('🛒 Shipping info email:', shippingInfo.email);
+        console.log('👤 User data email:', userData.email);
+        
+        if (!finalEmail) {
+          alert('Email is required for order confirmation. Please update your account email.');
+          setProcessingPayment(false);
+          return;
+        }
+
         const shippingForOrder = {
           ...shippingInfo,
-          email: shippingInfo.email || userData.email || '',
+          email: finalEmail,
         };
+        
+        console.log('📦 Creating order with shipping:', shippingForOrder);
 
         const orderResponse = await fetch('/api/orders', {
           method: 'POST',
@@ -726,20 +745,20 @@ export default function CheckoutPage() {
                   )}
                   
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
-                    {/* Email field - Always visible */}
+                    {/* Email field - Always visible, using account email */}
                     <div className="mb-4">
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Email Address * (for order confirmation)
+                        Email Address * (from your account)
                       </label>
                       <input
                         type="email"
                         required
                         value={shippingInfo.email}
-                        onChange={(e) => setShippingInfo({...shippingInfo, email: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        readOnly
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed"
                         placeholder="your-email@example.com"
                       />
-                      <p className="text-xs text-gray-500 mt-1">We'll send order confirmation and updates to this email</p>
+                      <p className="text-xs text-gray-500 mt-1">Order confirmations will be sent to this email. Update in <Link href="/account" className="text-[#FF8C42] hover:underline">account settings</Link> if needed.</p>
                     </div>
 
                     {(useNewAddress || savedAddresses.length === 0) && (
