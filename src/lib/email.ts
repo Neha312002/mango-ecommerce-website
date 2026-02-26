@@ -8,16 +8,30 @@ function createTransporter() {
 
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL
+    port: 587,
+    secure: false,
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD,
     },
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    tls: {
+      ciphers: 'SSLv3',
+      rejectUnauthorized: false,
+    },
+    connectionTimeout: 5000,
+    greetingTimeout: 5000,
+    socketTimeout: 5000,
   });
+}
+
+// Timeout wrapper for email sending
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs}ms`)), timeoutMs)
+    ),
+  ]);
 }
 
 export async function sendOrderConfirmationEmail(
@@ -188,12 +202,15 @@ export async function sendOrderConfirmationEmail(
     console.log('From:', process.env.GMAIL_USER);
     console.log('To:', to);
     
-    const info = await transporter.sendMail({
-      from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
-      to: to,
-      subject: `Order Confirmation - #${orderData.orderNumber}`,
-      html: htmlContent,
-    });
+    const info = await withTimeout(
+      transporter.sendMail({
+        from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
+        to: to,
+        subject: `Order Confirmation - #${orderData.orderNumber}`,
+        html: htmlContent,
+      }),
+      10000 // 10 second timeout
+    );
 
     console.log('✅ Email sent successfully!');
     console.log('📨 Message ID:', info.messageId);
@@ -353,12 +370,15 @@ export async function sendAdminOrderNotification(orderData: {
     console.log('From:', process.env.GMAIL_USER);
     console.log('To:', process.env.ADMIN_EMAIL);
 
-    const info = await transporter.sendMail({
-      from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
-      html: htmlContent,
-    });
+    const info = await withTimeout(
+      transporter.sendMail({
+        from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
+        to: process.env.ADMIN_EMAIL,
+        subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
+        html: htmlContent,
+      }),
+      10000 // 10 second timeout
+    );
 
     console.log('✅ Admin email sent successfully!');
     console.log('📨 Admin message ID:', info.messageId);
