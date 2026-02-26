@@ -4,6 +4,8 @@ A modern, full-stack e-commerce platform for selling fresh mangoes online. Built
 
 **Live Site:** [https://mango-ecommerce-website-ebon.vercel.app](https://mango-ecommerce-website-ebon.vercel.app)
 
+<!-- Last updated: Feb 2026 -->
+
 ---
 
 ## 📋 Table of Contents
