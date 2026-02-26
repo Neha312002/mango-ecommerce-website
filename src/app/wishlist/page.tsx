@@ -9,7 +9,7 @@ import { useCart } from '@/context/CartContext';
 
 export default function WishlistPage() {
   const router = useRouter();
-  const { cart, addToCart, removeFromWishlist, isInWishlist, addToWishlist } = useCart();
+  const { cart, addToCart, updateQuantity, removeFromCart, removeFromWishlist, isInWishlist, addToWishlist } = useCart();
   const [wishlistProducts, setWishlistProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -47,7 +47,7 @@ export default function WishlistPage() {
     setWishlistProducts(prev => prev.filter(item => item.productId !== productId));
   }
 
-  async function handleAddToCart(product: any, event?: MouseEvent) {
+  function handleAddToCartSimple(product: any, event?: MouseEvent) {
     if (event) {
       event.stopPropagation();
     }
@@ -59,16 +59,6 @@ export default function WishlistPage() {
       desc: product.product.description,
     };
     addToCart(productData);
-    
-    // Optional: Show a brief notification
-    const button = event?.currentTarget as HTMLElement;
-    if (button) {
-      const originalText = button.textContent;
-      button.textContent = '✓ Added!';
-      setTimeout(() => {
-        button.textContent = originalText;
-      }, 1000);
-    }
   }
 
   const handleProductClick = async (productId: number) => {
@@ -459,20 +449,52 @@ export default function WishlistPage() {
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-[#3D4F42] mb-2">
                     {item.product.name}
-                  </h3>handleAddToCart(item, e)
+                  </h3>
+                  <p className="text-2xl font-bold text-[#FF8C42] mb-4">
+                    ₹{item.product.price.toFixed(2)} / kg
+                  </p>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {item.product.description}
                   </p>
                   <div className="flex gap-3">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(item);
-                      }}
-                      className="flex-1 bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-4 py-2 rounded-lg font-semibold transition"
-                    >
-                      Add to Cart
-                    </button>
+                    {cart.find(cartItem => cartItem.name === item.product.name) ? (
+                      <div className="flex-1 flex items-center justify-center gap-3 bg-[#3D4F42] text-white px-4 py-2 rounded-lg">
+                        <motion.button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const quantity = cart.find(cartItem => cartItem.name === item.product.name)?.quantity || 1;
+                            updateQuantity(item.product.name, quantity - 1);
+                          }}
+                          className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center font-bold"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          −
+                        </motion.button>
+                        <span className="text-lg font-bold min-w-[2rem] text-center">
+                          {cart.find(cartItem => cartItem.name === item.product.name)?.quantity}
+                        </span>
+                        <motion.button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const quantity = cart.find(cartItem => cartItem.name === item.product.name)?.quantity || 1;
+                            updateQuantity(item.product.name, quantity + 1);
+                          }}
+                          className="w-8 h-8 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] flex items-center justify-center font-bold"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          +
+                        </motion.button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={(e) => handleAddToCartSimple(item, e)}
+                        className="flex-1 bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-4 py-2 rounded-lg font-semibold transition"
+                      >
+                        Add to Cart
+                      </button>
+                    )}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
