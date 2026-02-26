@@ -303,6 +303,16 @@ export default function Home() {
                   </span>
                 )}
               </Link>
+              {currentUser?.role === 'admin' && (
+                <Link 
+                  href="/admin" 
+                  className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md transition shadow-md"
+                  title="Admin Panel"
+                >
+                  <span className="text-lg">⚙️</span>
+                  <span className="font-medium">Admin</span>
+                </Link>
+              )}
               <Link 
                 href={currentUser ? "/account" : "/auth"} 
                 className="hidden sm:inline-flex items-center gap-2 text-sm md:text-base hover:text-orange-300 transition"
@@ -447,6 +457,16 @@ export default function Home() {
                     </span>
                   )}
                 </Link>
+                {currentUser?.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 hover:text-purple-800 transition font-medium"
+                  >
+                    <span className="text-xl">⚙️</span>
+                    <span>Admin Panel</span>
+                  </Link>
+                )}
                 <Link
                   href={currentUser ? "/account" : "/auth"}
                   onClick={() => setMobileMenuOpen(false)}

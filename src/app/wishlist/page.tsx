@@ -16,15 +16,17 @@ export default function WishlistPage() {
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'nutrition' | 'reviews'>('description');
   const [cartOpen, setCartOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
+    const userDataStr = localStorage.getItem('currentUser');
+    if (!userDataStr) {
       router.push('/auth');
       return;
     }
 
-    const userData = JSON.parse(currentUser);
+    const userData = JSON.parse(userDataStr);
+    setCurrentUser(userData);
     loadWishlist(userData.id);
   }, []);
 
@@ -384,6 +386,15 @@ export default function WishlistPage() {
             <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
+            {currentUser?.role === 'admin' && (
+              <Link
+                href="/admin"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-md font-semibold transition flex items-center gap-2"
+              >
+                <span>⚙️</span>
+                <span className="hidden sm:inline">Admin</span>
+              </Link>
+            )}
             <Link
               href="/checkout"
               className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-3 sm:px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md"

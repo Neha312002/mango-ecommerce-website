@@ -10,6 +10,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  role?: string;
   joinedDate: string;
   wishlist: any[];
   reviews: any[];
@@ -45,6 +46,7 @@ function AccountPageContent() {
       id: userData.id,
       name: userData.name || 'User',
       email: userData.email || '',
+      role: userData.role || 'user',
       joinedDate: userData.joinedDate || userData.createdAt || new Date().toISOString(),
       wishlist: userData.wishlist || [],
       reviews: userData.reviews || [],
@@ -257,6 +259,15 @@ function AccountPageContent() {
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
             <span className="text-gray-700 text-sm sm:text-base">Hello, <strong>{user.name}</strong></span>
+            {user.role === 'admin' && (
+              <Link
+                href="/admin"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base flex items-center gap-2"
+              >
+                <span>⚙️</span>
+                <span className="hidden sm:inline">Admin</span>
+              </Link>
+            )}
             <button
               onClick={handleLogout}
               className="bg-gray-200 hover:bg-gray-300 px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base"
