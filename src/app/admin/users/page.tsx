@@ -14,14 +14,21 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      // Note: You need to create a /api/users endpoint
-      const res = await fetch('/api/auth/users', {
+      console.log('Fetching users with token:', !!token);
+      
+      const res = await fetch('/api/users', {
         headers: { Authorization: `Bearer ${token}` },
       });
       
+      console.log('Users response status:', res.status);
+      
       if (res.ok) {
         const data = await res.json();
+        console.log('Fetched users:', data.length);
         setUsers(data);
+      } else {
+        const errorText = await res.text();
+        console.error('Failed to fetch users:', errorText);
       }
       setLoading(false);
     } catch (error) {
@@ -70,10 +77,12 @@ export default function AdminUsers() {
           className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white"
         >
           <div className="flex items-center justify-between mb-4">
-            <span className="text-4xl">✅</span>
+            <span className="text-4xl">📦</span>
           </div>
-          <h3 className="text-3xl font-bold mb-1">{users.filter(u => u.email).length}</h3>
-          <p className="text-white/80 text-sm">Verified Users</p>
+          <h3 className="text-3xl font-bold mb-1">
+            {users.reduce((sum, u) => sum + (u.ordersCount || 0), 0)}
+          </h3>
+          <p className="text-white/80 text-sm">Total Orders</p>
         </motion.div>
 
         <motion.div
@@ -85,7 +94,7 @@ export default function AdminUsers() {
           <div className="flex items-center justify-between mb-4">
             <span className="text-4xl">🛡️</span>
           </div>
-          <h3 className="text-3xl font-bold mb-1">{users.filter(u => u.email?.includes('admin')).length}</h3>
+          <h3 className="text-3xl font-bold mb-1">{users.filter(u => u.role === 'admin').length}</h3>
           <p className="text-white/80 text-sm">Admin Users</p>
         </motion.div>
       </div>
@@ -106,28 +115,41 @@ export default function AdminUsers() {
                   <th className="text-left py-4 px-6 font-semibold text-gray-700">ID</th>
                   <th className="text-left py-4 px-6 font-semibold text-gray-700">Name</th>
                   <th className="text-left py-4 px-6 font-semibold text-gray-700">Email</th>
+                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Orders</th>
                   <th className="text-left py-4 px-6 font-semibold text-gray-700">Joined</th>
                   <th className="text-left py-4 px-6 font-semibold text-gray-700">Role</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user.id} className="border-t hover:bg-gray-50">
-                    <td className="py-4 px-6 font-mono text-sm">#{user.id}</td>
-                    <td className="py-4 px-6 font-semibold">{user.name}</td>
+                  <tr key={user.id} className="border-t hover:bg-gray-50 transition-colors">
+                    <td className="py-4 px-6 font-mono text-sm text-gray-600">#{user.id}</td>
+                    <td className="py-4 px-6">
+                      <div className="font-semibold text-gray-900">{user.name || 'N/A'}</div>
+                    </td>
                     <td className="py-4 px-6 text-gray-600">{user.email}</td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-900 font-semibold">{user.ordersCount || 0}</span>
+                        <span className="text-xs text-gray-500">orders</span>
+                      </div>
+                    </td>
                     <td className="py-4 px-6 text-sm text-gray-600">
-                      {new Date(user.createdAt).toLocaleDateString()}
+                      {user.joinedDate ? new Date(user.joinedDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }) : 'N/A'}
                     </td>
                     <td className="py-4 px-6">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          user.email?.includes('admin')
+                          user.role === 'admin'
                             ? 'bg-purple-100 text-purple-700'
                             : 'bg-blue-100 text-blue-700'
                         }`}
                       >
-                        {user.email?.includes('admin') ? 'Admin' : 'Customer'}
+                        {user.role === 'admin' ? '🛡️ Admin' : '👤 Customer'}
                       </span>
                     </td>
                   </tr>
@@ -139,23 +161,24 @@ export default function AdminUsers() {
       </div>
 
       {/* Info Note */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded"
-      >
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">ℹ️</span>
-          <div>
-            <h3 className="font-semibold text-blue-900 mb-1">User Management</h3>
-            <p className="text-sm text-blue-800">
-              To fully implement user management, you'll need to create a <code className="bg-blue-100 px-2 py-1 rounded">/api/auth/users</code> endpoint 
-              that returns all users from the database. Currently showing mock data or limited information.
-            </p>
+      {users.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 bg-green-50 border-l-4 border-green-500 p-4 rounded"
+        >
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">✅</span>
+            <div>
+              <h3 className="font-semibold text-green-900 mb-1">User Management Active</h3>
+              <p className="text-sm text-green-800">
+                Showing {users.length} registered users from the database. User data includes order counts, reviews, and wishlist items.
+              </p>
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }

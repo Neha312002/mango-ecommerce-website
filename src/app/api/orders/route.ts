@@ -68,6 +68,31 @@ export async function POST(request: NextRequest) {
       price: item.price,
     }));
 
+    // Check stock availability before creating order
+    console.log('Checking stock availability...');
+    for (const item of normalizedItems) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        select: { id: true, name: true, stock: true }
+      });
+
+      if (!product) {
+        console.error(`Product ${item.productId} not found`);
+        return NextResponse.json(
+          { error: `Product not found: ${item.productId}` },
+          { status: 404 }
+        );
+      }
+
+      if (product.stock < item.quantity) {
+        console.error(`Insufficient stock for product ${product.name}. Requested: ${item.quantity}, Available: ${product.stock}`);
+        return NextResponse.json(
+          { error: `Insufficient stock for ${product.name}. Only ${product.stock} items available.` },
+          { status: 400 }
+        );
+      }
+    }
+
     // Generate order number
     const orderNumber = 'MF' + Date.now().toString();
 
@@ -106,6 +131,20 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Decrease stock for ordered products
+    console.log('Decreasing stock for ordered products...');
+    for (const item of normalizedItems) {
+      await prisma.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: {
+            decrement: item.quantity
+          }
+        }
+      });
+      console.log(`Stock decreased for product ${item.productId} by ${item.quantity}`);
+    }
 
     // Send order confirmation email (await to ensure it completes before function terminates)
     console.log('🔍 Email check - shipping.email:', shipping.email);

@@ -45,6 +45,11 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'description' | 'nutrition' | 'reviews'>('description');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartButtonRef = useRef<HTMLButtonElement | null>(null);
+  
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priceFilter, setPriceFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all');
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'name'>('featured');
 
   // Fetch products from database
   useEffect(() => {
@@ -60,6 +65,7 @@ export default function Home() {
             price: p.price,
             img: p.image,
             desc: p.description,
+            stock: p.stock || 0,
           }));
           setProducts(transformedProducts);
         }
@@ -101,7 +107,58 @@ export default function Home() {
     setTimeout(() => setSelectedProduct(null), 300);
   };
 
+  // Filter and sort products based on search and filters
+  const getFilteredAndSortedProducts = () => {
+    let filtered = [...products];
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.desc?.toLowerCase().includes(query)
+      );
+    }
+
+    // Price filter
+    if (priceFilter !== 'all') {
+      filtered = filtered.filter(product => {
+        const price = product.price;
+        if (priceFilter === 'low') return price < 500;
+        if (priceFilter === 'medium') return price >= 500 && price < 1000;
+        if (priceFilter === 'high') return price >= 1000;
+        return true;
+      });
+    }
+
+    // Sorting
+    if (sortBy === 'price-asc') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      filtered.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'name') {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return filtered;
+  };
+
+  const filteredProducts = getFilteredAndSortedProducts();
+
   function handleAddToCart(product: any, event: MouseEvent<HTMLButtonElement>) {
+    // Check stock availability
+    if (product.stock !== undefined && product.stock <= 0) {
+      alert('This product is out of stock!');
+      return;
+    }
+
+    // Check if cart quantity would exceed stock
+    const cartItem = cart.find(item => item.name === product.name);
+    if (cartItem && product.stock !== undefined && cartItem.quantity >= product.stock) {
+      alert(`Only ${product.stock} items available in stock!`);
+      return;
+    }
+
     addToCart(product);
 
     if (!cartButtonRef.current) return;
@@ -1189,7 +1246,7 @@ export default function Home() {
             Our Premium Mangoes
           </motion.h2>
           <motion.p 
-            className="text-center text-gray-600 text-lg mb-12 max-w-2xl mx-auto"
+            className="text-center text-gray-600 text-lg mb-8 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
@@ -1197,6 +1254,69 @@ export default function Home() {
           >
             Hand-picked varieties, each with unique flavors and characteristics. Slide to explore our collection.
           </motion.p>
+
+          {/* Search and Filter Bar */}
+          <motion.div
+            className="mb-8 max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            {/* Search Bar */}
+            <div className="mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search mangoes by name or description..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                />
+                <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">🔍</span>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Filters and Sort */}
+            <div className="flex flex-wrap gap-3 items-center justify-center">
+              {/* Price Filter */}
+              <select
+                value={priceFilter}
+                onChange={(e) => setPriceFilter(e.target.value as any)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8C42] bg-white"
+              >
+                <option value="all">All Prices</option>
+                <option value="low">Under ₹500</option>
+                <option value="medium">₹500 - ₹1000</option>
+                <option value="high">Above ₹1000</option>
+              </select>
+
+              {/* Sort By */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8C42] bg-white"
+              >
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name">Name (A-Z)</option>
+              </select>
+
+              {/* Results Count */}
+              <div className="text-sm text-gray-600 px-3 py-2 bg-gray-100 rounded-lg">
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} found
+              </div>
+            </div>
+          </motion.div>
           
           {/* Product Carousel */}
           {productsLoading ? (
@@ -1204,11 +1324,21 @@ export default function Home() {
               <div className="text-6xl mb-4 animate-bounce">🥭</div>
               <p className="text-gray-600 text-lg">Loading fresh mangoes...</p>
             </div>
-          ) : products.length === 0 ? (
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20">
-              <div className="text-6xl mb-4">📦</div>
-              <p className="text-gray-600 text-lg mb-4">No products available</p>
-              <a href="/api/seed" className="text-[#FF8C42] hover:underline">Seed database with products</a>
+              <div className="text-6xl mb-4">🔍</div>
+              <p className="text-gray-600 text-lg mb-2">No mangoes found</p>
+              <p className="text-gray-500 text-sm">Try adjusting your search or filters</p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setPriceFilter('all');
+                  setSortBy('featured');
+                }}
+                className="mt-4 px-6 py-2 bg-[#FF8C42] text-white rounded-lg hover:bg-[#ff7a29] transition-colors"
+              >
+                Clear All Filters
+              </button>
             </div>
           ) : (
           <Swiper
@@ -1229,7 +1359,7 @@ export default function Home() {
             }}
             className="product-swiper pb-12"
           >
-            {products.map((product, idx) => (
+            {filteredProducts.map((product, idx) => (
               <SwiperSlide key={idx}>
                 <motion.div 
                   onClick={() => handleProductClick(product.id)}
@@ -1284,6 +1414,25 @@ export default function Home() {
                       >
                         {product.id && isInWishlist(product.id) ? '❤️' : '🤍'}
                       </motion.button>
+                      
+                      {/* Stock Badge */}
+                      {product.stock !== undefined && (
+                        <div className="absolute bottom-3 left-3 z-10">
+                          {product.stock === 0 ? (
+                            <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                              Out of Stock
+                            </div>
+                          ) : product.stock < 10 ? (
+                            <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                              Only {product.stock} left!
+                            </div>
+                          ) : (
+                            <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                              In Stock
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </motion.div>
                     <div className="p-6 flex flex-col flex-grow">
                       <h3 className="text-xl font-bold text-[#3D4F42] mb-2">{product.name}</h3>
@@ -1295,7 +1444,14 @@ export default function Home() {
                         ₹{product.price} / kg
                       </motion.p>
                       <p className="text-gray-600 mb-6 flex-grow">{product.desc}</p>
-                      {cart.find(item => item.name === product.name) ? (
+                      {product.stock === 0 ? (
+                        <button 
+                          disabled
+                          className="w-full bg-gray-300 text-gray-500 px-6 py-3 rounded-md font-semibold cursor-not-allowed shadow-md"
+                        >
+                          Out of Stock
+                        </button>
+                      ) : cart.find(item => item.name === product.name) ? (
                         <div className="flex items-center justify-center gap-3 w-full bg-[#3D4F42] text-white px-6 py-3 rounded-md shadow-md">
                           <motion.button
                             onClick={(event) => {
