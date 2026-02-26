@@ -39,12 +39,15 @@ export async function POST(request: NextRequest) {
       tax,
       total,
       paymentId,
+      paymentMethod = 'razorpay',
+      paymentScreenshot,
+      status,
     } = body;
 
     // Normalize userId to a number (Prisma expects Int)
     const userIdInt = typeof userId === 'string' ? parseInt(userId, 10) : userId;
 
-    console.log('Creating order with data:', { userId: userIdInt, items, shipping, subtotal, shippingCost, tax, total });
+    console.log('Creating order with data:', { userId: userIdInt, items, shipping, subtotal, shippingCost, tax, total, paymentMethod, status });
 
     // Validation
     if (!userIdInt || !items || items.length === 0 || !shipping) {
@@ -65,8 +68,11 @@ export async function POST(request: NextRequest) {
     // Generate order number
     const orderNumber = 'MF' + Date.now().toString();
 
+    // Determine order status based on payment method
+    const orderStatus = status || (paymentMethod === 'upi' ? 'pending_payment' : 'processing');
+
     // Create order with items
-    const order = await prisma.order.create({
+    const order: any = await (prisma.order.create as any)({
       data: {
         orderNumber,
         userId: userIdInt,
@@ -82,7 +88,9 @@ export async function POST(request: NextRequest) {
         shipping: shippingCost,
         tax,
         total,
-        status: 'processing',
+        status: orderStatus,
+        paymentMethod,
+        paymentScreenshot,
         items: {
           create: normalizedItems,
         },
@@ -107,7 +115,7 @@ export async function POST(request: NextRequest) {
             {
               orderNumber,
               customerName: shipping.fullName,
-              items: order.items.map((item) => ({
+              items: order.items.map((item: any) => ({
                 name: item.product.name,
                 quantity: item.quantity,
                 price: item.price,
@@ -135,7 +143,7 @@ export async function POST(request: NextRequest) {
               orderNumber,
               customerName: shipping.fullName,
               customerEmail: shipping.email,
-              items: order.items.map((item) => ({
+              items: order.items.map((item: any) => ({
                 name: item.product.name,
                 quantity: item.quantity,
                 price: item.price,

@@ -25,6 +25,9 @@ export default function CheckoutPage() {
   const [useNewAddress, setUseNewAddress] = useState(false);
   const [saveAddress, setSaveAddress] = useState(true);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi'>('upi');
+  const [paymentScreenshot, setPaymentScreenshot] = useState<string | null>(null);
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -165,6 +168,33 @@ export default function CheckoutPage() {
     setStep(2);
   };
 
+  // Handle screenshot upload for UPI payment
+  const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file is an image
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      
+      setScreenshotFile(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPaymentScreenshot(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     try {
       setProcessingPayment(true);
@@ -188,6 +218,71 @@ export default function CheckoutPage() {
         return;
       }
 
+      // Handle UPI Manual Payment
+      if (paymentMethod === 'upi') {
+        if (!paymentScreenshot) {
+          alert('Please upload payment screenshot');
+          setProcessingPayment(false);
+          return;
+        }
+
+        // Create order with pending_payment status
+        const orderItems = cart.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity || 1,
+          price: item.price,
+        }));
+
+        const shippingForOrder = {
+          ...shippingInfo,
+          email: shippingInfo.email || userData.email || '',
+        };
+
+        const orderResponse = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userData.id,
+            items: orderItems,
+            shipping: shippingForOrder,
+            subtotal: subtotal,
+            shippingCost: shipping,
+            tax: tax,
+            total: total,
+            paymentMethod: 'upi',
+            paymentScreenshot: paymentScreenshot,
+            status: 'pending_payment', // Admin will verify payment
+          }),
+        });
+
+        if (orderResponse.ok) {
+          const orderData = await orderResponse.json();
+          setOrderNumber(orderData.order.orderNumber);
+          setOrderPlaced(true);
+          clearCart();
+          
+          // Save to localStorage as backup
+          const order = {
+            orderNumber: orderData.order.orderNumber,
+            date: new Date().toISOString(),
+            items: cart,
+            total: total,
+            shipping: shippingForOrder,
+            status: 'pending_payment',
+            paymentMethod: 'upi',
+          };
+          
+          const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+          localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
+          
+          setProcessingPayment(false);
+        } else {
+          throw new Error('Failed to create order');
+        }
+        return;
+      }
+
+      // Handle Razorpay Payment
       // Create Razorpay order
       const razorpayOrderResponse = await fetch('/api/razorpay/create-order', {
         method: 'POST',
@@ -253,6 +348,7 @@ export default function CheckoutPage() {
                   tax: tax,
                   total: total,
                   paymentId: response.razorpay_payment_id,
+                  paymentMethod: 'razorpay',
                 }),
               });
 
@@ -691,36 +787,209 @@ export default function CheckoutPage() {
                   <h2 className="text-xl sm:text-2xl font-bold text-[#3D4F42] mb-4 sm:mb-6">Payment Method</h2>
                   
                   <div className="space-y-6">
-                    <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-xl p-4 sm:p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="text-2xl sm:text-3xl">💳</span>
-                        <h3 className="text-lg sm:text-xl font-bold text-[#3D4F42]">Secure Payment with Razorpay</h3>
-                      </div>
-                      <p className="text-gray-700 mb-4">
-                        Your payment will be processed securely through Razorpay, India's leading payment gateway.
-                      </p>
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="bg-white rounded-lg p-3 text-center">
-                          <p className="text-sm font-semibold text-gray-700">💳 Credit/Debit Cards</p>
+                    {/* Payment Method Selection */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* Razorpay Option */}
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('razorpay')}
+                        className={`border-2 rounded-xl p-4 text-left transition ${
+                          paymentMethod === 'razorpay'
+                            ? 'border-[#FF8C42] bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            paymentMethod === 'razorpay' ? 'border-[#FF8C42]' : 'border-gray-300'
+                          }`}>
+                            {paymentMethod === 'razorpay' && (
+                              <div className="w-3 h-3 rounded-full bg-[#FF8C42]"></div>
+                            )}
+                          </div>
+                          <span className="text-2xl">💳</span>
+                          <h3 className="text-lg font-bold text-[#3D4F42]">Razorpay Gateway</h3>
                         </div>
-                        <div className="bg-white rounded-lg p-3 text-center">
-                          <p className="text-sm font-semibold text-gray-700">🏦 Net Banking</p>
+                        <p className="text-sm text-gray-600 ml-8">
+                          Cards, UPI, Net Banking, Wallets
+                        </p>
+                        <p className="text-xs text-gray-500 ml-8 mt-1">
+                          Instant payment processing
+                        </p>
+                      </button>
+
+                      {/* UPI Manual Option */}
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('upi')}
+                        className={`border-2 rounded-xl p-4 text-left transition ${
+                          paymentMethod === 'upi'
+                            ? 'border-[#FF8C42] bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            paymentMethod === 'upi' ? 'border-[#FF8C42]' : 'border-gray-300'
+                          }`}>
+                            {paymentMethod === 'upi' && (
+                              <div className="w-3 h-3 rounded-full bg-[#FF8C42]"></div>
+                            )}
+                          </div>
+                          <span className="text-2xl">📱</span>
+                          <h3 className="text-lg font-bold text-[#3D4F42]">UPI Direct Payment</h3>
                         </div>
-                        <div className="bg-white rounded-lg p-3 text-center">
-                          <p className="text-sm font-semibold text-gray-700">📱 UPI</p>
-                        </div>
-                        <div className="bg-white rounded-lg p-3 text-center">
-                          <p className="text-sm font-semibold text-gray-700">👝 Wallets</p>
-                        </div>
-                      </div>
+                        <p className="text-sm text-gray-600 ml-8">
+                          Scan QR or Use UPI ID
+                        </p>
+                        <p className="text-xs text-gray-500 ml-8 mt-1">
+                          Manual verification (24 hours)
+                        </p>
+                      </button>
                     </div>
+
+                    {/* Razorpay Payment Info */}
+                    {paymentMethod === 'razorpay' && (
+                      <div className="space-y-4">
+                        <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border border-[#FF8C42] rounded-xl p-4 sm:p-6">
+                          <p className="text-gray-700 mb-4">
+                            Your payment will be processed securely through Razorpay, India's leading payment gateway.
+                          </p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-white rounded-lg p-3 text-center">
+                              <p className="text-sm font-semibold text-gray-700">💳 Credit/Debit Cards</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 text-center">
+                              <p className="text-sm font-semibold text-gray-700">🏦 Net Banking</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 text-center">
+                              <p className="text-sm font-semibold text-gray-700">📱 UPI</p>
+                            </div>
+                            <div className="bg-white rounded-lg p-3 text-center">
+                              <p className="text-sm font-semibold text-gray-700">👝 Wallets</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* UPI Manual Payment Info */}
+                    {paymentMethod === 'upi' && (
+                      <div className="space-y-4">
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 sm:p-6">
+                          <h4 className="font-bold text-gray-800 mb-3">📱 Pay via UPI</h4>
+                          
+                          <div className="bg-white rounded-lg p-4 mb-4">
+                            <p className="text-sm font-semibold text-gray-700 mb-2">Step 1: Scan QR Code or Use UPI ID</p>
+                            
+                            {/* QR Code */}
+                            <div className="flex flex-col items-center mb-4">
+                              <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 mb-2">
+                                <Image
+                                  src={process.env.NEXT_PUBLIC_UPI_QR_CODE || '/images/upi-qr-code.png'}
+                                  alt="UPI QR Code"
+                                  width={200}
+                                  height={200}
+                                  className="object-contain"
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500">Scan with any UPI app</p>
+                            </div>
+
+                            {/* UPI ID */}
+                            <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                              <p className="text-xs text-gray-600 mb-1">Or copy UPI ID:</p>
+                              <div className="flex items-center justify-between gap-2">
+                                <code className="text-sm font-mono text-gray-800 flex-1">
+                                  {process.env.NEXT_PUBLIC_UPI_ID || 'your-upi-id@paytm'}
+                                </code>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(process.env.NEXT_PUBLIC_UPI_ID || 'your-upi-id@paytm');
+                                    alert('UPI ID copied!');
+                                  }}
+                                  className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-3 py-1 rounded text-xs font-semibold"
+                                >
+                                  Copy
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="bg-yellow-50 border border-yellow-200 rounded p-2 mb-3">
+                              <p className="text-xs text-yellow-800">
+                                ⚠️ Pay exactly <strong>₹{total.toFixed(2)}</strong> to {process.env.NEXT_PUBLIC_UPI_NAME || 'Mango Fresh Farm'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="bg-white rounded-lg p-4">
+                            <p className="text-sm font-semibold text-gray-700 mb-3">Step 2: Upload Payment Screenshot</p>
+                            
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleScreenshotUpload}
+                                className="hidden"
+                                id="screenshot-upload"
+                              />
+                              <label
+                                htmlFor="screenshot-upload"
+                                className="cursor-pointer flex flex-col items-center gap-2"
+                              >
+                                {paymentScreenshot ? (
+                                  <>
+                                    <div className="relative w-full max-w-xs">
+                                      <Image
+                                        src={paymentScreenshot}
+                                        alt="Payment Screenshot"
+                                        width={300}
+                                        height={200}
+                                        className="object-contain rounded-lg border"
+                                      />
+                                    </div>
+                                    <p className="text-xs text-green-600 font-semibold">✓ Screenshot uploaded</p>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        setPaymentScreenshot(null);
+                                        setScreenshotFile(null);
+                                      }}
+                                      className="text-xs text-red-600 hover:underline"
+                                    >
+                                      Remove
+                                    </button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="text-4xl">📸</span>
+                                    <p className="text-sm font-semibold text-gray-700">Click to upload screenshot</p>
+                                    <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                                  </>
+                                )}
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 bg-blue-50 border border-blue-200 rounded p-3">
+                            <p className="text-xs text-blue-800">
+                              ℹ️ Your order will be confirmed within 24 hours after admin verifies your payment.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
                       <span className="text-green-600 text-xl">🔒</span>
                       <div>
                         <p className="font-semibold text-gray-800 mb-1">100% Secure & Encrypted</p>
                         <p className="text-sm text-gray-700">
-                          Your payment information is encrypted with 256-bit SSL. We never store your card details.
+                          {paymentMethod === 'razorpay' 
+                            ? 'Your payment information is encrypted with 256-bit SSL. We never store your card details.'
+                            : 'Your screenshot is securely stored and only used for payment verification.'}
                         </p>
                       </div>
                     </div>
@@ -806,15 +1075,41 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* Payment Method */}
-                    <div className="mb-6">
-                      <h3 className="text-lg font-bold text-[#3D4F42] mb-3">Payment Method</h3>
+                    <div className="mb-6 pb-6 border-b">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-bold text-[#3D4F42]">Payment Method</h3>
+                        <button
+                          onClick={() => setStep(2)}
+                          className="text-[#FF8C42] hover:underline text-sm font-semibold"
+                        >
+                          Edit
+                        </button>
+                      </div>
                       <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-lg p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xl">💳</span>
-                          <p className="font-semibold text-gray-800">Razorpay Payment Gateway</p>
-                        </div>
-                        <p className="text-sm text-gray-600">You will be redirected to secure payment page after clicking "Place Order"</p>
-                        <p className="text-xs text-gray-500 mt-2">Accepts: UPI, Cards, Net Banking, Wallets</p>
+                        {paymentMethod === 'razorpay' ? (
+                          <>
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-xl">💳</span>
+                              <p className="font-semibold text-gray-800">Razorpay Payment Gateway</p>
+                            </div>
+                            <p className="text-sm text-gray-600">You will be redirected to secure payment page after clicking "Place Order"</p>
+                            <p className="text-xs text-gray-500 mt-2">Accepts: UPI, Cards, Net Banking, Wallets</p>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-xl">📱</span>
+                              <p className="font-semibold text-gray-800">UPI Direct Payment</p>
+                            </div>
+                            <p className="text-sm text-gray-600">Payment screenshot uploaded. Order will be confirmed after admin verification.</p>
+                            <p className="text-xs text-gray-500 mt-2">Verification time: Within 24 hours</p>
+                            {paymentScreenshot && (
+                              <div className="mt-3 flex items-center gap-2">
+                                <span className="text-green-600 text-sm">✓ Screenshot attached</span>
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
 

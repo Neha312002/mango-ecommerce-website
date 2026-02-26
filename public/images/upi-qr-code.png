@@ -1,0 +1,14 @@
+This is a placeholder file. Replace this with your actual UPI QR code image.
+
+To generate a UPI QR code:
+1. Use any UPI QR code generator online (search "UPI QR code generator")
+2. Enter your UPI ID (e.g., yourname@paytm)
+3. Download the QR code image
+4. Replace this file with your QR code image
+5. Name it: upi-qr-code.png
+
+Or you can use payment app's built-in QR code:
+- Open your payment app (Paytm, PhonePe, GooglePay)
+- Go to "Receive Money" or "My QR Code"
+- Take a screenshot
+- Crop and save as upi-qr-code.png
