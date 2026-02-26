@@ -78,33 +78,43 @@ model Product {
 
 // Order Model - Customer orders
 model Order {
-  id            Int       @id @default(autoincrement())
-  orderNumber   String    @unique
-  userId        Int
-  status        String    @default("processing") // processing, packed, shipped, delivered
+  id                Int       @id @default(autoincrement())
+  orderNumber       String    @unique
+  userId            Int
+  status            String    @default("processing") // processing, packed, shipped, delivered
   
-  // Shipping Information
-  fullName      String
-  email         String
-  phone         String
-  address       String
-  city          String
-  state         String
-  zipCode       String
-  country       String
+  // Shipping Information (with prefix)
+  shippingFullName  String?
+  shippingEmail     String?
+  shippingPhone     String?
+  shippingAddress   String?
+  shippingCity      String?
+  shippingState     String?
+  shippingZipCode   String?
+  shippingCountry   String?
+  
+  // Legacy fields (without prefix) - kept for backwards compatibility
+  fullName          String?
+  email             String?
+  phone             String?
+  address           String?
+  city              String?
+  state             String?
+  zipCode           String?
+  country           String?
   
   // Order Details
-  subtotal      Float
-  shipping      Float
-  tax           Float
-  total         Float
+  subtotal          Float
+  shipping          Float
+  tax               Float
+  total             Float
   
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   
   // Relations
-  user          User      @relation(fields: [userId], references: [id])
-  items         OrderItem[]
+  user              User      @relation(fields: [userId], references: [id])
+  items             OrderItem[]
   
   @@index([userId])
   @@index([orderNumber])
@@ -118,6 +128,7 @@ model OrderItem {
   productId     Int
   quantity      Int
   price         Float
+  createdAt     DateTime? @default(now())
   
   // Relations
   order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
