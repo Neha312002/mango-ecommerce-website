@@ -375,7 +375,20 @@ export default function WishlistPage() {
                             </div>
                             <p className="text-gray-700 text-sm leading-relaxed">{review.comment}</p>
                           </div>
-                        ))4 sm:px-6 py-4 flex items-center justify-between">
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Navigation */}
+      <nav className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
             <span className="text-3xl">🥭</span>
             <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
@@ -394,20 +407,7 @@ export default function WishlistPage() {
               <span className="hidden sm:inline">← Back to Home</span>
               <span className="sm:hidden">← Home</span>
             </Link>
-          </div
-      {/* Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
-          </Link>
-          <Link 
-            href="/" 
-            className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-md font-semibold transition"
-          >
-            ← Back to Home
-          </Link>
+          </div>
         </div>
       </nav>
 
