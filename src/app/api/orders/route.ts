@@ -167,20 +167,31 @@ export async function GET(request: NextRequest) {
       console.log('GET /api/orders - Admin verification:', user);
       
       if (!user || user.role !== 'admin') {
-        console.error('Unauthorized access to all orders');
+        console.error('Unauthorized access to all orders. User:', user);
         return NextResponse.json(
           { error: 'Unauthorized - Admin access required to view all orders' },
           { status: 401 }
         );
       }
+      
+      console.log('Admin verified successfully, fetching all orders...');
     }
+
+    console.log('Querying orders with whereClause:', whereClause);
 
     const orders = await prisma.order.findMany({
       where: whereClause,
       include: {
         items: {
           include: {
-            product: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                image: true,
+              },
+            },
           },
         },
         user: {
@@ -196,12 +207,23 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    console.log(`Returning ${orders.length} orders`);
-    return NextResponse.json(orders, { status: 200 });
+    console.log(`Successfully fetched ${orders.length} orders`);
+    
+    // Transform to ensure all fields are present
+    const transformedOrders = orders.map(order => ({
+      ...order,
+      items: order.items.map(item => ({
+        ...item,
+        product: item.product || { id: 0, name: 'Deleted Product', price: 0, image: '/images/placeholder.jpg' },
+      })),
+    }));
+
+    return NextResponse.json(transformedOrders, { status: 200 });
   } catch (error: any) {
     console.error('Get orders error:', error);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
-      { error: 'Failed to fetch orders', details: error.message },
+      { error: 'Failed to fetch orders', details: error.message, code: error.code },
       { status: 500 }
     );
   }
