@@ -1,37 +1,8 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
-// Create Gmail SMTP transporter
-function createTransporter() {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    throw new Error('Gmail credentials not configured');
-  }
-
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-    tls: {
-      ciphers: 'SSLv3',
-      rejectUnauthorized: false,
-    },
-    connectionTimeout: 5000,
-    greetingTimeout: 5000,
-    socketTimeout: 5000,
-  });
-}
-
-// Timeout wrapper for email sending
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs}ms`)), timeoutMs)
-    ),
-  ]);
+// Initialize SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
 export async function sendOrderConfirmationEmail(
@@ -56,18 +27,14 @@ export async function sendOrderConfirmationEmail(
 ) {
   try {
     // Check if email is configured
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      console.warn('⚠️ Gmail credentials not configured, skipping email');
+    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+      console.warn('⚠️ SendGrid not configured, skipping email');
       return { success: false, error: 'Email not configured' };
     }
 
     console.log('📧 Sending order confirmation email to:', to);
     console.log('📦 Order number:', orderData.orderNumber);
-
-    // Initialize Gmail transporter
-    const transporter = createTransporter();
-    console.log('✅ Gmail transporter initialized');
-    console.log('📧 SMTP Config: smtp.gmail.com:587 (STARTTLS)');
+    console.log('📧 Using SendGrid API');
 
     const itemsHtml = orderData.items
       .map(
@@ -199,31 +166,23 @@ export async function sendOrderConfirmationEmail(
     `;
 
     console.log('📤 Attempting to send email...');
-    console.log('From:', process.env.GMAIL_USER);
+    console.log('From:', process.env.SENDGRID_FROM_EMAIL);
     console.log('To:', to);
     
-    const info = await withTimeout(
-      transporter.sendMail({
-        from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
-        to: to,
-        subject: `Order Confirmation - #${orderData.orderNumber}`,
-        html: htmlContent,
-      }),
-      10000 // 10 second timeout
-    );
+    await sgMail.send({
+      to: to,
+      from: process.env.SENDGRID_FROM_EMAIL!,
+      subject: `Order Confirmation - #${orderData.orderNumber}`,
+      html: htmlContent,
+    });
 
-    console.log('✅ Email sent successfully!');
-    console.log('📨 Message ID:', info.messageId);
-    console.log('📨 Response:', info.response);
-    return { success: true, data: info };
+    console.log('✅ Email sent successfully via SendGrid!');
+    return { success: true };
   } catch (error: any) {
-    console.error('❌ Email sending error (catch block):', error);
-    console.error('Error type:', typeof error);
+    console.error('❌ Email sending error:', error);
     console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
-    console.error('Error stack:', error.stack);
     if (error.response) {
-      console.error('SMTP Response:', error.response);
+      console.error('SendGrid Response:', error.response.body);
     }
     return { success: false, error: error.message };
   }
@@ -246,18 +205,13 @@ export async function sendAdminOrderNotification(orderData: {
   };
 }) {
   try {
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !process.env.ADMIN_EMAIL) {
-      console.warn('⚠️ Email not configured for admin notifications');
-      console.warn('GMAIL_USER exists:', !!process.env.GMAIL_USER);
-      console.warn('GMAIL_APP_PASSWORD exists:', !!process.env.GMAIL_APP_PASSWORD);
-      console.warn('ADMIN_EMAIL exists:', !!process.env.ADMIN_EMAIL);
+    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL || !process.env.ADMIN_EMAIL) {
+      console.warn('⚠️ SendGrid not configured for admin notifications');
       return { success: false, error: 'Email not configured' };
     }
 
     console.log('📧 Sending admin notification to:', process.env.ADMIN_EMAIL);
     console.log('📦 Order:', orderData.orderNumber, '- Total:', orderData.total);
-
-    const transporter = createTransporter();
 
     const itemsHtml = orderData.items
       .map(
@@ -367,30 +321,23 @@ export async function sendAdminOrderNotification(orderData: {
     `;
 
     console.log('📤 Attempting to send admin email...');
-    console.log('From:', process.env.GMAIL_USER);
+    console.log('From:', process.env.SENDGRID_FROM_EMAIL);
     console.log('To:', process.env.ADMIN_EMAIL);
 
-    const info = await withTimeout(
-      transporter.sendMail({
-        from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
-        to: process.env.ADMIN_EMAIL,
-        subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
-        html: htmlContent,
-      }),
-      10000 // 10 second timeout
-    );
+    await sgMail.send({
+      to: process.env.ADMIN_EMAIL!,
+      from: process.env.SENDGRID_FROM_EMAIL!,
+      subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
+      html: htmlContent,
+    });
 
-    console.log('✅ Admin email sent successfully!');
-    console.log('📨 Admin message ID:', info.messageId);
-    console.log('📨 Admin response:', info.response);
-    return { success: true, data: info };
+    console.log('✅ Admin email sent successfully via SendGrid!');
+    return { success: true };
   } catch (error: any) {
-    console.error('❌ Admin email sending error (catch block):', error);
-    console.error('Error type:', typeof error);
+    console.error('❌ Admin email sending error:', error);
     console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
     if (error.response) {
-      console.error('SMTP Response:', error.response);
+      console.error('SendGrid Response:', error.response.body);
     }
     return { success: false, error: error.message };
   }
