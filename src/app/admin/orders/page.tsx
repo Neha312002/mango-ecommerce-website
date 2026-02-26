@@ -219,7 +219,7 @@ export default function AdminOrders() {
                       </div>
                     </td>
                     <td className="py-4 px-6">{order.items?.length || 0} items</td>
-                    <td className="py-4 px-6 font-semibold text-lg">₹{order.totalAmount.toFixed(2)}</td>
+                    <td className="py-4 px-6 font-semibold text-lg">₹{order.total?.toFixed(2) || '0.00'}</td>
                     <td className="py-4 px-6">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -326,7 +326,7 @@ export default function AdminOrders() {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Subtotal:</span>
-                        <span>₹{selectedOrder.totalAmount.toFixed(2)}</span>
+                        <span>₹{selectedOrder.total?.toFixed(2) || '0.00'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Shipping:</span>
@@ -334,7 +334,7 @@ export default function AdminOrders() {
                       </div>
                       <div className="flex justify-between font-bold text-lg pt-2 border-t">
                         <span>Total:</span>
-                        <span>₹{selectedOrder.totalAmount.toFixed(2)}</span>
+                        <span>₹{selectedOrder.total?.toFixed(2) || '0.00'}</span>
                       </div>
                     </div>
                   </div>
