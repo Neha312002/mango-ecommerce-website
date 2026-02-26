@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Send order confirmation email (don't block response if email fails)
+    // Send order confirmation email (await to ensure it completes before function terminates)
     console.log('🔍 Email check - shipping.email:', shipping.email);
     console.log('🔍 Email check - SENDGRID_API_KEY exists:', !!process.env.SENDGRID_API_KEY);
     console.log('🔍 Email check - SENDGRID_FROM_EMAIL exists:', !!process.env.SENDGRID_FROM_EMAIL);
@@ -115,82 +115,81 @@ export async function POST(request: NextRequest) {
     
     if (shipping.email && process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) {
       console.log('✅ Starting email sending process...');
-      // Dynamic import to avoid build-time initialization
-      import('@/lib/email')
-        .then(async ({ sendOrderConfirmationEmail, sendAdminOrderNotification }) => {
-          console.log('📧 Email module loaded successfully');
-          
-          // Send customer confirmation
+      try {
+        // Await dynamic import to ensure email module is loaded
+        const { sendOrderConfirmationEmail, sendAdminOrderNotification } = await import('@/lib/email');
+        console.log('📧 Email module loaded successfully');
+        
+        // Send customer confirmation
+        try {
+          console.log('📨 Sending customer confirmation to:', shipping.email);
+          const customerResult = await sendOrderConfirmationEmail(
+            shipping.email,
+            {
+              orderNumber,
+              customerName: shipping.fullName,
+              items: order.items.map((item: any) => ({
+                name: item.product.name,
+                quantity: item.quantity,
+                price: item.price,
+              })),
+              subtotal,
+              shipping: shippingCost,
+              tax,
+              total,
+              shippingAddress: {
+                fullName: shipping.fullName,
+                address: shipping.address,
+                city: shipping.city,
+                state: shipping.state,
+                zipCode: shipping.zipCode,
+                country: shipping.country,
+              },
+            }
+          );
+          console.log('✅ Customer email result:', customerResult);
+        } catch (error) {
+          console.error('❌ Failed to send customer confirmation email:', error);
+          console.error('Error details:', JSON.stringify(error, null, 2));
+        }
+
+        // Send admin notification
+        if (process.env.ADMIN_EMAIL) {
           try {
-            console.log('📨 Sending customer confirmation to:', shipping.email);
-            const customerResult = await sendOrderConfirmationEmail(
-              shipping.email,
-              {
-                orderNumber,
-                customerName: shipping.fullName,
-                items: order.items.map((item: any) => ({
-                  name: item.product.name,
-                  quantity: item.quantity,
-                  price: item.price,
-                })),
-                subtotal,
-                shipping: shippingCost,
-                tax,
-                total,
-                shippingAddress: {
-                  fullName: shipping.fullName,
-                  address: shipping.address,
-                  city: shipping.city,
-                  state: shipping.state,
-                  zipCode: shipping.zipCode,
-                  country: shipping.country,
-                },
-              }
-            );
-            console.log('✅ Customer email result:', customerResult);
+            console.log('📨 Sending admin notification to:', process.env.ADMIN_EMAIL);
+            const adminResult = await sendAdminOrderNotification({
+              orderNumber,
+              customerName: shipping.fullName,
+              customerEmail: shipping.email,
+              items: order.items.map((item: any) => ({
+                name: item.product.name,
+                quantity: item.quantity,
+                price: item.price,
+              })),
+              total,
+              shippingAddress: {
+                fullName: shipping.fullName,
+                address: shipping.address,
+                city: shipping.city,
+                state: shipping.state,
+                zipCode: shipping.zipCode,
+                country: shipping.country,
+              },
+            });
+            console.log('✅ Admin email result:', adminResult);
           } catch (error) {
-            console.error('❌ Failed to send customer confirmation email:', error);
+            console.error('❌ Failed to send admin notification email:', error);
             console.error('Error details:', JSON.stringify(error, null, 2));
           }
-
-          // Send admin notification
-          if (process.env.ADMIN_EMAIL) {
-            try {
-              console.log('📨 Sending admin notification to:', process.env.ADMIN_EMAIL);
-              const adminResult = await sendAdminOrderNotification({
-                orderNumber,
-                customerName: shipping.fullName,
-                customerEmail: shipping.email,
-                items: order.items.map((item: any) => ({
-                  name: item.product.name,
-                  quantity: item.quantity,
-                  price: item.price,
-                })),
-                total,
-                shippingAddress: {
-                  fullName: shipping.fullName,
-                  address: shipping.address,
-                  city: shipping.city,
-                  state: shipping.state,
-                  zipCode: shipping.zipCode,
-                  country: shipping.country,
-                },
-              });
-              console.log('✅ Admin email result:', adminResult);
-            } catch (error) {
-              console.error('❌ Failed to send admin notification email:', error);
-              console.error('Error details:', JSON.stringify(error, null, 2));
-            }
-          } else {
-            console.warn('⚠️ ADMIN_EMAIL not configured, skipping admin notification');
-          }
-        })
-        .catch((error) => {
-          console.error('❌ Failed to load email module:', error);
-          console.error('Module error details:', JSON.stringify(error, null, 2));
-        });
+        } else {
+          console.warn('⚠️ ADMIN_EMAIL not configured, skipping admin notification');
+        }
+      } catch (error) {
+        console.error('❌ Failed to load email module:', error);
+        console.error('Module error details:', JSON.stringify(error, null, 2));
+      }
     } else {
-      console.warn('⚠️ Email sending skipped - Missing shipping.email or RESEND_API_KEY');
+      console.warn('⚠️ Email sending skipped - Missing shipping.email or SENDGRID_API_KEY');
     }
 
     return NextResponse.json(
