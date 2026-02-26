@@ -89,7 +89,7 @@ export default function Error({
               {/* Try Again Button */}
               <motion.button
                 onClick={reset}
-                className="w-full bg-[#FF8C42] hover:bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold transition shadow-lg flex items-center justify-center gap-3"
+                className="w-full bg-[#ffa62b] hover:bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold transition shadow-lg flex items-center justify-center gap-3"
                 whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(255, 140, 66, 0.4)' }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -121,7 +121,7 @@ export default function Error({
             <Link href="/#products" className="group">
               <div className="bg-white hover:bg-orange-50 rounded-lg p-4 shadow transition">
                 <span className="text-3xl block mb-2">🥭</span>
-                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#FF8C42]">
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#ffa62b]">
                   Products
                 </span>
               </div>
@@ -129,7 +129,7 @@ export default function Error({
             <Link href="/wishlist" className="group">
               <div className="bg-white hover:bg-orange-50 rounded-lg p-4 shadow transition">
                 <span className="text-3xl block mb-2">❤️</span>
-                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#FF8C42]">
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#ffa62b]">
                   Wishlist
                 </span>
               </div>
@@ -137,7 +137,7 @@ export default function Error({
             <Link href="/account" className="group">
               <div className="bg-white hover:bg-orange-50 rounded-lg p-4 shadow transition">
                 <span className="text-3xl block mb-2">👤</span>
-                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#FF8C42]">
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#ffa62b]">
                   Account
                 </span>
               </div>
@@ -145,7 +145,7 @@ export default function Error({
             <Link href="/#contact" className="group">
               <div className="bg-white hover:bg-orange-50 rounded-lg p-4 shadow transition">
                 <span className="text-3xl block mb-2">📧</span>
-                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#FF8C42]">
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#ffa62b]">
                   Contact
                 </span>
               </div>
@@ -162,12 +162,12 @@ export default function Error({
             <p className="mb-2">If the problem persists, please contact our support team:</p>
             <p>
               📧{' '}
-              <a href="mailto:support@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">
+              <a href="mailto:support@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">
                 support@mangofreshfarm.com
               </a>
               {' '}or{' '}
               📞{' '}
-              <a href="tel:+91XXXXXXXXXX" className="text-[#FF8C42] hover:underline">
+              <a href="tel:+91XXXXXXXXXX" className="text-[#ffa62b] hover:underline">
                 +91 XXXX-XXXXXX
               </a>
             </p>

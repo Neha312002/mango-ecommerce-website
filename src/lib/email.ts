@@ -78,7 +78,7 @@ export async function sendOrderConfirmationEmail(
                   
                   <!-- Header -->
                   <tr>
-                    <td style="background: linear-gradient(135deg, #FF8C42 0%, #3D4F42 100%); padding: 40px 20px; text-align: center;">
+                    <td style="background: linear-gradient(135deg, #ffa62b 0%, #3D4F42 100%); padding: 40px 20px; text-align: center;">
                       <h1 style="margin: 0; color: #ffffff; font-size: 32px;">🥭 Mango Fresh Farm</h1>
                       <p style="margin: 10px 0 0; color: #ffffff; font-size: 18px;">Order Confirmation</p>
                     </td>
@@ -95,9 +95,9 @@ export async function sendOrderConfirmationEmail(
                         Your order has been confirmed and will be shipped soon. Here are your order details:
                       </p>
                       
-                      <div style="background-color: #FFF7ED; border-left: 4px solid #FF8C42; padding: 15px; margin-bottom: 30px;">
+                      <div style="background-color: #FFF7ED; border-left: 4px solid #ffa62b; padding: 15px; margin-bottom: 30px;">
                         <p style="margin: 0; color: #3D4F42; font-size: 14px; font-weight: 600;">Order Number</p>
-                        <p style="margin: 5px 0 0; color: #FF8C42; font-size: 20px; font-weight: 700;">#${orderData.orderNumber}</p>
+                        <p style="margin: 5px 0 0; color: #ffa62b; font-size: 20px; font-weight: 700;">#${orderData.orderNumber}</p>
                       </div>
                       
                       <!-- Items Table -->
@@ -132,7 +132,7 @@ export async function sendOrderConfirmationEmail(
                         </tr>
                         <tr>
                           <td style="padding: 8px 0; border-top: 2px solid #e5e7eb; color: #3D4F42; font-weight: 700; font-size: 18px;">Total:</td>
-                          <td style="padding: 8px 0; border-top: 2px solid #e5e7eb; text-align: right; color: #FF8C42; font-weight: 700; font-size: 18px;">₹${orderData.total.toFixed(2)}</td>
+                          <td style="padding: 8px 0; border-top: 2px solid #e5e7eb; text-align: right; color: #ffa62b; font-weight: 700; font-size: 18px;">₹${orderData.total.toFixed(2)}</td>
                         </tr>
                       </table>
                       
@@ -150,7 +150,7 @@ export async function sendOrderConfirmationEmail(
                       <!-- Track Order Button -->
                       <div style="text-align: center; margin-top: 40px;">
                         <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://yourdomain.com'}/track-order" 
-                           style="display: inline-block; background-color: #FF8C42; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                           style="display: inline-block; background-color: #ffa62b; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
                           Track Your Order
                         </a>
                       </div>
@@ -161,7 +161,7 @@ export async function sendOrderConfirmationEmail(
                   <tr>
                     <td style="background-color: #f9fafb; padding: 30px 20px; text-align: center; border-top: 1px solid #e5e7eb;">
                       <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px;">
-                        Questions? Contact us at <a href="mailto:support@mangofreshfarm.com" style="color: #FF8C42; text-decoration: none;">support@mangofreshfarm.com</a>
+                        Questions? Contact us at <a href="mailto:support@mangofreshfarm.com" style="color: #ffa62b; text-decoration: none;">support@mangofreshfarm.com</a>
                       </p>
                       <p style="margin: 0; color: #9ca3af; font-size: 12px;">
                         © ${new Date().getFullYear()} Mango Fresh Farm. All rights reserved.
@@ -444,7 +444,7 @@ export async function sendOrderStatusUpdateEmail(
                   
                   <!-- Header -->
                   <tr>
-                    <td style="background: linear-gradient(135deg, #FF8C42 0%, #3D4F42 100%); padding: 40px 20px; text-align: center;">
+                    <td style="background: linear-gradient(135deg, #ffa62b 0%, #3D4F42 100%); padding: 40px 20px; text-align: center;">
                       <h1 style="margin: 0; color: #ffffff; font-size: 32px;">🥭 Mango Fresh Farm</h1>
                       <p style="margin: 10px 0 0; color: #ffffff; font-size: 18px;">Order Status Update</p>
                     </td>
@@ -487,7 +487,7 @@ export async function sendOrderStatusUpdateEmail(
                       <!-- Track Button -->
                       <div style="text-align: center; margin-top: 40px;">
                         <a href="${orderData.trackingUrl}" 
-                           style="display: inline-block; background-color: #FF8C42; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                           style="display: inline-block; background-color: #ffa62b; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
                           Track Your Order
                         </a>
                       </div>
@@ -501,7 +501,7 @@ export async function sendOrderStatusUpdateEmail(
                   <tr>
                     <td style="background-color: #f9fafb; padding: 30px 20px; text-align: center; border-top: 1px solid #e5e7eb;">
                       <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px;">
-                        Questions? Contact us at <a href="mailto:support@mangofreshfarm.com" style="color: #FF8C42; text-decoration: none;">support@mangofreshfarm.com</a>
+                        Questions? Contact us at <a href="mailto:support@mangofreshfarm.com" style="color: #ffa62b; text-decoration: none;">support@mangofreshfarm.com</a>
                       </p>
                       <p style="margin: 0; color: #9ca3af; font-size: 12px;">
                         © ${new Date().getFullYear()} Mango Fresh Farm. All rights reserved.

@@ -83,7 +83,7 @@ export default function AdminLayout({
               <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
                 <span className="text-3xl">🥭</span>
                 <div>
-                  <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+                  <h1 className="text-xl font-bold text-[#ffa62b]">Mango Fresh Farm</h1>
                   <p className="text-xs text-gray-500">Admin Panel</p>
                 </div>
               </Link>
@@ -92,7 +92,7 @@ export default function AdminLayout({
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="text-gray-600 hover:text-[#FF8C42] transition flex items-center gap-2"
+                className="text-gray-600 hover:text-[#ffa62b] transition flex items-center gap-2"
               >
                 <span>🏠</span>
                 <span className="hidden sm:inline">View Site</span>
@@ -124,7 +124,7 @@ export default function AdminLayout({
                       <motion.div
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                           isActive
-                            ? 'bg-[#FF8C42] text-white'
+                            ? 'bg-[#ffa62b] text-white'
                             : 'text-gray-700 hover:bg-orange-50'
                         }`}
                         whileHover={{ scale: 1.02 }}
@@ -148,7 +148,7 @@ export default function AdminLayout({
               const isActive = pathname === item.path;
               return (
                 <Link key={item.path} href={item.path}>
-                  <div className={`flex flex-col items-center px-4 py-2 ${isActive ? 'text-[#FF8C42]' : 'text-gray-600'}`}>
+                  <div className={`flex flex-col items-center px-4 py-2 ${isActive ? 'text-[#ffa62b]' : 'text-gray-600'}`}>
                     <span className="text-2xl">{item.icon}</span>
                     <span className="text-xs mt-1">{item.name}</span>
                   </div>

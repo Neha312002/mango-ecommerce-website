@@ -157,7 +157,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link href="/admin/products?action=add">
             <motion.button
-              className="w-full bg-[#FF8C42] hover:bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold transition flex flex-col items-center gap-2"
+              className="w-full bg-[#ffa62b] hover:bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold transition flex flex-col items-center gap-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -207,7 +207,7 @@ export default function AdminDashboard() {
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-[#3D4F42]">Recent Orders</h2>
-          <Link href="/admin/orders" className="text-[#FF8C42] hover:underline text-sm font-semibold">
+          <Link href="/admin/orders" className="text-[#ffa62b] hover:underline text-sm font-semibold">
             View All →
           </Link>
         </div>

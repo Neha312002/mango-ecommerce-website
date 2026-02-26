@@ -5,17 +5,20 @@ import Link from 'next/link';
 
 export default function RefundPolicyPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-white">
       {/* Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <Link 
             href="/" 
-            className="bg-[#FF8C42] hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold transition"
+            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-semibold transition border border-white/20"
           >
             ← Back to Home
           </Link>
@@ -33,7 +36,7 @@ export default function RefundPolicyPage() {
           <p className="text-gray-600 mb-8">Last updated: February 26, 2026</p>
 
           <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
-            <div className="bg-orange-50 border-l-4 border-[#FF8C42] p-4 rounded">
+            <div className="bg-orange-50 border-l-4 border-[#ffa62b] p-4 rounded">
               <p className="text-gray-700">
                 <strong>Important:</strong> As we deal with fresh, organic produce, please read our 
                 return policy carefully. We want to ensure you receive the best quality mangoes!
@@ -85,7 +88,7 @@ export default function RefundPolicyPage() {
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="font-semibold text-lg text-[#3D4F42] mb-2">Step 1: Contact Us</h3>
                   <p className="text-gray-700">
-                    Email us at <a href="mailto:support@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">support@mangofreshfarm.com</a> or 
+                    Email us at <a href="mailto:support@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">support@mangofreshfarm.com</a> or 
                     call +91 XXXX-XXXXXX within 24 hours of delivery.
                   </p>
                 </div>
@@ -152,7 +155,7 @@ export default function RefundPolicyPage() {
                   <li><strong>During Delivery:</strong> You may refuse delivery for full refund</li>
                 </ul>
                 <p className="mt-4">
-                  To cancel an order, go to your <Link href="/account" className="text-[#FF8C42] hover:underline">Account Dashboard</Link> or 
+                  To cancel an order, go to your <Link href="/account" className="text-[#ffa62b] hover:underline">Account Dashboard</Link> or 
                   contact our support team.
                 </p>
               </div>
@@ -182,7 +185,7 @@ export default function RefundPolicyPage() {
 
             <section>
               <h2 className="text-2xl font-bold text-[#3D4F42] mb-4">10. Quality Guarantee</h2>
-              <div className="bg-gradient-to-r from-[#FF8C42]/10 to-[#3D4F42]/10 border-2 border-[#FF8C42] rounded-xl p-6">
+              <div className="bg-gradient-to-r from-[#ffa62b]/10 to-[#3D4F42]/10 border-2 border-[#ffa62b] rounded-xl p-6">
                 <p className="text-gray-700 mb-4">
                   <strong className="text-lg">🥭 Our Promise</strong>
                 </p>
@@ -199,7 +202,7 @@ export default function RefundPolicyPage() {
                 For returns, refunds, or any questions:
               </p>
               <div className="space-y-2 text-gray-700">
-                <p><strong>Email:</strong> <a href="mailto:support@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">support@mangofreshfarm.com</a></p>
+                <p><strong>Email:</strong> <a href="mailto:support@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">support@mangofreshfarm.com</a></p>
                 <p><strong>Phone:</strong> +91 XXXX-XXXXXX (Mon-Sat, 9 AM - 6 PM IST)</p>
                 <p><strong>Address:</strong> Mango Fresh Farm, India</p>
               </div>
@@ -209,7 +212,7 @@ export default function RefundPolicyPage() {
           <div className="mt-8 text-center">
             <Link 
               href="/" 
-              className="inline-block bg-[#FF8C42] hover:bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold transition"
+              className="inline-block bg-[#ffa62b] hover:bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold transition"
             >
               Back to Shopping
             </Link>

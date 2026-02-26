@@ -86,13 +86,16 @@ function TrackOrderPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-white">
       {/* Navigation */}
-      <nav className="bg-white shadow-md">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
         </div>
       </nav>
@@ -115,12 +118,12 @@ function TrackOrderPageContent() {
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
               placeholder="Enter order number (e.g., MF12345678)"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
               required
             />
             <button
               type="submit"
-              className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
+              className="bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
             >
               Track Order
             </button>
@@ -145,7 +148,7 @@ function TrackOrderPageContent() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-sm text-gray-500">Order Number</p>
-                  <p className="text-2xl font-bold text-[#FF8C42]">{order.orderNumber}</p>
+                  <p className="text-2xl font-bold text-[#ffa62b]">{order.orderNumber}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Order Date</p>
@@ -163,7 +166,7 @@ function TrackOrderPageContent() {
               <div className="relative">
                 <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200">
                   <div
-                    className="h-full bg-[#FF8C42] transition-all duration-500"
+                    className="h-full bg-[#ffa62b] transition-all duration-500"
                     style={{ width: `${(getStatusIndex(order.status) / 3) * 100}%` }}
                   />
                 </div>
@@ -183,7 +186,7 @@ function TrackOrderPageContent() {
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 transition-all ${
                             isComplete
-                              ? 'bg-[#FF8C42] text-white'
+                              ? 'bg-[#ffa62b] text-white'
                               : 'bg-gray-200 text-gray-400'
                           } ${isCurrent ? 'ring-4 ring-orange-200' : ''}`}
                         >
@@ -242,7 +245,7 @@ function TrackOrderPageContent() {
                       <p className="font-semibold text-gray-800">{item.name}</p>
                       <p className="text-sm text-gray-500">1 kg</p>
                     </div>
-                    <p className="font-bold text-[#FF8C42]">₹{item.price.toFixed(2)}</p>
+                    <p className="font-bold text-[#ffa62b]">₹{item.price.toFixed(2)}</p>
                   </div>
                 ))}
               </div>
@@ -258,7 +261,7 @@ function TrackOrderPageContent() {
             <div className="flex gap-4">
               <Link
                 href="/#products"
-                className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-center transition"
+                className="flex-1 bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-center transition"
               >
                 Order Again
               </Link>

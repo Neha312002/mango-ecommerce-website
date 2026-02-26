@@ -5,17 +5,20 @@ import Link from 'next/link';
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-white">
       {/* Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <Link 
             href="/" 
-            className="bg-[#FF8C42] hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold transition"
+            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-semibold transition border border-white/20"
           >
             ← Back to Home
           </Link>
@@ -109,7 +112,7 @@ export default function PrivacyPolicyPage() {
                 <li>Object to data processing</li>
               </ul>
               <p className="text-gray-700 mt-4">
-                To exercise these rights, contact us at <a href="mailto:privacy@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">privacy@mangofreshfarm.com</a>
+                To exercise these rights, contact us at <a href="mailto:privacy@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">privacy@mangofreshfarm.com</a>
               </p>
             </section>
 
@@ -146,7 +149,7 @@ export default function PrivacyPolicyPage() {
                 If you have any questions about this Privacy Policy, please contact us:
               </p>
               <div className="mt-4 space-y-2 text-gray-700">
-                <p><strong>Email:</strong> <a href="mailto:privacy@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">privacy@mangofreshfarm.com</a></p>
+                <p><strong>Email:</strong> <a href="mailto:privacy@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">privacy@mangofreshfarm.com</a></p>
                 <p><strong>Address:</strong> Mango Fresh Farm, India</p>
                 <p><strong>Phone:</strong> +91 XXXX-XXXXXX</p>
               </div>
@@ -156,7 +159,7 @@ export default function PrivacyPolicyPage() {
           <div className="mt-8 text-center">
             <Link 
               href="/" 
-              className="inline-block bg-[#FF8C42] hover:bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold transition"
+              className="inline-block bg-[#ffa62b] hover:bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold transition"
             >
               Back to Shopping
             </Link>

@@ -172,7 +172,7 @@ export default function AdminOrders() {
               onClick={() => setFilterStatus(status)}
               className={`px-4 py-2 rounded-lg font-semibold transition ${
                 filterStatus === status
-                  ? 'bg-[#FF8C42] text-white'
+                  ? 'bg-[#ffa62b] text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
               whileHover={{ scale: 1.05 }}
@@ -355,7 +355,7 @@ export default function AdminOrders() {
                   </div>
 
                   {/* Update Status */}
-                  <div className="bg-orange-50 rounded-lg p-4 border-2 border-[#FF8C42]">
+                  <div className="bg-orange-50 rounded-lg p-4 border-2 border-[#ffa62b]">
                     <h3 className="font-bold text-lg mb-3">Update Order Status</h3>
                     <div className="flex flex-wrap gap-2">
                       {['pending', 'processing', 'shipped', 'delivered', 'cancelled'].map((status) => (
@@ -364,7 +364,7 @@ export default function AdminOrders() {
                           onClick={() => handleStatusUpdate(selectedOrder.id, status)}
                           className={`px-4 py-2 rounded-lg font-semibold transition ${
                             selectedOrder.status === status
-                              ? 'bg-[#FF8C42] text-white'
+                              ? 'bg-[#ffa62b] text-white'
                               : 'bg-white hover:bg-gray-100 text-gray-700'
                           }`}
                           whileHover={{ scale: 1.05 }}

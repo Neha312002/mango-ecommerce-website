@@ -86,7 +86,7 @@ export default function AdminSetupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                 placeholder="user@example.com"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -103,7 +103,7 @@ export default function AdminSetupPage() {
                 value={masterPassword}
                 onChange={(e) => setMasterPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                 placeholder="Enter master password"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -114,7 +114,7 @@ export default function AdminSetupPage() {
             <motion.button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FF8C42] hover:bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition disabled:bg-gray-400"
+              className="w-full bg-[#ffa62b] hover:bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition disabled:bg-gray-400"
               whileHover={{ scale: loading ? 1 : 1.02 }}
               whileTap={{ scale: loading ? 1 : 0.98 }}
             >
@@ -137,7 +137,7 @@ export default function AdminSetupPage() {
                 {result.message}
               </p>
               {result.success && (
-                <Link href="/admin" className="mt-3 inline-block text-[#FF8C42] hover:underline text-sm font-semibold">
+                <Link href="/admin" className="mt-3 inline-block text-[#ffa62b] hover:underline text-sm font-semibold">
                   Go to Admin Panel →
                 </Link>
               )}
@@ -158,11 +158,11 @@ export default function AdminSetupPage() {
 
           {/* Navigation */}
           <div className="mt-6 flex gap-3 justify-center text-sm">
-            <Link href="/" className="text-gray-600 hover:text-[#FF8C42]">
+            <Link href="/" className="text-gray-600 hover:text-[#ffa62b]">
               ← Back to Home
             </Link>
             <span className="text-gray-300">|</span>
-            <Link href="/auth" className="text-gray-600 hover:text-[#FF8C42]">
+            <Link href="/auth" className="text-gray-600 hover:text-[#ffa62b]">
               Sign In/Up
             </Link>
           </div>

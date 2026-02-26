@@ -21,7 +21,7 @@ export default function NotFound() {
             className="mb-8"
           >
             <div className="flex items-center justify-center gap-4 mb-4">
-              <span className="text-9xl font-bold text-[#FF8C42]">4</span>
+              <span className="text-9xl font-bold text-[#ffa62b]">4</span>
               <motion.span
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -29,7 +29,7 @@ export default function NotFound() {
               >
                 🥭
               </motion.span>
-              <span className="text-9xl font-bold text-[#FF8C42]">4</span>
+              <span className="text-9xl font-bold text-[#ffa62b]">4</span>
             </div>
           </motion.div>
 
@@ -59,37 +59,37 @@ export default function NotFound() {
             </h2>
             <ul className="space-y-3 text-left">
               <li className="flex items-start gap-3">
-                <span className="text-[#FF8C42] text-xl">🏠</span>
+                <span className="text-[#ffa62b] text-xl">🏠</span>
                 <div>
                   <span className="text-gray-700">Go back to our </span>
-                  <Link href="/" className="text-[#FF8C42] hover:underline font-semibold">
+                  <Link href="/" className="text-[#ffa62b] hover:underline font-semibold">
                     Homepage
                   </Link>
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#FF8C42] text-xl">🛒</span>
+                <span className="text-[#ffa62b] text-xl">🛒</span>
                 <div>
                   <span className="text-gray-700">Browse our </span>
-                  <Link href="/#products" className="text-[#FF8C42] hover:underline font-semibold">
+                  <Link href="/#products" className="text-[#ffa62b] hover:underline font-semibold">
                     Fresh Mangoes
                   </Link>
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#FF8C42] text-xl">❤️</span>
+                <span className="text-[#ffa62b] text-xl">❤️</span>
                 <div>
                   <span className="text-gray-700">Check your </span>
-                  <Link href="/wishlist" className="text-[#FF8C42] hover:underline font-semibold">
+                  <Link href="/wishlist" className="text-[#ffa62b] hover:underline font-semibold">
                     Wishlist
                   </Link>
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#FF8C42] text-xl">👤</span>
+                <span className="text-[#ffa62b] text-xl">👤</span>
                 <div>
                   <span className="text-gray-700">Visit your </span>
-                  <Link href="/account" className="text-[#FF8C42] hover:underline font-semibold">
+                  <Link href="/account" className="text-[#ffa62b] hover:underline font-semibold">
                     Account
                   </Link>
                 </div>
@@ -106,7 +106,7 @@ export default function NotFound() {
           >
             <Link href="/">
               <motion.button
-                className="bg-[#FF8C42] hover:bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold transition shadow-lg text-lg"
+                className="bg-[#ffa62b] hover:bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold transition shadow-lg text-lg"
                 whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(255, 140, 66, 0.4)' }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -132,7 +132,7 @@ export default function NotFound() {
             className="text-gray-500 text-sm mt-8"
           >
             Need help? Contact us at{' '}
-            <a href="mailto:support@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">
+            <a href="mailto:support@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">
               support@mangofreshfarm.com
             </a>
           </motion.p>

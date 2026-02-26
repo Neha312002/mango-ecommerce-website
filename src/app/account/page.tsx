@@ -237,18 +237,21 @@ function AccountPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50/50">
       {/* Navigation */}
-      <nav className="bg-white shadow-md">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-              <span className="text-3xl">🥭</span>
-              <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+            <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+              <span className="text-4xl drop-shadow-lg">🥭</span>
+              <div>
+                <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+                <p className="text-xs text-white/90">Naturally Sweet</p>
+              </div>
             </Link>
             <Link
               href="/"
-              className="bg-[#FF8C42] hover:bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 text-sm sm:text-base"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 text-sm sm:text-base border border-white/20"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -258,11 +261,11 @@ function AccountPageContent() {
             </Link>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
-            <span className="text-gray-700 text-sm sm:text-base">Hello, <strong>{user.name}</strong></span>
+            <span className="text-white text-sm sm:text-base drop-shadow-sm">Hello, <strong>{user.name}</strong> 👋</span>
             {user.role === 'admin' && (
               <Link
                 href="/admin"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base flex items-center gap-2"
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base flex items-center gap-2 shadow-lg border border-white/20"
               >
                 <span>⚙️</span>
                 <span className="hidden sm:inline">Admin</span>
@@ -270,7 +273,7 @@ function AccountPageContent() {
             )}
             <button
               onClick={handleLogout}
-              className="bg-gray-200 hover:bg-gray-300 px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base"
+              className="bg-white text-[#ffa62b] hover:bg-gray-50 px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base shadow-lg"
             >
               Logout
             </button>
@@ -285,7 +288,7 @@ function AccountPageContent() {
             <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
               {/* Profile Summary */}
               <div className="text-center mb-6 pb-6 border-b">
-                <div className="w-24 h-24 bg-gradient-to-br from-[#FF8C42] to-orange-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
+                <div className="w-24 h-24 bg-gradient-to-br from-[#ffa62b] to-orange-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
                   {user.name[0].toUpperCase()}
                 </div>
                 <h2 className="text-xl font-bold text-gray-800 mb-1">{user.name}</h2>
@@ -308,7 +311,7 @@ function AccountPageContent() {
                     onClick={() => setActiveTab(item.id as any)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg font-semibold transition ${
                       activeTab === item.id
-                        ? 'bg-[#FF8C42] text-white'
+                        ? 'bg-[#ffa62b] text-white'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -349,7 +352,7 @@ function AccountPageContent() {
                       <p className="text-gray-600 mb-6">Start shopping for delicious organic mangoes!</p>
                       <Link
                         href="/#products"
-                        className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
+                        className="inline-block bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
                       >
                         Browse Products
                       </Link>
@@ -361,7 +364,7 @@ function AccountPageContent() {
                           <div className="flex items-center justify-between mb-4">
                             <div>
                               <p className="text-sm text-gray-500">Order Number</p>
-                              <p className="text-lg font-bold text-[#FF8C42]">{order.orderNumber}</p>
+                              <p className="text-lg font-bold text-[#ffa62b]">{order.orderNumber}</p>
                             </div>
                             <div className="text-right">
                               <p className="text-sm text-gray-500">Order Date</p>
@@ -388,10 +391,10 @@ function AccountPageContent() {
                                 </div>
                                 <div className="flex-1">
                                   <p className="font-semibold text-gray-800">{item.name}</p>
-                                  <p className="text-[#FF8C42] font-bold">₹{item.price.toFixed(2)}</p>
+                                  <p className="text-[#ffa62b] font-bold">₹{item.price.toFixed(2)}</p>
                                   <button
                                     onClick={() => setReviewForm({ productId: item.id, rating: 5, comment: '' })}
-                                    className="text-sm text-[#FF8C42] hover:underline mt-1"
+                                    className="text-sm text-[#ffa62b] hover:underline mt-1"
                                   >
                                     Write a Review
                                   </button>
@@ -421,7 +424,7 @@ function AccountPageContent() {
                               </p>
                               <Link
                                 href={`/track-order?order=${order.orderNumber}`}
-                                className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-lg font-semibold transition"
+                                className="bg-[#ffa62b] hover:bg-[#FFA558] text-white px-6 py-2 rounded-lg font-semibold transition"
                               >
                                 Track Order
                               </Link>
@@ -453,7 +456,7 @@ function AccountPageContent() {
                         <input
                           type="text"
                           defaultValue={user.name}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         />
                       </div>
 
@@ -464,7 +467,7 @@ function AccountPageContent() {
                         <input
                           type="email"
                           defaultValue={user.email}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         />
                       </div>
 
@@ -475,14 +478,14 @@ function AccountPageContent() {
                         <input
                           type="tel"
                           placeholder="+1 (234) 567-890"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         />
                       </div>
 
                       <div className="pt-4">
                         <button
                           type="submit"
-                          className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
+                          className="bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-bold transition"
                         >
                           Save Changes
                         </button>
@@ -495,17 +498,17 @@ function AccountPageContent() {
                         <input
                           type="password"
                           placeholder="Current Password"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         />
                         <input
                           type="password"
                           placeholder="New Password"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         />
                         <input
                           type="password"
                           placeholder="Confirm New Password"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         />
                         <button
                           type="submit"
@@ -533,7 +536,7 @@ function AccountPageContent() {
                               </p>
                               <div className="mt-3 flex items-center gap-3">
                                 {addr.isDefault && (
-                                  <span className="inline-block px-2 py-0.5 text-xs bg-[#FF8C42] text-white rounded">
+                                  <span className="inline-block px-2 py-0.5 text-xs bg-[#ffa62b] text-white rounded">
                                     Default
                                   </span>
                                 )}
@@ -541,7 +544,7 @@ function AccountPageContent() {
                                   <button
                                     type="button"
                                     onClick={() => handleSetDefaultAddress(addr.id)}
-                                    className="text-xs text-[#FF8C42] hover:underline font-semibold"
+                                    className="text-xs text-[#ffa62b] hover:underline font-semibold"
                                   >
                                     Set as Default
                                   </button>
@@ -671,7 +674,7 @@ function AccountPageContent() {
                 value={reviewForm.comment}
                 onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                 placeholder="Share your experience with this product..."
               />
             </div>
@@ -685,7 +688,7 @@ function AccountPageContent() {
               </button>
               <button
                 onClick={() => handleSubmitReview('', reviewForm.productId)}
-                className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold transition"
+                className="flex-1 bg-[#ffa62b] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold transition"
               >
                 Submit Review
               </button>

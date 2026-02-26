@@ -229,7 +229,7 @@ export default function Home() {
       <nav className="sticky top-0 z-40 shadow-lg text-white">
         <div className="flex w-full">
           {/* Left Brand Block */}
-          <div className="hidden sm:flex items-center gap-3 bg-[#FF8C42] text-[#3D4F42] px-5 md:px-8 py-3 relative overflow-visible">
+          <div className="hidden sm:flex items-center gap-3 bg-[#ffa62b] text-[#3D4F42] px-5 md:px-8 py-3 relative overflow-visible">
             {/* Mango with Juice Splash */}
             <div className="relative w-16 h-16 flex items-center justify-center">
               
@@ -332,17 +332,17 @@ export default function Home() {
                   🥭
                 </motion.span>
               </div>
-              <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+              <h1 className="text-xl font-bold text-[#ffa62b]">Mango Fresh Farm</h1>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-10 mx-auto">
-              <a href="#home" className="text-[#FF8C42] hover:text-orange-300 transition font-medium">Home</a>
-              <a href="#about" className="hover:text-[#FF8C42] transition font-medium">About</a>
-              <a href="/our-process" className="hover:text-[#FF8C42] transition font-medium">Our Process</a>
-              <a href="#products" className="hover:text-[#FF8C42] transition font-medium">Order Online</a>
-              <a href="#blog" className="hover:text-[#FF8C42] transition font-medium">Blog</a>
-              <a href="#contact" className="hover:text-[#FF8C42] transition font-medium">Contact Us</a>
+              <a href="#home" className="text-[#ffa62b] hover:text-orange-300 transition font-medium">Home</a>
+              <a href="#about" className="hover:text-[#ffa62b] transition font-medium">About</a>
+              <a href="/our-process" className="hover:text-[#ffa62b] transition font-medium">Our Process</a>
+              <a href="#products" className="hover:text-[#ffa62b] transition font-medium">Order Online</a>
+              <a href="#blog" className="hover:text-[#ffa62b] transition font-medium">Blog</a>
+              <a href="#contact" className="hover:text-[#ffa62b] transition font-medium">Contact Us</a>
             </div>
 
             {/* Right side actions (log in + cart + wishlist) */}
@@ -380,7 +380,7 @@ export default function Home() {
               <button
                 ref={cartButtonRef}
                 onClick={() => setCartOpen(true)}
-                className={`bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md ${cartAnimating ? 'cart-animate' : ''}`}
+                className={`bg-[#ffa62b] hover:bg-[#FFA558] text-white px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md ${cartAnimating ? 'cart-animate' : ''}`}
               >
                 🛒 <span className="hidden sm:inline">Cart</span> ({cart.reduce((sum, item) => sum + item.quantity, 0)})
               </button>
@@ -452,7 +452,7 @@ export default function Home() {
                 <a
                   href="#home"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">🏠</span>
                   <span>Home</span>
@@ -460,7 +460,7 @@ export default function Home() {
                 <a
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">ℹ️</span>
                   <span>About</span>
@@ -468,7 +468,7 @@ export default function Home() {
                 <a
                   href="/our-process"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">🔄</span>
                   <span>Our Process</span>
@@ -476,7 +476,7 @@ export default function Home() {
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">🛒</span>
                   <span>Order Online</span>
@@ -484,7 +484,7 @@ export default function Home() {
                 <a
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">📝</span>
                   <span>Blog</span>
@@ -492,7 +492,7 @@ export default function Home() {
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">📞</span>
                   <span>Contact Us</span>
@@ -504,7 +504,7 @@ export default function Home() {
                 <Link
                   href="/wishlist"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">❤️</span>
                   <span>Wishlist</span>
@@ -527,7 +527,7 @@ export default function Home() {
                 <Link
                   href={currentUser ? "/account" : "/auth"}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#FF8C42] transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-[#ffa62b] transition font-medium"
                 >
                   <span className="text-xl">👤</span>
                   <span>{currentUser ? currentUser.name : 'Login / Sign Up'}</span>
@@ -632,7 +632,7 @@ export default function Home() {
                                   addToCart(product);
                                 }
                               }}
-                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] text-white flex items-center justify-center font-bold text-sm sm:text-base"
+                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#ffa62b] hover:bg-[#FFA558] text-white flex items-center justify-center font-bold text-sm sm:text-base"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                             >
@@ -641,7 +641,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 sm:gap-3">
-                          <span className="font-bold text-[#FF8C42] text-sm sm:text-base">₹{item.price * item.quantity}</span>
+                          <span className="font-bold text-[#ffa62b] text-sm sm:text-base">₹{item.price * item.quantity}</span>
                         </div>
                       </motion.li>
                     ))}
@@ -654,7 +654,7 @@ export default function Home() {
                   >
                     <span className="font-bold text-base sm:text-xl text-[#3D4F42]">Total:</span>
                     <motion.span 
-                      className="font-bold text-lg sm:text-2xl text-[#FF8C42]"
+                      className="font-bold text-lg sm:text-2xl text-[#ffa62b]"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', delay: 0.5 }}
@@ -764,7 +764,7 @@ export default function Home() {
                     {selectedProduct.name}
                   </h1>
                   
-                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#FF8C42] mb-3 sm:mb-4">
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#ffa62b] mb-3 sm:mb-4">
                     ₹{selectedProduct.price} / kg
                   </p>
 
@@ -807,7 +807,7 @@ export default function Home() {
                       closeProductModal();
                       setTimeout(() => setCartOpen(true), 1000);
                     }}
-                    className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg shadow-lg transition mb-2 sm:mb-3"
+                    className="w-full bg-[#ffa62b] hover:bg-[#FFA558] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-base sm:text-lg shadow-lg transition mb-2 sm:mb-3"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -846,7 +846,7 @@ export default function Home() {
                       onClick={() => setActiveTab(tab as any)}
                       className={`px-3 sm:px-4 py-2 font-semibold capitalize transition text-sm sm:text-base whitespace-nowrap ${
                         activeTab === tab
-                          ? 'text-[#FF8C42] border-b-2 border-[#FF8C42]'
+                          ? 'text-[#ffa62b] border-b-2 border-[#ffa62b]'
                           : 'text-gray-600 hover:text-gray-800'
                       }`}
                     >
@@ -866,19 +866,19 @@ export default function Home() {
                     <h4 className="text-lg font-bold text-[#3D4F42] mb-2">Why Choose Our Mangoes?</h4>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>100% USDA Organic Certified</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>Hand-picked at peak ripeness</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>Shipped within 24 hours of harvest</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>Sustainable farming practices</span>
                       </li>
                     </ul>
@@ -926,7 +926,7 @@ export default function Home() {
                       <h3 className="text-xl font-bold text-[#3D4F42]">Customer Reviews</h3>
                       <Link 
                         href={`/account?tab=reviews&productId=${selectedProduct.id}`}
-                        className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+                        className="bg-[#ffa62b] hover:bg-[#FFA558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
                         onClick={closeProductModal}
                       >
                         Write a Review
@@ -944,7 +944,7 @@ export default function Home() {
                           <div key={review.id} className="border-b pb-4">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 bg-[#FF8C42] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                <div className="w-8 h-8 bg-[#ffa62b] rounded-full flex items-center justify-center text-white text-sm font-bold">
                                   {review.user.name[0]}
                                 </div>
                                 <div>
@@ -1081,7 +1081,7 @@ export default function Home() {
               you see is what you get.
             </p>
             <p className="text-gray-700 text-lg leading-relaxed mb-4">
-              <strong className="text-[#FF8C42]">Our Promise:</strong> Every mango is USDA Organic certified, 
+              <strong className="text-[#ffa62b]">Our Promise:</strong> Every mango is USDA Organic certified, 
               hand-picked at peak ripeness, and shipped fresh within 24 hours. No chemicals, no shortcuts, 
               just pure, delicious mangoes grown the way nature intended.
             </p>
@@ -1091,7 +1091,7 @@ export default function Home() {
             </p>
               <a 
               href="#products" 
-              className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button"
+              className="inline-block bg-[#ffa62b] hover:bg-[#FFA558] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button"
             >
               Shop Now
             </a>
@@ -1145,7 +1145,7 @@ export default function Home() {
                 viewport={{ once: false }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
               >
-                <div className="text-3xl mb-2 text-[#FF8C42]">{badge.icon}</div>
+                <div className="text-3xl mb-2 text-[#ffa62b]">{badge.icon}</div>
                 <h4 className="font-bold text-[#3D4F42] text-sm">{badge.title}</h4>
                 <p className="text-xs text-gray-600">{badge.subtitle}</p>
               </motion.div>
@@ -1182,7 +1182,7 @@ export default function Home() {
             </p>
             <motion.a
               href="/our-process"
-              className="inline-flex items-center gap-3 bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition-all"
+              className="inline-flex items-center gap-3 bg-[#3D4F42] hover:bg-[#ffa62b] text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition-all"
               whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(61, 79, 66, 0.3)' }}
               whileTap={{ scale: 0.95 }}
             >
@@ -1271,7 +1271,7 @@ export default function Home() {
                   placeholder="Search mangoes by name or description..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                  className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                 />
                 <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">🔍</span>
                 {searchQuery && (
@@ -1291,7 +1291,7 @@ export default function Home() {
               <select
                 value={priceFilter}
                 onChange={(e) => setPriceFilter(e.target.value as any)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8C42] bg-white"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffa62b] bg-white"
               >
                 <option value="all">All Prices</option>
                 <option value="low">Under ₹500</option>
@@ -1303,7 +1303,7 @@ export default function Home() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8C42] bg-white"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffa62b] bg-white"
               >
                 <option value="featured">Featured</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -1335,7 +1335,7 @@ export default function Home() {
                   setPriceFilter('all');
                   setSortBy('featured');
                 }}
-                className="mt-4 px-6 py-2 bg-[#FF8C42] text-white rounded-lg hover:bg-[#ff7a29] transition-colors"
+                className="mt-4 px-6 py-2 bg-[#ffa62b] text-white rounded-lg hover:bg-[#ff7a29] transition-colors"
               >
                 Clear All Filters
               </button>
@@ -1387,7 +1387,7 @@ export default function Home() {
                         className="object-cover"
                       />
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-t from-[#FF8C42]/20 to-transparent opacity-0"
+                        className="absolute inset-0 bg-gradient-to-t from-[#ffa62b]/20 to-transparent opacity-0"
                         whileHover={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       />
@@ -1437,7 +1437,7 @@ export default function Home() {
                     <div className="p-6 flex flex-col flex-grow">
                       <h3 className="text-xl font-bold text-[#3D4F42] mb-2">{product.name}</h3>
                       <motion.p 
-                        className="text-2xl font-bold text-[#FF8C42] mb-3"
+                        className="text-2xl font-bold text-[#ffa62b] mb-3"
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.2 }}
                       >
@@ -1474,7 +1474,7 @@ export default function Home() {
                               event.stopPropagation();
                               handleAddToCart(product, event);
                             }}
-                            className="w-8 h-8 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] flex items-center justify-center font-bold"
+                            className="w-8 h-8 rounded-full bg-[#ffa62b] hover:bg-[#FFA558] flex items-center justify-center font-bold"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                           >
@@ -1483,7 +1483,7 @@ export default function Home() {
                         </div>
                       ) : (
                         <motion.button 
-                          className="w-full bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button" 
+                          className="w-full bg-[#3D4F42] hover:bg-[#ffa62b] text-white px-6 py-3 rounded-md font-semibold transition shadow-md juice-button" 
                           onClick={(event) => {
                             event.preventDefault();
                             event.stopPropagation();
@@ -1629,7 +1629,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               {/* Background decorative element */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FF8C42]/5 to-[#3D4F42]/5 rounded-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#ffa62b]/5 to-[#3D4F42]/5 rounded-3xl"></div>
               
               {/* Image 1 - Large tilted */}
               <motion.div 
@@ -1701,7 +1701,7 @@ export default function Home() {
               
               {/* Decorative elements */}
               <motion.div 
-                className="absolute top-1/4 right-1/4 w-16 h-16 bg-[#FF8C42]/20 rounded-full blur-2xl"
+                className="absolute top-1/4 right-1/4 w-16 h-16 bg-[#ffa62b]/20 rounded-full blur-2xl"
                 animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
                 transition={{ duration: 3, repeat: Infinity }}
               />
@@ -1727,7 +1727,7 @@ export default function Home() {
                 viewport={{ once: false }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
-                <span className="bg-[#FF8C42]/10 text-[#FF8C42] px-4 py-2 rounded-full text-sm font-semibold">
+                <span className="bg-[#ffa62b]/10 text-[#ffa62b] px-4 py-2 rounded-full text-sm font-semibold">
                   🌱 100% Organic & Fresh
                 </span>
               </motion.div>
@@ -1802,7 +1802,7 @@ export default function Home() {
               >
                 <motion.a 
                   href="#products" 
-                  className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-semibold transition shadow-lg juice-button"
+                  className="inline-block bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-semibold transition shadow-lg juice-button"
                   whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(255, 140, 66, 0.3)' }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -1888,7 +1888,7 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   <motion.div
-                    className="absolute top-4 left-4 bg-[#FF8C42] text-white px-3 py-1 rounded-full text-sm font-semibold"
+                    className="absolute top-4 left-4 bg-[#ffa62b] text-white px-3 py-1 rounded-full text-sm font-semibold"
                     whileHover={{ scale: 1.1 }}
                   >
                     {post.category}
@@ -1905,7 +1905,7 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-[#3D4F42] mb-3 group-hover:text-[#FF8C42] transition-colors">
+                  <h3 className="text-xl font-bold text-[#3D4F42] mb-3 group-hover:text-[#ffa62b] transition-colors">
                     {post.title}
                   </h3>
                   
@@ -1914,7 +1914,7 @@ export default function Home() {
                   </p>
 
                   <motion.button
-                    className="inline-flex items-center gap-2 text-[#FF8C42] font-semibold hover:gap-3 transition-all"
+                    className="inline-flex items-center gap-2 text-[#ffa62b] font-semibold hover:gap-3 transition-all"
                     whileHover={{ x: 5 }}
                   >
                     Read More
@@ -2041,7 +2041,7 @@ export default function Home() {
                       whileHover={{ x: 5 }}
                     >
                       <h4 className="font-bold text-[#3D4F42] mb-2 flex items-start gap-2">
-                        <span className="text-[#FF8C42] text-lg">Q:</span>
+                        <span className="text-[#ffa62b] text-lg">Q:</span>
                         <span className="text-sm">{faq.q}</span>
                       </h4>
                       <p className="text-gray-600 text-sm pl-6">{faq.a}</p>
@@ -2078,7 +2078,7 @@ export default function Home() {
                     <span className="text-2xl">📧</span>
                     <div>
                       <p className="text-xs text-orange-200">Email</p>
-                      <a href="mailto:info@mangofresh.com" className="font-semibold hover:text-[#FF8C42] transition">
+                      <a href="mailto:info@mangofresh.com" className="font-semibold hover:text-[#ffa62b] transition">
                         info@mangofresh.com
                       </a>
                     </div>
@@ -2091,7 +2091,7 @@ export default function Home() {
                     <span className="text-2xl">📞</span>
                     <div>
                       <p className="text-xs text-orange-200">Phone</p>
-                      <a href="tel:+1234567890" className="font-semibold hover:text-[#FF8C42] transition">
+                      <a href="tel:+1234567890" className="font-semibold hover:text-[#ffa62b] transition">
                         +1 (234) 567-890
                       </a>
                     </div>
@@ -2123,7 +2123,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <motion.a
                     href="mailto:info@mangofreshfarm.com"
-                    className="flex-1 bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-semibold transition text-center"
+                    className="flex-1 bg-[#ffa62b] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-semibold transition text-center"
                     whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(255, 140, 66, 0.4)' }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -2166,7 +2166,7 @@ export default function Home() {
       {/* Floating Message Icon */}
       <button
         onClick={() => setMessageOpen(true)}
-        className="fixed bottom-8 right-8 z-50 bg-[#FF8C42] hover:bg-[#FFA558] text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-3xl transition-all transform hover:scale-110 animate-bounce"
+        className="fixed bottom-8 right-8 z-50 bg-[#ffa62b] hover:bg-[#FFA558] text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-3xl transition-all transform hover:scale-110 animate-bounce"
         aria-label="Open message dialog"
       >
         💬
@@ -2185,7 +2185,7 @@ export default function Home() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
               {/* Header - Red/Orange */}
-              <div className="bg-[#FF8C42] text-white p-5 flex items-center justify-between">
+              <div className="bg-[#ffa62b] text-white p-5 flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold">Mango Fresh Farm</h2>
                   <p className="text-sm flex items-center gap-2 mt-1">
@@ -2240,7 +2240,7 @@ export default function Home() {
                     placeholder="Your name"
                     value={messageName}
                     onChange={(e) => setMessageName(e.target.value)}
-                    className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-[#FF8C42] focus:outline-none bg-transparent text-gray-700 transition"
+                    className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-[#ffa62b] focus:outline-none bg-transparent text-gray-700 transition"
                   />
                   <span className="absolute right-3 top-8 text-gray-400">ℹ️</span>
                 </div>
@@ -2251,7 +2251,7 @@ export default function Home() {
                   <input 
                     type="email" 
                     placeholder="your@email.com"
-                    className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-[#FF8C42] focus:outline-none bg-transparent text-gray-700 transition"
+                    className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-[#ffa62b] focus:outline-none bg-transparent text-gray-700 transition"
                   />
                 </div>
                 
@@ -2262,11 +2262,11 @@ export default function Home() {
                     placeholder="Write your message..."
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
-                    className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-[#FF8C42] focus:outline-none bg-transparent text-gray-700 placeholder-gray-400 transition"
+                    className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-[#ffa62b] focus:outline-none bg-transparent text-gray-700 placeholder-gray-400 transition"
                   />
                   <div className="absolute right-2 -bottom-8 flex gap-2 text-gray-400">
-                    <button className="hover:text-[#FF8C42] transition">😊</button>
-                    <button className="hover:text-[#FF8C42] transition">📎</button>
+                    <button className="hover:text-[#ffa62b] transition">😊</button>
+                    <button className="hover:text-[#ffa62b] transition">📎</button>
                   </div>
                 </div>
                 
@@ -2316,10 +2316,10 @@ export default function Home() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 px-5 py-3 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#FF8C42] transition"
+                  className="flex-1 px-5 py-3 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#ffa62b] transition"
                 />
                 <motion.button
-                  className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg whitespace-nowrap"
+                  className="bg-[#ffa62b] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg whitespace-nowrap"
                   whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(255, 140, 66, 0.4)' }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -2343,13 +2343,13 @@ export default function Home() {
                 Premium organic mangoes grown with sustainable farming practices. From our farm to your table with love and care.
               </p>
               <div className="flex gap-3 mt-4">
-                <a href="https://facebook.com/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-[#FF8C42] rounded-full flex items-center justify-center transition" title="Facebook">
+                <a href="https://facebook.com/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-[#ffa62b] rounded-full flex items-center justify-center transition" title="Facebook">
                   <span className="text-sm">f</span>
                 </a>
-                <a href="https://twitter.com/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-[#FF8C42] rounded-full flex items-center justify-center transition" title="Twitter/X">
+                <a href="https://twitter.com/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-[#ffa62b] rounded-full flex items-center justify-center transition" title="Twitter/X">
                   <span className="text-sm">𝕏</span>
                 </a>
-                <a href="https://linkedin.com/company/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-[#FF8C42] rounded-full flex items-center justify-center transition" title="LinkedIn">
+                <a href="https://linkedin.com/company/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-[#ffa62b] rounded-full flex items-center justify-center transition" title="LinkedIn">
                   <span className="text-sm">in</span>
                 </a>
                 <a href="https://instagram.com/mangofreshfarm" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-white/10 hover:bg-gradient-to-r hover:from-purple-600 hover:via-pink-600 hover:to-orange-600 rounded-full flex items-center justify-center transition" title="Instagram">
@@ -2362,13 +2362,13 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#about" className="hover:text-[#FF8C42] transition">About Us</a></li>
-                <li><a href="/our-process" className="hover:text-[#FF8C42] transition">Our Organic Process</a></li>
-                <li><a href="#products" className="hover:text-[#FF8C42] transition">Our Products</a></li>
-                <li><a href="#blog" className="hover:text-[#FF8C42] transition">Blog</a></li>
-                <li><a href="#team" className="hover:text-[#FF8C42] transition">Our Team</a></li>
-                <li><a href="#testimonials" className="hover:text-[#FF8C42] transition">Testimonials</a></li>
-                <li><a href="#contact" className="hover:text-[#FF8C42] transition">Contact Us</a></li>
+                <li><a href="#about" className="hover:text-[#ffa62b] transition">About Us</a></li>
+                <li><a href="/our-process" className="hover:text-[#ffa62b] transition">Our Organic Process</a></li>
+                <li><a href="#products" className="hover:text-[#ffa62b] transition">Our Products</a></li>
+                <li><a href="#blog" className="hover:text-[#ffa62b] transition">Blog</a></li>
+                <li><a href="#team" className="hover:text-[#ffa62b] transition">Our Team</a></li>
+                <li><a href="#testimonials" className="hover:text-[#ffa62b] transition">Testimonials</a></li>
+                <li><a href="#contact" className="hover:text-[#ffa62b] transition">Contact Us</a></li>
               </ul>
             </div>
 
@@ -2376,11 +2376,11 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4">Customer Service</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="/shipping-policy" className="hover:text-[#FF8C42] transition">Shipping Information</a></li>
-                <li><a href="/refund-policy" className="hover:text-[#FF8C42] transition">Return Policy</a></li>
-                <li><a href="/terms" className="hover:text-[#FF8C42] transition">Terms & Conditions</a></li>
-                <li><a href="/privacy-policy" className="hover:text-[#FF8C42] transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-[#FF8C42] transition">FAQ</a></li>
+                <li><a href="/shipping-policy" className="hover:text-[#ffa62b] transition">Shipping Information</a></li>
+                <li><a href="/refund-policy" className="hover:text-[#ffa62b] transition">Return Policy</a></li>
+                <li><a href="/terms" className="hover:text-[#ffa62b] transition">Terms & Conditions</a></li>
+                <li><a href="/privacy-policy" className="hover:text-[#ffa62b] transition">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-[#ffa62b] transition">FAQ</a></li>
               </ul>
             </div>
 
@@ -2389,19 +2389,19 @@ export default function Home() {
               <h4 className="text-white font-semibold mb-4">Get In Touch</h4>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#FF8C42] mt-1">📍</span>
+                  <span className="text-[#ffa62b] mt-1">📍</span>
                   <span className="text-gray-400">123 Farm Lane<br/>Mango Valley, MV 12345</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#FF8C42]">📞</span>
-                  <a href="tel:+1234567890" className="text-gray-400 hover:text-[#FF8C42] transition">+1 (234) 567-890</a>
+                  <span className="text-[#ffa62b]">📞</span>
+                  <a href="tel:+1234567890" className="text-gray-400 hover:text-[#ffa62b] transition">+1 (234) 567-890</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#FF8C42]">✉️</span>
-                  <a href="mailto:info@mangofresh.com" className="text-gray-400 hover:text-[#FF8C42] transition">info@mangofresh.com</a>
+                  <span className="text-[#ffa62b]">✉️</span>
+                  <a href="mailto:info@mangofresh.com" className="text-gray-400 hover:text-[#ffa62b] transition">info@mangofresh.com</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#FF8C42]">🕐</span>
+                  <span className="text-[#ffa62b]">🕐</span>
                   <span className="text-gray-400">Mon-Sat: 8AM - 6PM</span>
                 </li>
               </ul>
@@ -2413,10 +2413,10 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
               <p className="text-gray-400">&copy; 2026 Mango Fresh Farm. All rights reserved.</p>
               <div className="flex gap-6 text-gray-400">
-                <a href="/privacy-policy" className="hover:text-[#FF8C42] transition">Privacy</a>
-                <a href="/terms" className="hover:text-[#FF8C42] transition">Terms</a>
-                <a href="/refund-policy" className="hover:text-[#FF8C42] transition">Refunds</a>
-                <a href="/shipping-policy" className="hover:text-[#FF8C42] transition">Shipping</a>
+                <a href="/privacy-policy" className="hover:text-[#ffa62b] transition">Privacy</a>
+                <a href="/terms" className="hover:text-[#ffa62b] transition">Terms</a>
+                <a href="/refund-policy" className="hover:text-[#ffa62b] transition">Refunds</a>
+                <a href="/shipping-policy" className="hover:text-[#ffa62b] transition">Shipping</a>
               </div>
             </div>
           </div>

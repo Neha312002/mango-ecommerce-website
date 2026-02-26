@@ -33,7 +33,7 @@ body {
 /* Swiper Navigation Arrows Styling */
 .product-swiper .swiper-button-next,
 .product-swiper .swiper-button-prev {
-  color: #FF8C42;
+  color: #ffa62b;
   background: white;
   width: 45px;
   height: 45px;
@@ -49,7 +49,7 @@ body {
 
 .product-swiper .swiper-button-next:hover,
 .product-swiper .swiper-button-prev:hover {
-  background: #FF8C42;
+  background: #ffa62b;
   color: white;
 }
 
@@ -62,7 +62,7 @@ body {
 }
 
 .product-swiper .swiper-pagination-bullet-active {
-  background: #FF8C42;
+  background: #ffa62b;
   width: 14px;
   height: 14px;
 }
@@ -81,7 +81,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #ffb347 0%, #ff8c42 100%);
+  background: linear-gradient(90deg, #ffb347 0%, #ffa62b 100%);
   transform: translateX(-100%);
   transition: transform 0.35s ease;
   z-index: -1;
@@ -111,7 +111,7 @@ body {
 .splash-screen {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, #FF8C42 0%, #FFA500 50%, #FFB84D 100%);
+  background: linear-gradient(135deg, #ffa62b 0%, #FFA500 50%, #FFB84D 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -334,7 +334,7 @@ html {
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #FF8C42, #FFA500, #FFB84D, #FF8C42);
+  background: linear-gradient(90deg, #ffa62b, #FFA500, #FFB84D, #ffa62b);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

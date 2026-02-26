@@ -240,7 +240,7 @@ export default function AdminProducts() {
         </div>
         <motion.button
           onClick={() => handleOpenModal()}
-          className="bg-[#FF8C42] hover:bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2"
+          className="bg-[#ffa62b] hover:bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -270,7 +270,7 @@ export default function AdminProducts() {
               <h3 className="text-xl font-bold text-[#3D4F42] mb-2">{product.name}</h3>
               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-2xl font-bold text-[#FF8C42]">
+                <span className="text-2xl font-bold text-[#ffa62b]">
                   ₹{product.price.toFixed(2)}/kg
                 </span>
                 <span className="text-sm text-gray-500">
@@ -341,7 +341,7 @@ export default function AdminProducts() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                       placeholder="e.g., Alphonso Mango"
                     />
                   </div>
@@ -356,7 +356,7 @@ export default function AdminProducts() {
                       onChange={handleInputChange}
                       required
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                       placeholder="Describe your product..."
                     />
                   </div>
@@ -374,7 +374,7 @@ export default function AdminProducts() {
                         required
                         step="0.01"
                         min="0"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         placeholder="0.00"
                       />
                     </div>
@@ -389,7 +389,7 @@ export default function AdminProducts() {
                         value={formData.stock}
                         onChange={handleInputChange}
                         min="0"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         placeholder="100"
                       />
                     </div>
@@ -462,7 +462,7 @@ export default function AdminProducts() {
                         name="image"
                         value={formData.image}
                         onChange={handleInputChange}
-                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         placeholder="https://example.com/image.jpg"
                       />
                     </div>
@@ -478,7 +478,7 @@ export default function AdminProducts() {
                         name="weight"
                         value={formData.weight}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         placeholder="1 kg"
                       />
                     </div>
@@ -492,7 +492,7 @@ export default function AdminProducts() {
                         name="origin"
                         value={formData.origin}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                         placeholder="e.g., Ratnagiri, India"
                       />
                     </div>
@@ -507,7 +507,7 @@ export default function AdminProducts() {
                       name="season"
                       value={formData.season}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                       placeholder="e.g., Summer (April-June)"
                     />
                   </div>
@@ -515,7 +515,7 @@ export default function AdminProducts() {
                   <div className="flex gap-4 pt-4">
                     <motion.button
                       type="submit"
-                      className="flex-1 bg-[#FF8C42] hover:bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition"
+                      className="flex-1 bg-[#ffa62b] hover:bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >

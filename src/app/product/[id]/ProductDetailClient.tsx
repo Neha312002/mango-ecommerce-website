@@ -57,16 +57,19 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     : 5;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-white">
       {/* Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-md">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/#products" className="text-gray-700 hover:text-[#FF8C42] transition">
+            <Link href="/#products" className="text-white hover:text-white/80 transition font-semibold">
               ← Back to Products
             </Link>
           </div>
@@ -114,7 +117,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 {product.name}
               </h1>
 
-              <p className="text-2xl font-bold text-[#FF8C42] mb-6">
+              <p className="text-2xl font-bold text-[#ffa62b] mb-6">
                 ₹{product.price} / kg
               </p>
 
@@ -171,7 +174,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <div className="flex gap-4">
                 <motion.button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-[#FF8C42] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition"
+                  className="flex-1 bg-[#ffa62b] hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -225,7 +228,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   onClick={() => setActiveTab(tab as any)}
                   className={`px-6 py-3 font-semibold capitalize transition ${
                     activeTab === tab
-                      ? 'text-[#FF8C42] border-b-2 border-[#FF8C42]'
+                      ? 'text-[#ffa62b] border-b-2 border-[#ffa62b]'
                       : 'text-gray-600 hover:text-gray-800'
                   }`}
                 >
@@ -241,19 +244,19 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 <h4 className="text-xl font-bold text-[#3D4F42] mb-3">Why Choose Our Mangoes?</h4>
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#FF8C42] text-xl">✓</span>
+                    <span className="text-[#ffa62b] text-xl">✓</span>
                     <span>100% USDA Organic Certified - No synthetic pesticides or chemicals</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#FF8C42] text-xl">✓</span>
+                    <span className="text-[#ffa62b] text-xl">✓</span>
                     <span>Hand-picked at peak ripeness for maximum flavor</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#FF8C42] text-xl">✓</span>
+                    <span className="text-[#ffa62b] text-xl">✓</span>
                     <span>Shipped within 24 hours of harvest</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#FF8C42] text-xl">✓</span>
+                    <span className="text-[#ffa62b] text-xl">✓</span>
                     <span>Sustainable farming practices for 15+ years</span>
                   </li>
                 </ul>
@@ -302,7 +305,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                       <span className="text-gray-600">({product.reviews?.length || 0} {product.reviews?.length === 1 ? 'review' : 'reviews'})</span>
                     </div>
                   </div>
-                  <Link href={`/account?tab=reviews&productId=${product.id}`} className="bg-[#FF8C42] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition inline-block">
+                  <Link href={`/account?tab=reviews&productId=${product.id}`} className="bg-[#ffa62b] hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition inline-block">
                     Write a Review
                   </Link>
                 </div>
@@ -318,7 +321,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                       <div key={review.id} className="border-b pb-6">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[#FF8C42] rounded-full flex items-center justify-center text-white font-bold">
+                            <div className="w-10 h-10 bg-[#ffa62b] rounded-full flex items-center justify-center text-white font-bold">
                               {review.user.name[0]}
                             </div>
                             <div>

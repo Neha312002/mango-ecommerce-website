@@ -6,17 +6,20 @@ import Link from 'next/link';
 
 export default function OurProcessPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-orange-50/30">
       {/* Simple Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-md">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <Link 
             href="/" 
-            className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-md font-semibold transition"
+            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-lg font-semibold transition border border-white/20"
           >
             ← Back to Home
           </Link>
@@ -86,14 +89,14 @@ export default function OurProcessPage() {
             ].map((item, idx) => (
               <motion.div
                 key={idx}
-                className="relative bg-white rounded-2xl p-6 shadow-lg border-2 border-green-100 hover:border-[#FF8C42] transition-all"
+                className="relative bg-white rounded-2xl p-6 shadow-lg border-2 border-green-100 hover:border-[#ffa62b] transition-all"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: idx * 0.15 }}
                 whileHover={{ y: -10, scale: 1.03 }}
               >
-                <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-[#FF8C42] to-orange-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-[#ffa62b] to-orange-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
                   {item.step}
                 </div>
                 <motion.div
@@ -231,7 +234,7 @@ export default function OurProcessPage() {
                 >
                   <Link
                     href="/#products"
-                    className="inline-block bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-8 py-4 rounded-lg font-bold transition shadow-lg"
+                    className="inline-block bg-[#3D4F42] hover:bg-[#ffa62b] text-white px-8 py-4 rounded-lg font-bold transition shadow-lg"
                   >
                     🥭 Order Organic Mangoes Now
                   </Link>
@@ -270,7 +273,7 @@ export default function OurProcessPage() {
           >
             <Link
               href="/#products"
-              className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl"
+              className="inline-block bg-[#ffa62b] hover:bg-[#FFA558] text-white px-10 py-4 rounded-lg font-bold text-lg transition shadow-xl"
             >
               Shop Our Mangoes 🛒
             </Link>

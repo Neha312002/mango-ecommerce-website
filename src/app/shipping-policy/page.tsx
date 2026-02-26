@@ -5,17 +5,20 @@ import Link from 'next/link';
 
 export default function ShippingPolicyPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-white">
       {/* Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <Link 
             href="/" 
-            className="bg-[#FF8C42] hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold transition"
+            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-semibold transition border border-white/20"
           >
             ← Back to Home
           </Link>
@@ -58,7 +61,7 @@ export default function ShippingPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-[#3D4F42] mb-4">2. Shipping Costs</h2>
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-orange-50 to-green-50 rounded-lg p-4 border-2 border-[#FF8C42]">
+                <div className="bg-gradient-to-r from-orange-50 to-green-50 rounded-lg p-4 border-2 border-[#ffa62b]">
                   <p className="font-semibold text-lg text-[#3D4F42] mb-2">🎉 FREE Shipping on Orders Above ₹50!</p>
                   <p className="text-gray-700">
                     Orders below ₹50 will incur a shipping charge of ₹9.99
@@ -153,7 +156,7 @@ export default function ShippingPolicyPage() {
                 <ol className="list-decimal list-inside space-y-2 ml-4">
                   <li>Tracking link sent via email</li>
                   <li>Your account dashboard under "My Orders"</li>
-                  <li>Our <Link href="/track-order" className="text-[#FF8C42] hover:underline">Track Order</Link> page using your order number</li>
+                  <li>Our <Link href="/track-order" className="text-[#ffa62b] hover:underline">Track Order</Link> page using your order number</li>
                 </ol>
                 <div className="bg-gray-50 rounded-lg p-4 mt-4">
                   <p className="font-semibold mb-2">📱 Real-Time Updates</p>
@@ -243,9 +246,9 @@ export default function ShippingPolicyPage() {
                 For shipping inquiries or support:
               </p>
               <div className="space-y-2 text-gray-700">
-                <p><strong>Email:</strong> <a href="mailto:shipping@mangofreshfarm.com" className="text-[#FF8C42] hover:underline">shipping@mangofreshfarm.com</a></p>
+                <p><strong>Email:</strong> <a href="mailto:shipping@mangofreshfarm.com" className="text-[#ffa62b] hover:underline">shipping@mangofreshfarm.com</a></p>
                 <p><strong>Phone:</strong> +91 XXXX-XXXXXX (Mon-Sat, 9 AM - 6 PM IST)</p>
-                <p><strong>Track Order:</strong> <Link href="/track-order" className="text-[#FF8C42] hover:underline">Click here</Link></p>
+                <p><strong>Track Order:</strong> <Link href="/track-order" className="text-[#ffa62b] hover:underline">Click here</Link></p>
               </div>
             </section>
           </div>
@@ -253,7 +256,7 @@ export default function ShippingPolicyPage() {
           <div className="mt-8 text-center">
             <Link 
               href="/" 
-              className="inline-block bg-[#FF8C42] hover:bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold transition"
+              className="inline-block bg-[#ffa62b] hover:bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold transition"
             >
               Start Shopping
             </Link>

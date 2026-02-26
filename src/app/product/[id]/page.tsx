@@ -12,7 +12,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Product Not Found</h1>
-          <Link href="/" className="text-[#FF8C42] hover:underline">Return to Home</Link>
+          <Link href="/" className="text-[#ffa62b] hover:underline">Return to Home</Link>
         </div>
       </div>
     );
@@ -43,7 +43,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Product Not Found</h1>
-            <Link href="/" className="text-[#FF8C42] hover:underline">Return to Home</Link>
+            <Link href="/" className="text-[#ffa62b] hover:underline">Return to Home</Link>
           </div>
         </div>
       );
@@ -81,7 +81,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Product Not Found</h1>
           <p className="text-gray-600 mb-4">An error occurred loading this product.</p>
-          <Link href="/" className="text-[#FF8C42] hover:underline">Return to Home</Link>
+          <Link href="/" className="text-[#ffa62b] hover:underline">Return to Home</Link>
         </div>
       </div>
     );

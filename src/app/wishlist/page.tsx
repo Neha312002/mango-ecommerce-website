@@ -163,7 +163,7 @@ export default function WishlistPage() {
                     {selectedProduct.name}
                   </h1>
                   
-                  <p className="text-2xl font-bold text-[#FF8C42] mb-4">
+                  <p className="text-2xl font-bold text-[#ffa62b] mb-4">
                     ₹{selectedProduct.price} / kg
                   </p>
 
@@ -205,7 +205,7 @@ export default function WishlistPage() {
                       addToCart(cartProduct);
                       closeProductModal();
                     }}
-                    className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
+                    className="w-full bg-[#ffa62b] hover:bg-[#FFA558] text-white px-6 py-3 rounded-lg font-bold text-lg shadow-lg transition mb-3"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -245,7 +245,7 @@ export default function WishlistPage() {
                       onClick={() => setActiveTab(tab as any)}
                       className={`px-4 py-2 font-semibold capitalize transition ${
                         activeTab === tab
-                          ? 'text-[#FF8C42] border-b-2 border-[#FF8C42]'
+                          ? 'text-[#ffa62b] border-b-2 border-[#ffa62b]'
                           : 'text-gray-600 hover:text-gray-800'
                       }`}
                     >
@@ -265,19 +265,19 @@ export default function WishlistPage() {
                     <h4 className="text-lg font-bold text-[#3D4F42] mb-2">Why Choose Our Mangoes?</h4>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>100% USDA Organic Certified</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>Hand-picked at peak ripeness</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>Shipped within 24 hours of harvest</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-[#FF8C42]">✓</span>
+                        <span className="text-[#ffa62b]">✓</span>
                         <span>Sustainable farming practices</span>
                       </li>
                     </ul>
@@ -325,7 +325,7 @@ export default function WishlistPage() {
                       <h3 className="text-xl font-bold text-[#3D4F42]">Customer Reviews</h3>
                       <Link 
                         href={`/account?tab=reviews&productId=${selectedProduct.id}`}
-                        className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+                        className="bg-[#ffa62b] hover:bg-[#FFA558] text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
                         onClick={closeProductModal}
                       >
                         Write a Review
@@ -343,7 +343,7 @@ export default function WishlistPage() {
                           <div key={review.id} className="border-b pb-4">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 bg-[#FF8C42] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                <div className="w-8 h-8 bg-[#ffa62b] rounded-full flex items-center justify-center text-white text-sm font-bold">
                                   {review.user.name[0]}
                                 </div>
                                 <div>
@@ -379,17 +379,20 @@ export default function WishlistPage() {
       </AnimatePresence>
 
       {/* Navigation */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
             {currentUser?.role === 'admin' && (
               <Link
                 href="/admin"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-md font-semibold transition flex items-center gap-2"
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 shadow-lg border border-white/20"
               >
                 <span>⚙️</span>
                 <span className="hidden sm:inline">Admin</span>
@@ -397,30 +400,35 @@ export default function WishlistPage() {
             )}
             <Link
               href="/checkout"
-              className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-3 sm:px-4 py-2 rounded-md flex items-center gap-2 font-medium transition shadow-md"
+              className="bg-white text-[#ffa62b] hover:bg-gray-50 px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 font-semibold transition shadow-lg"
             >
-              🛒 <span className="hidden sm:inline">Cart</span> ({cart.reduce((sum, item) => sum + item.quantity, 0)})
+              🛒 <span className="hidden sm:inline">Cart</span> <span className="bg-[#ffa62b] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                {cart.reduce((sum, item) => sum + item.quantity, 0)}
+              </span>
             </Link>
             <Link 
               href="/" 
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 sm:px-4 py-2 rounded-md font-semibold transition"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition border border-white/20"
             >
               <span className="hidden sm:inline">← Back to Home</span>
-              <span className="sm:hidden">← Home</span>
+              <span className="sm:hidden">←</span>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Wishlist Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <motion.h1 
-          className="text-4xl font-bold text-[#3D4F42] mb-8"
+      <div className="max-w-7xl mx-auto px-6 py-12 bg-gradient-to-b from-orange-50 to-white min-h-screen">
+        <motion.div 
+          className="mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          My Wishlist ❤️
-        </motion.h1>
+          <h1 className="text-5xl font-bold text-[#3D4F42] mb-2 flex items-center gap-3">
+            <span className="text-red-500">❤️</span> My Wishlist
+          </h1>
+          <p className="text-gray-600 text-lg">Your favorite mangoes, saved for later</p>
+        </motion.div>
 
         {wishlistProducts.length === 0 ? (
           <motion.div 
@@ -433,7 +441,7 @@ export default function WishlistPage() {
             <p className="text-gray-600 mb-6">Add your favorite mangoes to your wishlist!</p>
             <Link 
               href="/"
-              className="inline-block bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-semibold transition"
+              className="inline-block bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-3 rounded-lg font-semibold transition"
             >
               Browse Products
             </Link>
@@ -461,7 +469,7 @@ export default function WishlistPage() {
                   <h3 className="text-xl font-bold text-[#3D4F42] mb-2">
                     {item.product.name}
                   </h3>
-                  <p className="text-2xl font-bold text-[#FF8C42] mb-4">
+                  <p className="text-2xl font-bold text-[#ffa62b] mb-4">
                     ₹{item.product.price.toFixed(2)} / kg
                   </p>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
@@ -491,7 +499,7 @@ export default function WishlistPage() {
                             const quantity = cart.find(cartItem => cartItem.name === item.product.name)?.quantity || 1;
                             updateQuantity(item.product.name, quantity + 1);
                           }}
-                          className="w-8 h-8 rounded-full bg-[#FF8C42] hover:bg-[#FFA558] flex items-center justify-center font-bold"
+                          className="w-8 h-8 rounded-full bg-[#ffa62b] hover:bg-[#FFA558] flex items-center justify-center font-bold"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                         >
@@ -501,7 +509,7 @@ export default function WishlistPage() {
                     ) : (
                       <button
                         onClick={(e) => handleAddToCartSimple(item, e)}
-                        className="flex-1 bg-[#3D4F42] hover:bg-[#FF8C42] text-white px-4 py-2 rounded-lg font-semibold transition"
+                        className="flex-1 bg-[#3D4F42] hover:bg-[#ffa62b] text-white px-4 py-2 rounded-lg font-semibold transition"
                       >
                         Add to Cart
                       </button>
@@ -522,7 +530,7 @@ export default function WishlistPage() {
                       e.stopPropagation();
                       handleProductClick(item.product.id);
                     }}
-                    className="block w-full mt-3 text-center text-sm text-[#FF8C42] hover:underline"
+                    className="block w-full mt-3 text-center text-sm text-[#ffa62b] hover:underline"
                   >
                     View Details →
                   </button>

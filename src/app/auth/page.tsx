@@ -104,15 +104,18 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-md">
+      <nav className="bg-gradient-to-r from-[#ffa62b] to-[#ff9500] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-            <span className="text-3xl">🥭</span>
-            <h1 className="text-xl font-bold text-[#FF8C42]">Mango Fresh Farm</h1>
+          <Link href="/" className="flex items-center gap-3 hover:scale-105 transition-transform">
+            <span className="text-4xl drop-shadow-lg">🥭</span>
+            <div>
+              <h1 className="text-2xl font-bold text-white drop-shadow-md">Mango Fresh Farm</h1>
+              <p className="text-xs text-white/90">Naturally Sweet</p>
+            </div>
           </Link>
           <Link 
             href="/" 
-            className="bg-[#FF8C42] hover:bg-[#FFA558] text-white px-6 py-2 rounded-md font-semibold transition"
+            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-2 rounded-lg font-semibold transition border border-white/20"
           >
             ← Back to Home
           </Link>
@@ -134,7 +137,7 @@ export default function AuthPage() {
               }}
               className={`py-4 font-bold transition ${
                 isLogin
-                  ? 'bg-white text-[#FF8C42]'
+                  ? 'bg-white text-[#ffa62b]'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -147,7 +150,7 @@ export default function AuthPage() {
               }}
               className={`py-4 font-bold transition ${
                 !isLogin
-                  ? 'bg-white text-[#FF8C42]'
+                  ? 'bg-white text-[#ffa62b]'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -195,7 +198,7 @@ export default function AuthPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                     placeholder="John Doe"
                   />
                 </div>
@@ -210,7 +213,7 @@ export default function AuthPage() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                   placeholder="john@example.com"
                 />
               </div>
@@ -234,7 +237,7 @@ export default function AuthPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                   placeholder="••••••••"
                 />
               </div>
@@ -251,7 +254,7 @@ export default function AuthPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, confirmPassword: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffa62b] focus:border-transparent"
                     placeholder="••••••••"
                   />
                 </div>
@@ -260,7 +263,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#FF8C42] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#ffa62b] hover:bg-[#FFA558] text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Create Account')}
               </button>
@@ -268,7 +271,7 @@ export default function AuthPage() {
 
             {isLogin && (
               <div className="mt-6 text-center">
-                <a href="#" className="text-[#FF8C42] hover:underline text-sm">
+                <a href="#" className="text-[#ffa62b] hover:underline text-sm">
                   Forgot Password?
                 </a>
               </div>
@@ -292,11 +295,11 @@ export default function AuthPage() {
 
         <p className="text-center mt-6 text-gray-600 text-sm">
           By continuing, you agree to our{' '}
-          <Link href="#" className="text-[#FF8C42] hover:underline">
+          <Link href="#" className="text-[#ffa62b] hover:underline">
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href="#" className="text-[#FF8C42] hover:underline">
+          <Link href="#" className="text-[#ffa62b] hover:underline">
             Privacy Policy
           </Link>
         </p>
