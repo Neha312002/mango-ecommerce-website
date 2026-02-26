@@ -84,7 +84,7 @@ export async function PUT(
     });
 
     // Send status update email to customer
-    if (order.email && process.env.RESEND_API_KEY) {
+    if (order.email && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
       const statusMessages: { [key: string]: string } = {
         processing: 'Your order is being processed and will be shipped soon.',
         shipped: 'Great news! Your order has been shipped and is on its way to you.',

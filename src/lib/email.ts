@@ -1,4 +1,19 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
+
+// Create Gmail SMTP transporter
+function createTransporter() {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    throw new Error('Gmail credentials not configured');
+  }
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
+}
 
 export async function sendOrderConfirmationEmail(
   to: string,
@@ -22,18 +37,17 @@ export async function sendOrderConfirmationEmail(
 ) {
   try {
     // Check if email is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.warn('⚠️ RESEND_API_KEY not configured, skipping email');
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.warn('⚠️ Gmail credentials not configured, skipping email');
       return { success: false, error: 'Email not configured' };
     }
 
-    console.log('🔑 RESEND_API_KEY found (length):', process.env.RESEND_API_KEY.length);
     console.log('📧 Sending order confirmation email to:', to);
     console.log('📦 Order number:', orderData.orderNumber);
 
-    // Initialize Resend
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    console.log('✅ Resend client initialized');
+    // Initialize Gmail transporter
+    const transporter = createTransporter();
+    console.log('✅ Gmail transporter initialized');
 
     const itemsHtml = orderData.items
       .map(
@@ -164,27 +178,21 @@ export async function sendOrderConfirmationEmail(
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Mango Fresh Farm <onboarding@resend.dev>',
-      to: [to],
+    const info = await transporter.sendMail({
+      from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
+      to: to,
       subject: `Order Confirmation - #${orderData.orderNumber}`,
       html: htmlContent,
     });
 
-    if (error) {
-      console.error('❌ Resend API error:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
-      return { success: false, error };
-    }
-
     console.log('✅ Email sent successfully!');
-    console.log('📨 Email data:', data);
-    return { success: true, data };
-  } catch (error) {
+    console.log('📨 Message ID:', info.messageId);
+    return { success: true, data: info };
+  } catch (error: any) {
     console.error('❌ Email sending error (catch block):', error);
     console.error('Error type:', typeof error);
-    console.error('Error details:', JSON.stringify(error, null, 2));
-    return { success: false, error };
+    console.error('Error message:', error.message);
+    return { success: false, error: error.message };
   }
 }
 
@@ -205,9 +213,10 @@ export async function sendAdminOrderNotification(orderData: {
   };
 }) {
   try {
-    if (!process.env.RESEND_API_KEY || !process.env.ADMIN_EMAIL) {
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !process.env.ADMIN_EMAIL) {
       console.warn('⚠️ Email not configured for admin notifications');
-      console.warn('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+      console.warn('GMAIL_USER exists:', !!process.env.GMAIL_USER);
+      console.warn('GMAIL_APP_PASSWORD exists:', !!process.env.GMAIL_APP_PASSWORD);
       console.warn('ADMIN_EMAIL exists:', !!process.env.ADMIN_EMAIL);
       return { success: false, error: 'Email not configured' };
     }
@@ -215,7 +224,7 @@ export async function sendAdminOrderNotification(orderData: {
     console.log('📧 Sending admin notification to:', process.env.ADMIN_EMAIL);
     console.log('📦 Order:', orderData.orderNumber, '- Total:', orderData.total);
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const transporter = createTransporter();
 
     const itemsHtml = orderData.items
       .map(
@@ -324,27 +333,21 @@ export async function sendAdminOrderNotification(orderData: {
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Mango Fresh Farm <onboarding@resend.dev>',
-      to: [process.env.ADMIN_EMAIL],
+    const info = await transporter.sendMail({
+      from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
+      to: process.env.ADMIN_EMAIL,
       subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
       html: htmlContent,
     });
 
-    if (error) {
-      console.error('❌ Admin email sending failed:', error);
-      console.error('Admin error details:', JSON.stringify(error, null, 2));
-      return { success: false, error };
-    }
-
     console.log('✅ Admin email sent successfully!');
-    console.log('📨 Admin email data:', data);
-    return { success: true, data };
-  } catch (error) {
+    console.log('📨 Admin message ID:', info.messageId);
+    return { success: true, data: info };
+  } catch (error: any) {
     console.error('❌ Admin email sending error (catch block):', error);
     console.error('Error type:', typeof error);
-    console.error('Error details:', JSON.stringify(error, null, 2));
-    return { success: false, error };
+    console.error('Error message:', error.message);
+    return { success: false, error: error.message };
   }
 }
 
@@ -361,12 +364,12 @@ export async function sendOrderStatusUpdateEmail(
   }
 ) {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY not configured, skipping email');
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.warn('Gmail credentials not configured, skipping email');
       return { success: false, error: 'Email not configured' };
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const transporter = createTransporter();
 
     const statusColors: { [key: string]: { bg: string; text: string; emoji: string } } = {
       processing: { bg: '#FEF3C7', text: '#F59E0B', emoji: '⏳' },
@@ -475,21 +478,17 @@ export async function sendOrderStatusUpdateEmail(
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Mango Fresh Farm <onboarding@resend.dev>',
-      to: [to],
+    const info = await transporter.sendMail({
+      from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
+      to: to,
       subject: `Order #${orderData.orderNumber} - ${statusStyle.emoji} ${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}`,
       html: htmlContent,
     });
 
-    if (error) {
-      console.error('Status update email failed:', error);
-      return { success: false, error };
-    }
-
-    return { success: true, data };
-  } catch (error) {
+    console.log('✅ Status update email sent successfully!');
+    return { success: true, data: info };
+  } catch (error: any) {
     console.error('Status update email error:', error);
-    return { success: false, error };
+    return { success: false, error: error.message };
   }
 }

@@ -106,11 +106,11 @@ export async function POST(request: NextRequest) {
 
     // Send order confirmation email (don't block response if email fails)
     console.log('🔍 Email check - shipping.email:', shipping.email);
-    console.log('🔍 Email check - RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+    console.log('🔍 Email check - GMAIL_USER exists:', !!process.env.GMAIL_USER);
+    console.log('🔍 Email check - GMAIL_APP_PASSWORD exists:', !!process.env.GMAIL_APP_PASSWORD);
     console.log('🔍 Email check - ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
-    console.log('🔍 Email check - EMAIL_FROM:', process.env.EMAIL_FROM);
     
-    if (shipping.email && process.env.RESEND_API_KEY) {
+    if (shipping.email && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
       console.log('✅ Starting email sending process...');
       // Dynamic import to avoid build-time initialization
       import('@/lib/email')
