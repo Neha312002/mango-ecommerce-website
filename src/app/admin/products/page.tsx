@@ -14,9 +14,10 @@ export default function AdminProducts() {
     description: '',
     price: '',
     image: '',
-    category: '',
     stock: '',
     weight: '',
+    origin: '',
+    season: '',
   });
 
   useEffect(() => {
@@ -43,9 +44,10 @@ export default function AdminProducts() {
         description: product.description,
         price: product.price.toString(),
         image: product.image,
-        category: product.category || '',
         stock: product.stock?.toString() || '100',
-        weight: product.weight || '1kg',
+        weight: product.weight || '1 kg',
+        origin: product.origin || '',
+        season: product.season || '',
       });
     } else {
       setEditingProduct(null);
@@ -54,9 +56,10 @@ export default function AdminProducts() {
         description: '',
         price: '',
         image: '',
-        category: '',
         stock: '100',
-        weight: '1kg',
+        weight: '1 kg',
+        origin: 'Local Farm',
+        season: 'All Year',
       });
     }
     setModalOpen(true);
@@ -327,20 +330,6 @@ export default function AdminProducts() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Category
-                      </label>
-                      <input
-                        type="text"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                        placeholder="e.g., Premium"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Weight
                       </label>
                       <input
@@ -349,9 +338,37 @@ export default function AdminProducts() {
                         value={formData.weight}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                        placeholder="1kg"
+                        placeholder="1 kg"
                       />
                     </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Origin
+                      </label>
+                      <input
+                        type="text"
+                        name="origin"
+                        value={formData.origin}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        placeholder="e.g., Ratnagiri, India"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Season
+                    </label>
+                    <input
+                      type="text"
+                      name="season"
+                      value={formData.season}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                      placeholder="e.g., Summer (April-June)"
+                    />
                   </div>
 
                   <div className="flex gap-4 pt-4">

@@ -124,27 +124,29 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Get orders for a user
+// Get orders (all orders for admin, or specific user's orders)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      );
-    }
+    // If userId is provided, get orders for that user
+    // If not provided, assume admin is requesting all orders
+    const whereClause = userId ? { userId: parseInt(userId) } : {};
 
     const orders = await prisma.order.findMany({
-      where: {
-        userId: parseInt(userId),
-      },
+      where: whereClause,
       include: {
         items: {
           include: {
             product: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
           },
         },
       },
