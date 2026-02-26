@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Disallow admin areas (if you create admin panel later)
+Disallow: /api/
+Disallow: /admin/
+
+# Allow all other pages
+Allow: /
+Allow: /products
+Allow: /wishlist
+Allow: /account
+Allow: /checkout
+Allow: /privacy-policy
+Allow: /terms
+Allow: /refund-policy
+Allow: /shipping-policy
+
+# Sitemap location
+Sitemap: https://mangofreshfarm.com/sitemap.xml
+
+# Crawl delay (optional, in seconds)
+Crawl-delay: 1

@@ -11,6 +11,7 @@ import { useCart } from '../context/CartContext';
 import { useState, useRef, useEffect, type MouseEvent, type CSSProperties } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { OrganizationSchema, WebsiteSchema, LocalBusinessSchema } from '../components/StructuredData';
 
 const sliderImages = [
   '/images/mango1.jpg',
@@ -135,6 +136,11 @@ export default function Home() {
 
   return (
     <>
+      {/* SEO Structured Data */}
+      <OrganizationSchema />
+      <WebsiteSchema />
+      <LocalBusinessSchema />
+
       {/* Mango Splash Reveal Animation */}
       {showSplash && (
         <div className="splash-screen">
