@@ -1,8 +1,19 @@
 import sgMail from '@sendgrid/mail';
 
+// Timeout wrapper
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
 // Initialize SendGrid
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('SendGrid initialized with API key');
 }
 
 export async function sendOrderConfirmationEmail(
@@ -172,12 +183,16 @@ export async function sendOrderConfirmationEmail(
     console.log('API Key starts with SG:', process.env.SENDGRID_API_KEY?.startsWith('SG.'));
     
     try {
-      const response = await sgMail.send({
-        to: to,
-        from: process.env.SENDGRID_FROM_EMAIL!,
-        subject: `Order Confirmation - #${orderData.orderNumber}`,
-        html: htmlContent,
-      });
+      console.log('⏱️ Sending with 15 second timeout...');
+      const response = await withTimeout(
+        sgMail.send({
+          to: to,
+          from: process.env.SENDGRID_FROM_EMAIL!,
+          subject: `Order Confirmation - #${orderData.orderNumber}`,
+          html: htmlContent,
+        }),
+        15000 // 15 second timeout
+      );
       
       console.log('✅ Email sent successfully via SendGrid!');
       console.log('Response:', JSON.stringify(response));
@@ -339,12 +354,16 @@ export async function sendAdminOrderNotification(orderData: {
     console.log('To:', process.env.ADMIN_EMAIL);
 
     try {
-      const response = await sgMail.send({
-        to: process.env.ADMIN_EMAIL!,
-        from: process.env.SENDGRID_FROM_EMAIL!,
-        subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
-        html: htmlContent,
-      });
+      console.log('⏱️ Sending admin email with 15 second timeout...');
+      const response = await withTimeout(
+        sgMail.send({
+          to: process.env.ADMIN_EMAIL!,
+          from: process.env.SENDGRID_FROM_EMAIL!,
+          subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
+          html: htmlContent,
+        }),
+        15000 // 15 second timeout
+      );
 
       console.log('✅ Admin email sent successfully via SendGrid!');
       console.log('Response:', JSON.stringify(response));
@@ -493,12 +512,16 @@ export async function sendOrderStatusUpdateEmail(
       </html>
     `;
 
-    await sgMail.send({
-      to: to,
-      from: process.env.SENDGRID_FROM_EMAIL!,
-      subject: `Order #${orderData.orderNumber} - ${statusStyle.emoji} ${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}`,
-      html: htmlContent,
-    });
+    console.log('⏱️ Sending status update email with 15 second timeout...');
+    await withTimeout(
+      sgMail.send({
+        to: to,
+        from: process.env.SENDGRID_FROM_EMAIL!,
+        subject: `Order #${orderData.orderNumber} - ${statusStyle.emoji} ${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}`,
+        html: htmlContent,
+      }),
+      15000 // 15 second timeout
+    );
 
     console.log('✅ Status update email sent successfully via SendGrid!');
     return { success: true };
