@@ -183,7 +183,8 @@ export async function sendOrderConfirmationEmail(
     console.log('API Key starts with SG:', process.env.SENDGRID_API_KEY?.startsWith('SG.'));
     
     try {
-      console.log('⏱️ Sending with 15 second timeout...');
+      console.log('⏱️ Sending with 8 second timeout...');
+      console.log('🌐 About to call SendGrid API...');
       const response = await withTimeout(
         sgMail.send({
           to: to,
@@ -191,8 +192,9 @@ export async function sendOrderConfirmationEmail(
           subject: `Order Confirmation - #${orderData.orderNumber}`,
           html: htmlContent,
         }),
-        15000 // 15 second timeout
+        8000 // 8 second timeout (Vercel hobby plan has 10s max)
       );
+      console.log('🎉 SendGrid API call completed!');
       
       console.log('✅ Email sent successfully via SendGrid!');
       console.log('Response:', JSON.stringify(response));
@@ -354,7 +356,8 @@ export async function sendAdminOrderNotification(orderData: {
     console.log('To:', process.env.ADMIN_EMAIL);
 
     try {
-      console.log('⏱️ Sending admin email with 15 second timeout...');
+      console.log('⏱️ Sending admin email with 8 second timeout...');
+      console.log('🌐 About to call SendGrid API for admin...');
       const response = await withTimeout(
         sgMail.send({
           to: process.env.ADMIN_EMAIL!,
@@ -362,8 +365,9 @@ export async function sendAdminOrderNotification(orderData: {
           subject: `🛎️ New Order #${orderData.orderNumber} - ₹${orderData.total.toFixed(2)}`,
           html: htmlContent,
         }),
-        15000 // 15 second timeout
+        8000 // 8 second timeout (Vercel hobby plan has 10s max)
       );
+      console.log('🎉 Admin SendGrid API call completed!');
 
       console.log('✅ Admin email sent successfully via SendGrid!');
       console.log('Response:', JSON.stringify(response));
@@ -512,7 +516,7 @@ export async function sendOrderStatusUpdateEmail(
       </html>
     `;
 
-    console.log('⏱️ Sending status update email with 15 second timeout...');
+    console.log('⏱️ Sending status update email with 8 second timeout...');
     await withTimeout(
       sgMail.send({
         to: to,
@@ -520,7 +524,7 @@ export async function sendOrderStatusUpdateEmail(
         subject: `Order #${orderData.orderNumber} - ${statusStyle.emoji} ${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}`,
         html: htmlContent,
       }),
-      15000 // 15 second timeout
+      8000 // 8 second timeout (Vercel hobby plan has 10s max)
     );
 
     console.log('✅ Status update email sent successfully via SendGrid!');
