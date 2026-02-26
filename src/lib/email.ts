@@ -356,12 +356,10 @@ export async function sendOrderStatusUpdateEmail(
   }
 ) {
   try {
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      console.warn('Gmail credentials not configured, skipping email');
+    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+      console.warn('SendGrid not configured, skipping status update email');
       return { success: false, error: 'Email not configured' };
     }
-
-    const transporter = createTransporter();
 
     const statusColors: { [key: string]: { bg: string; text: string; emoji: string } } = {
       processing: { bg: '#FEF3C7', text: '#F59E0B', emoji: '⏳' },
@@ -470,17 +468,20 @@ export async function sendOrderStatusUpdateEmail(
       </html>
     `;
 
-    const info = await transporter.sendMail({
-      from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
+    await sgMail.send({
       to: to,
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: `Order #${orderData.orderNumber} - ${statusStyle.emoji} ${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}`,
       html: htmlContent,
     });
 
-    console.log('✅ Status update email sent successfully!');
-    return { success: true, data: info };
+    console.log('✅ Status update email sent successfully via SendGrid!');
+    return { success: true };
   } catch (error: any) {
     console.error('Status update email error:', error);
+    if (error.response) {
+      console.error('SendGrid Response:', error.response.body);
+    }
     return { success: false, error: error.message };
   }
 }
