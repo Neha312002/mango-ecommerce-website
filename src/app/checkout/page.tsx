@@ -726,6 +726,22 @@ export default function CheckoutPage() {
                   )}
                   
                   <form onSubmit={handleShippingSubmit} className="space-y-6">
+                    {/* Email field - Always visible */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Email Address * (for order confirmation)
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={shippingInfo.email}
+                        onChange={(e) => setShippingInfo({...shippingInfo, email: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        placeholder="your-email@example.com"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">We'll send order confirmation and updates to this email</p>
+                    </div>
+
                     {(useNewAddress || savedAddresses.length === 0) && (
                     <>
                     <div className="grid md:grid-cols-2 gap-6">
@@ -744,31 +760,17 @@ export default function CheckoutPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          Email Address *
+                          Phone Number *
                         </label>
                         <input
-                          type="email"
+                          type="tel"
                           required
-                          value={shippingInfo.email}
-                          onChange={(e) => setShippingInfo({...shippingInfo, email: e.target.value})}
+                          value={shippingInfo.phone}
+                          onChange={(e) => setShippingInfo({...shippingInfo, phone: e.target.value})}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                          placeholder="john@example.com"
+                          placeholder="+1 (234) 567-890"
                         />
                       </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Phone Number *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={shippingInfo.phone}
-                        onChange={(e) => setShippingInfo({...shippingInfo, phone: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                        placeholder="+1 (234) 567-890"
-                      />
                     </div>
 
                     <div>
