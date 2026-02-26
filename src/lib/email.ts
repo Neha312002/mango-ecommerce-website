@@ -7,11 +7,19 @@ function createTransporter() {
   }
 
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: true,
+    },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 }
 
@@ -48,6 +56,16 @@ export async function sendOrderConfirmationEmail(
     // Initialize Gmail transporter
     const transporter = createTransporter();
     console.log('✅ Gmail transporter initialized');
+
+    // Verify connection
+    console.log('🔌 Verifying SMTP connection...');
+    try {
+      await transporter.verify();
+      console.log('✅ SMTP connection verified successfully!');
+    } catch (verifyError: any) {
+      console.error('❌ SMTP verification failed:', verifyError.message);
+      throw verifyError;
+    }
 
     const itemsHtml = orderData.items
       .map(
