@@ -27,8 +27,8 @@ export default function AdminLayout({
 
     const parsedUser = JSON.parse(userData);
     
-    // For now, check if email contains 'admin' (you can add a proper role field in database)
-    if (!parsedUser.email.includes('admin')) {
+    // Check if user has admin role
+    if (parsedUser.role !== 'admin') {
       alert('Access denied. Admin privileges required.');
       router.push('/');
       return;

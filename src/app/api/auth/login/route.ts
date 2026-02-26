@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
           id: userWithoutPassword.id,
           name: userWithoutPassword.name,
           email: userWithoutPassword.email,
+          role: userWithoutPassword.role || 'user',
           joinedDate: userWithoutPassword.createdAt.toISOString(),
           wishlist: [],
           reviews: [],
