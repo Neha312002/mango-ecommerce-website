@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Update user role to admin
-    const user = await prisma.user.update({
+    // Update user role to admin (type assertion until Prisma regenerates)
+    const user = await (prisma.user.update as any)({
       where: { email },
       data: { role: 'admin' },
       select: {

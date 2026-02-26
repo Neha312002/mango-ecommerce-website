@@ -15,10 +15,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user
+    // Find user (with role field)
     const user = await prisma.user.findUnique({
       where: { email },
-    });
+    }) as any; // Type assertion until Prisma regenerates
 
     if (!user) {
       return NextResponse.json(
