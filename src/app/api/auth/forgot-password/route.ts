@@ -35,13 +35,12 @@ export async function POST(request: NextRequest) {
     const resetExpiry = new Date(Date.now() + 3600000);
 
     // Update user with reset token
-    // @ts-expect-error - Prisma types not updated locally, but works in production
     await prisma.user.update({
       where: { id: user.id },
       data: {
         passwordResetToken: resetToken,
         passwordResetExpiry: resetExpiry,
-      },
+      } as any,
     });
 
     // TODO: Send email with reset token (when Resend is configured)

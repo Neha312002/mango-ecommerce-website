@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user with valid reset token
-    // @ts-expect-error - Prisma types not updated locally, but works in production
     const user = await prisma.user.findFirst({
       where: {
         email: email.toLowerCase(),
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
         passwordResetExpiry: {
           gt: new Date(), // Token must not be expired
         },
-      },
+      } as any,
     });
 
     if (!user) {
@@ -45,14 +44,13 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password and clear reset token
-    // @ts-expect-error - Prisma types not updated locally, but works in production
     await prisma.user.update({
       where: { id: user.id },
       data: {
         password: hashedPassword,
         passwordResetToken: null,
         passwordResetExpiry: null,
-      },
+      } as any,
     });
 
     console.log(`Password reset successful for user: ${user.email}`);
