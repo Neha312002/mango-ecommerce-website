@@ -19,6 +19,8 @@ export default function AdminProducts() {
     origin: '',
     season: '',
   });
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -49,6 +51,7 @@ export default function AdminProducts() {
         origin: product.origin || '',
         season: product.season || '',
       });
+      setImagePreview(product.image);
     } else {
       setEditingProduct(null);
       setFormData({
@@ -61,6 +64,7 @@ export default function AdminProducts() {
         origin: 'Local Farm',
         season: 'All Year',
       });
+      setImagePreview('');
     }
     setModalOpen(true);
   };
@@ -71,19 +75,82 @@ export default function AdminProducts() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    
+    // Update image preview if image URL is changed
+    if (name === 'image') {
+      setImagePreview(value);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size should be less than 5MB');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    setUploadingImage(true);
+
+    try {
+      // Convert to base64 for preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setImagePreview(base64String);
+        setFormData({
+          ...formData,
+          image: base64String,
+        });
+        setUploadingImage(false);
+      };
+      reader.onerror = () => {
+        alert('Failed to read image file');
+        setUploadingImage(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image');
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate image
+    if (!formData.image) {
+      alert('Please upload an image or provide an image URL');
+      return;
+    }
+    
     try {
       const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        alert('You are not logged in. Please login again.');
+        return;
+      }
+
       const url = editingProduct ? `/api/products/${editingProduct.id}` : '/api/products';
       const method = editingProduct ? 'PUT' : 'POST';
+
+      console.log(`${method} request to:`, url);
+      console.log('Token exists:', !!token);
 
       const res = await fetch(url, {
         method,
@@ -98,17 +165,20 @@ export default function AdminProducts() {
         }),
       });
 
+      console.log('Response status:', res.status);
+
       if (res.ok) {
         alert(editingProduct ? 'Product updated successfully!' : 'Product added successfully!');
         handleCloseModal();
         fetchProducts();
       } else {
         const error = await res.json();
+        console.error('Error response:', error);
         alert(`Error: ${error.error || 'Failed to save product'}`);
       }
     } catch (error) {
       console.error('Error saving product:', error);
-      alert('Failed to save product');
+      alert('Failed to save product. Check console for details.');
     }
   };
 
@@ -117,6 +187,15 @@ export default function AdminProducts() {
 
     try {
       const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        alert('You are not logged in. Please login again.');
+        return;
+      }
+
+      console.log('DELETE request to:', `/api/products/${id}`);
+      console.log('Token exists:', !!token);
+
       const res = await fetch(`/api/products/${id}`, {
         method: 'DELETE',
         headers: {
@@ -124,15 +203,19 @@ export default function AdminProducts() {
         },
       });
 
+      console.log('Delete response status:', res.status);
+
       if (res.ok) {
         alert('Product deleted successfully!');
         fetchProducts();
       } else {
-        alert('Failed to delete product');
+        const error = await res.json();
+        console.error('Delete error response:', error);
+        alert(`Failed to delete product: ${error.error || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert('Failed to delete product');
+      alert('Failed to delete product. Check console for details.');
     }
   };
 
@@ -314,17 +397,75 @@ export default function AdminProducts() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Image URL *
+                      Product Image *
                     </label>
-                    <input
-                      type="text"
-                      name="image"
-                      value={formData.image}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
-                      placeholder="/images/mango.jpg"
-                    />
+                    
+                    {/* Image Preview */}
+                    {imagePreview && (
+                      <div className="mb-3 relative">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-48 object-cover rounded-lg border-2 border-gray-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setImagePreview('');
+                            setFormData({ ...formData, image: '' });
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Upload Button */}
+                    <div className="flex gap-2">
+                      <label className="flex-1 cursor-pointer">
+                        <div className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition font-semibold">
+                          {uploadingImage ? (
+                            <>
+                              <span className="animate-spin">⏳</span>
+                              <span>Uploading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>📤</span>
+                              <span>Upload Image</span>
+                            </>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                          disabled={uploadingImage}
+                        />
+                      </label>
+                    </div>
+
+                    {/* Or URL Input */}
+                    <div className="mt-3">
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                          <span className="px-2 bg-white text-gray-500">or paste image URL</span>
+                        </div>
+                      </div>
+                      <input
+                        type="text"
+                        name="image"
+                        value={formData.image}
+                        onChange={handleInputChange}
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF8C42] focus:border-transparent"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">

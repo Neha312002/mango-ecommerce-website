@@ -56,13 +56,13 @@ model Product {
   id            Int       @id @default(autoincrement())
   name          String
   price         Float
-  description   String
-  details       String
-  image         String
+  description   String    @db.Text
+  details       String    @db.Text
+  image         String    @db.Text
   weight        String    @default("1 kg")
   origin        String
   season        String
-  nutritional   String
+  nutritional   String    @db.Text
   stock         Int       @default(100)
   featured      Boolean   @default(false)
   createdAt     DateTime  @default(now())

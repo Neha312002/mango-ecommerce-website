@@ -79,7 +79,10 @@ export async function PUT(
   try {
     // Verify admin
     const user = verifyAdmin(request);
+    console.log('PUT /api/products/[id] - User verification result:', user);
+    
     if (!user || user.role !== 'admin') {
+      console.error('Admin verification failed. User:', user);
       return NextResponse.json(
         { error: 'Unauthorized - Admin access required' },
         { status: 401 }
@@ -97,6 +100,8 @@ export async function PUT(
     }
 
     const body = await request.json();
+    console.log('Update product request body:', { ...body, image: body.image ? `${body.image.substring(0, 50)}...` : 'none' });
+    
     const { name, description, price, image, stock, weight, origin, season, details, nutritional, featured } = body;
 
     // Validation
@@ -159,7 +164,10 @@ export async function DELETE(
   try {
     // Verify admin
     const user = verifyAdmin(request);
+    console.log('DELETE /api/products/[id] - User verification result:', user);
+    
     if (!user || user.role !== 'admin') {
+      console.error('Admin verification failed. User:', user);
       return NextResponse.json(
         { error: 'Unauthorized - Admin access required' },
         { status: 401 }
@@ -176,10 +184,14 @@ export async function DELETE(
       );
     }
 
+    console.log('Attempting to delete product ID:', productId);
+
     // Delete product
     await prisma.product.delete({
       where: { id: productId },
     });
+
+    console.log('Product deleted successfully:', productId);
 
     return NextResponse.json(
       {
@@ -196,7 +208,7 @@ export async function DELETE(
       );
     }
     return NextResponse.json(
-      { error: 'Failed to delete product' },
+      { error: 'Failed to delete product', details: error.message },
       { status: 500 }
     );
   }
