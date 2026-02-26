@@ -1,5 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+// Helper to verify admin access
+function verifyAdmin(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  try {
+    const token = authHeader.substring(7);
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    return decoded;
+  } catch (error) {
+    return null;
+  }
+}
 
 // Create order
 export async function POST(request: NextRequest) {
@@ -130,9 +149,25 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    // If userId is provided, get orders for that user
-    // If not provided, assume admin is requesting all orders
-    const whereClause = userId ? { userId: parseInt(userId) } : {};
+    // If userId is provided, get orders for that user (normal user request)
+    // If not provided, verify admin and return all orders
+    let whereClause = {};
+    
+    if (userId) {
+      whereClause = { userId: parseInt(userId) };
+    } else {
+      // No userId means admin is requesting all orders - verify admin
+      const user = verifyAdmin(request);
+      console.log('GET /api/orders - Admin verification:', user);
+      
+      if (!user || user.role !== 'admin') {
+        console.error('Unauthorized access to all orders');
+        return NextResponse.json(
+          { error: 'Unauthorized - Admin access required to view all orders' },
+          { status: 401 }
+        );
+      }
+    }
 
     const orders = await prisma.order.findMany({
       where: whereClause,
@@ -155,11 +190,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    console.log(`Returning ${orders.length} orders`);
     return NextResponse.json(orders, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Get orders error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch orders' },
+      { error: 'Failed to fetch orders', details: error.message },
       { status: 500 }
     );
   }

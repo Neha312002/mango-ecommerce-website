@@ -26,15 +26,48 @@ export default function AdminOrders() {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        console.error('No auth token found');
+        alert('Please login again');
+        setLoading(false);
+        return;
+      }
+
+      console.log('Fetching orders with token');
       const res = await fetch('/api/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      console.log('Orders response status:', res.status);
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('Failed to fetch orders:', errorData);
+        alert(`Failed to load orders: ${errorData.error || 'Unknown error'}`);
+        setLoading(false);
+        return;
+      }
+
       const data = await res.json();
-      setOrders(data);
-      setFilteredOrders(data);
+      console.log('Orders fetched:', data.length);
+      
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setOrders(data);
+        setFilteredOrders(data);
+      } else {
+        console.error('Invalid orders data:', data);
+        setOrders([]);
+        setFilteredOrders([]);
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching orders:', error);
+      alert('Failed to load orders. Check console for details.');
+      setOrders([]);
+      setFilteredOrders([]);
       setLoading(false);
     }
   };
