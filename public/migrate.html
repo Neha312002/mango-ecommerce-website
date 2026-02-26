@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Migration - Add Admin Role</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #FFE5D9 0%, #FFF 50%, #D4EDDA 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .emoji { font-size: 60px; margin-bottom: 20px; }
+        h1 { color: #3D4F42; margin-bottom: 10px; }
+        .subtitle { color: #666; font-size: 14px; }
+        .warning {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .warning strong { color: #856404; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #3D4F42;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #FF8C42;
+        }
+        .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #FF8C42;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #FF7A29;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 140, 66, 0.4);
+        }
+        button:disabled {
+            background: #CCC;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .result.success {
+            background: #D4EDDA;
+            border: 1px solid #C3E6CB;
+            color: #155724;
+        }
+        .result.error {
+            background: #F8D7DA;
+            border: 1px solid #F5C6CB;
+            color: #721C24;
+        }
+        .steps {
+            background: #E3F2FD;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .steps h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+        }
+        .steps ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        .steps li {
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">🚀</div>
+            <h1>Database Migration</h1>
+            <p class="subtitle">Add admin role and promote your account</p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Run this ONCE only! After successful migration, delete the <code>/api/migrate-admin/route.ts</code> file.
+        </div>
+
+        <form id="migrationForm">
+            <div class="form-group">
+                <label for="email">Your Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="admin@example.com" 
+                    required
+                >
+                <div class="hint">The email you used to sign up (must exist in database)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="secret">Migration Secret</label>
+                <input 
+                    type="password" 
+                    id="secret" 
+                    name="secret" 
+                    value="migrate123"
+                    required
+                >
+                <div class="hint">Default is "migrate123" (or set MIGRATION_SECRET in env)</div>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                🚀 Run Migration & Make Me Admin
+            </button>
+        </form>
+
+        <div id="result" class="result"></div>
+
+        <div class="steps">
+            <h3>📋 What This Does:</h3>
+            <ol>
+                <li>Adds "role" column to User table</li>
+                <li>Creates index for faster queries</li>
+                <li>Sets your account role to "admin"</li>
+                <li>You can then access /admin panel</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('migrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const secret = document.getElementById('secret').value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Running migration...';
+            resultDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/migrate-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, secret }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br><br>
+                        ${data.message}<br><br>
+                        <strong>Admin User:</strong><br>
+                        Name: ${data.user.name}<br>
+                        Email: ${data.user.email}<br>
+                        Role: ${data.user.role}<br><br>
+                        <strong>Next Steps:</strong><br>
+                        1. Login at <a href="/auth">/auth</a><br>
+                        2. Go to <a href="/admin">/admin</a><br>
+                        3. Delete /api/migrate-admin/route.ts file!
+                    `;
+                    submitBtn.textContent = '✅ Migration Complete!';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <strong>❌ Error:</strong><br>
+                        ${data.error}<br><br>
+                        ${data.details ? `Details: ${data.details}<br><br>` : ''}
+                        ${data.hint ? `Hint: ${data.hint}` : ''}
+                    `;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Try Again';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ Network Error:</strong><br>
+                    ${error.message}<br><br>
+                    Check if your server is running!
+                `;
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Try Again';
+            }
+
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
