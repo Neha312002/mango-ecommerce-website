@@ -23,12 +23,17 @@ export async function sendOrderConfirmationEmail(
   try {
     // Check if email is configured
     if (!process.env.RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY not configured, skipping email');
+      console.warn('⚠️ RESEND_API_KEY not configured, skipping email');
       return { success: false, error: 'Email not configured' };
     }
 
+    console.log('🔑 RESEND_API_KEY found (length):', process.env.RESEND_API_KEY.length);
+    console.log('📧 Sending order confirmation email to:', to);
+    console.log('📦 Order number:', orderData.orderNumber);
+
     // Initialize Resend
     const resend = new Resend(process.env.RESEND_API_KEY);
+    console.log('✅ Resend client initialized');
 
     const itemsHtml = orderData.items
       .map(
@@ -167,13 +172,18 @@ export async function sendOrderConfirmationEmail(
     });
 
     if (error) {
-      console.error('Email sending failed:', error);
+      console.error('❌ Resend API error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       return { success: false, error };
     }
 
+    console.log('✅ Email sent successfully!');
+    console.log('📨 Email data:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Email sending error:', error);
+    console.error('❌ Email sending error (catch block):', error);
+    console.error('Error type:', typeof error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     return { success: false, error };
   }
 }
@@ -196,9 +206,14 @@ export async function sendAdminOrderNotification(orderData: {
 }) {
   try {
     if (!process.env.RESEND_API_KEY || !process.env.ADMIN_EMAIL) {
-      console.warn('Email not configured for admin notifications');
+      console.warn('⚠️ Email not configured for admin notifications');
+      console.warn('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+      console.warn('ADMIN_EMAIL exists:', !!process.env.ADMIN_EMAIL);
       return { success: false, error: 'Email not configured' };
     }
+
+    console.log('📧 Sending admin notification to:', process.env.ADMIN_EMAIL);
+    console.log('📦 Order:', orderData.orderNumber, '- Total:', orderData.total);
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -317,13 +332,18 @@ export async function sendAdminOrderNotification(orderData: {
     });
 
     if (error) {
-      console.error('Admin email sending failed:', error);
+      console.error('❌ Admin email sending failed:', error);
+      console.error('Admin error details:', JSON.stringify(error, null, 2));
       return { success: false, error };
     }
 
+    console.log('✅ Admin email sent successfully!');
+    console.log('📨 Admin email data:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Admin email sending error:', error);
+    console.error('❌ Admin email sending error (catch block):', error);
+    console.error('Error type:', typeof error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     return { success: false, error };
   }
 }
