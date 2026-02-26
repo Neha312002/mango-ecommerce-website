@@ -178,6 +178,10 @@ export async function sendOrderConfirmationEmail(
       </html>
     `;
 
+    console.log('📤 Attempting to send email...');
+    console.log('From:', process.env.GMAIL_USER);
+    console.log('To:', to);
+    
     const info = await transporter.sendMail({
       from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
       to: to,
@@ -187,11 +191,17 @@ export async function sendOrderConfirmationEmail(
 
     console.log('✅ Email sent successfully!');
     console.log('📨 Message ID:', info.messageId);
+    console.log('📨 Response:', info.response);
     return { success: true, data: info };
   } catch (error: any) {
     console.error('❌ Email sending error (catch block):', error);
     console.error('Error type:', typeof error);
     console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Error stack:', error.stack);
+    if (error.response) {
+      console.error('SMTP Response:', error.response);
+    }
     return { success: false, error: error.message };
   }
 }
@@ -333,6 +343,10 @@ export async function sendAdminOrderNotification(orderData: {
       </html>
     `;
 
+    console.log('📤 Attempting to send admin email...');
+    console.log('From:', process.env.GMAIL_USER);
+    console.log('To:', process.env.ADMIN_EMAIL);
+
     const info = await transporter.sendMail({
       from: `"Mango Fresh Farm" <${process.env.GMAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
@@ -342,11 +356,16 @@ export async function sendAdminOrderNotification(orderData: {
 
     console.log('✅ Admin email sent successfully!');
     console.log('📨 Admin message ID:', info.messageId);
+    console.log('📨 Admin response:', info.response);
     return { success: true, data: info };
   } catch (error: any) {
     console.error('❌ Admin email sending error (catch block):', error);
     console.error('Error type:', typeof error);
     console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    if (error.response) {
+      console.error('SMTP Response:', error.response);
+    }
     return { success: false, error: error.message };
   }
 }
